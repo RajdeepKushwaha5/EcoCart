@@ -1,0 +1,1727 @@
+{
+ "dataset": {
+  "name": "Open CEDA 2025",
+  "attribution": "CEDA by Watershed",
+  "licence": "CC BY-SA 4.0",
+  "source": "https://registry.opendata.aws/open-ceda/",
+  "homepage": "https://openceda.org/",
+  "country": "India",
+  "baseYear": 2023,
+  "priceYear": 2025,
+  "inrPerUsd": 86.25757844,
+  "built": "2026-10-08"
+ },
+ "sectors": {
+  "1111B0": {
+   "name": "Grain farming",
+   "kgPerUsdProducer2023": 0.567335,
+   "purchaserRatio": 0.653013,
+   "priceIndex": 83.23,
+   "kgPerInr": 0.00516041
+  },
+  "111400": {
+   "name": "Greenhouse, nursery, and floriculture production",
+   "kgPerUsdProducer2023": 0.396724,
+   "purchaserRatio": 0.721404,
+   "priceIndex": 96.18,
+   "kgPerInr": 0.00344973
+  },
+  "311111": {
+   "name": "Dog and cat food manufacturing",
+   "kgPerUsdProducer2023": 0.598536,
+   "purchaserRatio": 0.802054,
+   "priceIndex": 96.01,
+   "kgPerInr": 0.00579669
+  },
+  "311119": {
+   "name": "Other animal food manufacturing",
+   "kgPerUsdProducer2023": 0.552138,
+   "purchaserRatio": 0.654896,
+   "priceIndex": 93.53,
+   "kgPerInr": 0.004482
+  },
+  "311225": {
+   "name": "Fats and oils refining and blending",
+   "kgPerUsdProducer2023": 0.432931,
+   "purchaserRatio": 0.799903,
+   "priceIndex": 91.29,
+   "kgPerInr": 0.0043978
+  },
+  "311230": {
+   "name": "Breakfast cereal manufacturing",
+   "kgPerUsdProducer2023": 0.568724,
+   "purchaserRatio": 0.797753,
+   "priceIndex": 103.65,
+   "kgPerInr": 0.00507462
+  },
+  "311300": {
+   "name": "Sugar and confectionery product manufacturing",
+   "kgPerUsdProducer2023": 0.609854,
+   "purchaserRatio": 0.80138,
+   "priceIndex": 101.65,
+   "kgPerInr": 0.00557391
+  },
+  "311514": {
+   "name": "Dry, condensed, and evaporated dairy product manufacturing",
+   "kgPerUsdProducer2023": 0.853931,
+   "purchaserRatio": 0.799329,
+   "priceIndex": 119.61,
+   "kgPerInr": 0.00661582
+  },
+  "3118A0": {
+   "name": "Cookie, cracker, pasta, and tortilla manufacturing",
+   "kgPerUsdProducer2023": 0.648201,
+   "purchaserRatio": 0.788591,
+   "priceIndex": 106.24,
+   "kgPerInr": 0.00557797
+  },
+  "311910": {
+   "name": "Snack food manufacturing",
+   "kgPerUsdProducer2023": 0.481025,
+   "purchaserRatio": 0.809647,
+   "priceIndex": 106.41,
+   "kgPerInr": 0.0042431
+  },
+  "311920": {
+   "name": "Coffee and tea manufacturing",
+   "kgPerUsdProducer2023": 0.596819,
+   "purchaserRatio": 0.797836,
+   "priceIndex": 104.08,
+   "kgPerInr": 0.00530386
+  },
+  "311990": {
+   "name": "All other food manufacturing",
+   "kgPerUsdProducer2023": 0.609328,
+   "purchaserRatio": 0.794758,
+   "priceIndex": 106.68,
+   "kgPerInr": 0.00526267
+  },
+  "312110": {
+   "name": "Soft drink and ice manufacturing",
+   "kgPerUsdProducer2023": 0.894141,
+   "purchaserRatio": 0.754576,
+   "priceIndex": 94.78,
+   "kgPerInr": 0.00825268
+  },
+  "314110": {
+   "name": "Carpet and rug mills",
+   "kgPerUsdProducer2023": 0.786664,
+   "purchaserRatio": 0.669374,
+   "priceIndex": 111.38,
+   "kgPerInr": 0.00548092
+  },
+  "314120": {
+   "name": "Curtain and linen mills",
+   "kgPerUsdProducer2023": 0.707376,
+   "purchaserRatio": 0.780451,
+   "priceIndex": 115.07,
+   "kgPerInr": 0.00556207
+  },
+  "315000": {
+   "name": "Apparel manufacturing",
+   "kgPerUsdProducer2023": 0.581655,
+   "purchaserRatio": 0.687758,
+   "priceIndex": 100.93,
+   "kgPerInr": 0.00459499
+  },
+  "316000": {
+   "name": "Leather and allied product manufacturing",
+   "kgPerUsdProducer2023": 0.513838,
+   "purchaserRatio": 0.640826,
+   "priceIndex": 110.19,
+   "kgPerInr": 0.00346439
+  },
+  "322230": {
+   "name": "Stationery product manufacturing",
+   "kgPerUsdProducer2023": 0.803921,
+   "purchaserRatio": 0.795221,
+   "priceIndex": 88.58,
+   "kgPerInr": 0.00836698
+  },
+  "322291": {
+   "name": "Sanitary paper product manufacturing",
+   "kgPerUsdProducer2023": 1.017482,
+   "purchaserRatio": 0.829119,
+   "priceIndex": 111.37,
+   "kgPerInr": 0.00878169
+  },
+  "324190": {
+   "name": "Other petroleum and coal products manufacturing",
+   "kgPerUsdProducer2023": 1.092413,
+   "purchaserRatio": 0.779939,
+   "priceIndex": 86.16,
+   "kgPerInr": 0.01146422
+  },
+  "325310": {
+   "name": "Fertilizer manufacturing",
+   "kgPerUsdProducer2023": 1.028996,
+   "purchaserRatio": 0.635676,
+   "priceIndex": 83.11,
+   "kgPerInr": 0.00912429
+  },
+  "325320": {
+   "name": "Pesticide and other agricultural chemical manufacturing",
+   "kgPerUsdProducer2023": 0.684715,
+   "purchaserRatio": 0.655567,
+   "priceIndex": 96.03,
+   "kgPerInr": 0.00541904
+  },
+  "325412": {
+   "name": "Pharmaceutical preparation manufacturing",
+   "kgPerUsdProducer2023": 0.415188,
+   "purchaserRatio": 0.726892,
+   "priceIndex": 106.16,
+   "kgPerInr": 0.00329577
+  },
+  "325520": {
+   "name": "Adhesive manufacturing",
+   "kgPerUsdProducer2023": 0.78246,
+   "purchaserRatio": 0.86596,
+   "priceIndex": 96.97,
+   "kgPerInr": 0.00810075
+  },
+  "325610": {
+   "name": "Soap and cleaning compound manufacturing",
+   "kgPerUsdProducer2023": 0.566029,
+   "purchaserRatio": 0.874341,
+   "priceIndex": 94.68,
+   "kgPerInr": 0.00605988
+  },
+  "325620": {
+   "name": "Toilet preparation manufacturing",
+   "kgPerUsdProducer2023": 0.608509,
+   "purchaserRatio": 0.888374,
+   "priceIndex": 105.16,
+   "kgPerInr": 0.00595957
+  },
+  "326160": {
+   "name": "Plastics bottle manufacturing",
+   "kgPerUsdProducer2023": 1.408155,
+   "purchaserRatio": 0.782006,
+   "priceIndex": 108.76,
+   "kgPerInr": 0.01173799
+  },
+  "326190": {
+   "name": "Other plastics product manufacturing",
+   "kgPerUsdProducer2023": 1.087007,
+   "purchaserRatio": 0.729331,
+   "priceIndex": 101.07,
+   "kgPerInr": 0.00909363
+  },
+  "327100": {
+   "name": "Clay product and refractory manufacturing",
+   "kgPerUsdProducer2023": 0.916664,
+   "purchaserRatio": 0.680766,
+   "priceIndex": 111.9,
+   "kgPerInr": 0.00646518
+  },
+  "327200": {
+   "name": "Glass and glass product manufacturing",
+   "kgPerUsdProducer2023": 1.150881,
+   "purchaserRatio": 0.708814,
+   "priceIndex": 112.68,
+   "kgPerInr": 0.00839303
+  },
+  "332200": {
+   "name": "Cutlery and handtool manufacturing",
+   "kgPerUsdProducer2023": 1.654247,
+   "purchaserRatio": 0.577909,
+   "priceIndex": 120.36,
+   "kgPerInr": 0.00920832
+  },
+  "332999": {
+   "name": "Other fabricated metal manufacturing",
+   "kgPerUsdProducer2023": 1.511239,
+   "purchaserRatio": 0.768113,
+   "priceIndex": 108.43,
+   "kgPerInr": 0.01241114
+  },
+  "333316": {
+   "name": "Photographic and photocopying equipment manufacturing",
+   "kgPerUsdProducer2023": 0.884806,
+   "purchaserRatio": 0.559671,
+   "priceIndex": 115.8,
+   "kgPerInr": 0.00495764
+  },
+  "334118": {
+   "name": "Computer terminals and other computer peripheral equipment manufacturing",
+   "kgPerUsdProducer2023": 1.641254,
+   "purchaserRatio": 0.779212,
+   "priceIndex": 114.84,
+   "kgPerInr": 0.01291043
+  },
+  "334300": {
+   "name": "Audio and video equipment manufacturing",
+   "kgPerUsdProducer2023": 0.83562,
+   "purchaserRatio": 0.738347,
+   "priceIndex": 92.28,
+   "kgPerInr": 0.00775113
+  },
+  "33451A": {
+   "name": "Watch, clock, and other measuring and controlling device manufacturing",
+   "kgPerUsdProducer2023": 1.191604,
+   "purchaserRatio": 0.804632,
+   "priceIndex": 88.38,
+   "kgPerInr": 0.01257703
+  },
+  "335110": {
+   "name": "Electric lamp bulb and part manufacturing",
+   "kgPerUsdProducer2023": 1.605453,
+   "purchaserRatio": 0.70122,
+   "priceIndex": 154.43,
+   "kgPerInr": 0.00845128
+  },
+  "335120": {
+   "name": "Lighting fixture manufacturing",
+   "kgPerUsdProducer2023": 1.437346,
+   "purchaserRatio": 0.675833,
+   "priceIndex": 110.38,
+   "kgPerInr": 0.01020266
+  },
+  "335210": {
+   "name": "Small electrical appliance manufacturing",
+   "kgPerUsdProducer2023": 1.770549,
+   "purchaserRatio": 0.634509,
+   "priceIndex": 118.23,
+   "kgPerInr": 0.01101593
+  },
+  "335221": {
+   "name": "Household cooking appliance manufacturing",
+   "kgPerUsdProducer2023": 1.870525,
+   "purchaserRatio": 0.735415,
+   "priceIndex": 110.21,
+   "kgPerInr": 0.0144703
+  },
+  "335911": {
+   "name": "Storage battery manufacturing",
+   "kgPerUsdProducer2023": 1.734271,
+   "purchaserRatio": 0.8323,
+   "priceIndex": 112.89,
+   "kgPerInr": 0.01482327
+  },
+  "335912": {
+   "name": "Primary battery manufacturing",
+   "kgPerUsdProducer2023": 2.005442,
+   "purchaserRatio": 0.789474,
+   "priceIndex": 112.93,
+   "kgPerInr": 0.01625329
+  },
+  "335920": {
+   "name": "Communication and energy wire and cable manufacturing",
+   "kgPerUsdProducer2023": 0.923243,
+   "purchaserRatio": 0.759541,
+   "priceIndex": 99.11,
+   "kgPerInr": 0.00820262
+  },
+  "335930": {
+   "name": "Wiring device manufacturing",
+   "kgPerUsdProducer2023": 1.685282,
+   "purchaserRatio": 0.652581,
+   "priceIndex": 88.91,
+   "kgPerInr": 0.01434034
+  },
+  "335999": {
+   "name": "All other miscellaneous electrical equipment and component manufacturing",
+   "kgPerUsdProducer2023": 1.351239,
+   "purchaserRatio": 0.833713,
+   "priceIndex": 108.53,
+   "kgPerInr": 0.01203377
+  },
+  "336390": {
+   "name": "Other Motor Vehicle Parts Manufacturing",
+   "kgPerUsdProducer2023": 2.06602,
+   "purchaserRatio": 0.799719,
+   "priceIndex": 99.36,
+   "kgPerInr": 0.01927804
+  },
+  "336991": {
+   "name": "Motorcycle, bicycle, and parts manufacturing",
+   "kgPerUsdProducer2023": 1.917862,
+   "purchaserRatio": 0.827851,
+   "priceIndex": 109.17,
+   "kgPerInr": 0.01686045
+  },
+  "337121": {
+   "name": "Upholstered household furniture manufacturing",
+   "kgPerUsdProducer2023": 1.165435,
+   "purchaserRatio": 0.788546,
+   "priceIndex": 102.04,
+   "kgPerInr": 0.01044113
+  },
+  "337122": {
+   "name": "Nonupholstered wood household furniture manufacturing",
+   "kgPerUsdProducer2023": 0.822324,
+   "purchaserRatio": 0.923077,
+   "priceIndex": 109.46,
+   "kgPerInr": 0.00803949
+  },
+  "33721A": {
+   "name": "Office furniture and custom architectural woodwork and millwork manufacturing",
+   "kgPerUsdProducer2023": 1.104005,
+   "purchaserRatio": 0.767592,
+   "priceIndex": 104.36,
+   "kgPerInr": 0.00941391
+  },
+  "337900": {
+   "name": "Other furniture related product manufacturing",
+   "kgPerUsdProducer2023": 1.064732,
+   "purchaserRatio": 0.729877,
+   "priceIndex": 100.81,
+   "kgPerInr": 0.00893695
+  },
+  "339112": {
+   "name": "Surgical and medical instrument manufacturing",
+   "kgPerUsdProducer2023": 0.824809,
+   "purchaserRatio": 0.661986,
+   "priceIndex": 115.99,
+   "kgPerInr": 0.00545738
+  },
+  "339115": {
+   "name": "Ophthalmic goods manufacturing",
+   "kgPerUsdProducer2023": 0.699571,
+   "purchaserRatio": 0.649007,
+   "priceIndex": 104.74,
+   "kgPerInr": 0.0050254
+  },
+  "339910": {
+   "name": "Jewelry and silverware manufacturing",
+   "kgPerUsdProducer2023": 0.597571,
+   "purchaserRatio": 0.633851,
+   "priceIndex": 100.3,
+   "kgPerInr": 0.00437803
+  },
+  "339920": {
+   "name": "Sporting and athletic goods manufacturing",
+   "kgPerUsdProducer2023": 0.933476,
+   "purchaserRatio": 0.637209,
+   "priceIndex": 101.28,
+   "kgPerInr": 0.0068087
+  },
+  "339930": {
+   "name": "Doll, toy, and game manufacturing",
+   "kgPerUsdProducer2023": 0.812393,
+   "purchaserRatio": 0.63412,
+   "priceIndex": 99.71,
+   "kgPerInr": 0.00598965
+  },
+  "339940": {
+   "name": "Office supplies (except paper) manufacturing",
+   "kgPerUsdProducer2023": 1.031455,
+   "purchaserRatio": 0.755009,
+   "priceIndex": 103.36,
+   "kgPerInr": 0.00873479
+  },
+  "339990": {
+   "name": "All other miscellaneous manufacturing",
+   "kgPerUsdProducer2023": 0.916498,
+   "purchaserRatio": 0.697361,
+   "priceIndex": 97.6,
+   "kgPerInr": 0.00759176
+  },
+  "511130": {
+   "name": "Book publishers",
+   "kgPerUsdProducer2023": 0.771603,
+   "purchaserRatio": 0.853981,
+   "priceIndex": 82.55,
+   "kgPerInr": 0.00925397
+  }
+ },
+ "rules": [
+  {
+   "sector": null,
+   "label": "Digital, gift and service purchases",
+   "crumbs": [
+    "kindle store",
+    "kindle ebooks",
+    "kindle edition",
+    "ebooks",
+    "apps & games",
+    "gift cards",
+    "gift vouchers",
+    "subscribe & save",
+    "prime video",
+    "digital music",
+    "audible",
+    "audible audiobooks",
+    "software",
+    "services",
+    "amazon renewed",
+    "renewed",
+    "refurbished",
+    "pre-owned"
+   ]
+  },
+  {
+   "sector": "325610",
+   "label": "Car cleaning products",
+   "under": [
+    "car & motorbike"
+   ],
+   "crumbs": [
+    "car & motorbike care",
+    "car care",
+    "paint & exterior care",
+    "exterior care",
+    "interior care",
+    "wash equipment",
+    "shampoos",
+    "car shampoos",
+    "car wash",
+    "car washes",
+    "car cleaning",
+    "polishes & waxes",
+    "waxes",
+    "cleaners"
+   ]
+  },
+  {
+   "sector": "315000",
+   "label": "Clothing",
+   "crumbs": [
+    "clothing & accessories",
+    "clothing",
+    "topwear",
+    "bottomwear",
+    "t-shirts",
+    "t-shirts & polos",
+    "polos",
+    "shirts",
+    "casual shirts",
+    "formal shirts",
+    "tops",
+    "tops, t-shirts & shirts",
+    "kurtas",
+    "kurtas & kurtis",
+    "kurtis",
+    "ethnic wear",
+    "sarees",
+    "lehengas",
+    "salwar suits",
+    "dresses",
+    "jeans",
+    "trousers",
+    "track pants",
+    "shorts",
+    "leggings",
+    "innerwear",
+    "lingerie",
+    "innerwear & sleepwear",
+    "briefs",
+    "trunks",
+    "vests",
+    "bras",
+    "panties",
+    "sleepwear",
+    "nightwear",
+    "pyjamas",
+    "sweatshirts",
+    "sweatshirts & hoodies",
+    "hoodies",
+    "jackets",
+    "jackets & coats",
+    "sweaters",
+    "winter wear",
+    "sportswear",
+    "activewear",
+    "socks",
+    "ties",
+    "scarves",
+    "stoles",
+    "gloves",
+    "caps & hats",
+    "dupattas",
+    "uniforms",
+    "rainwear",
+    "western wear",
+    "ethnic sets",
+    "kids clothing",
+    "kids' clothing",
+    "frocks",
+    "frocks & dresses",
+    "night suits",
+    "trackpants"
+   ]
+  },
+  {
+   "sector": "316000",
+   "label": "Shoes, bags and leather goods",
+   "crumbs": [
+    "shoes & handbags",
+    "shoes",
+    "footwear",
+    "men's shoes",
+    "women's shoes",
+    "boys' shoes",
+    "girls' shoes",
+    "sports shoes",
+    "sports & outdoor shoes",
+    "running shoes",
+    "casual shoes",
+    "sneakers",
+    "formal shoes",
+    "sandals",
+    "sandals & floaters",
+    "flip flops",
+    "flip-flops & slippers",
+    "slippers",
+    "boots",
+    "heels",
+    "flats",
+    "handbags",
+    "handbags & clutches",
+    "clutches",
+    "wallets",
+    "belts",
+    "luggage & bags",
+    "luggage",
+    "suitcases",
+    "suitcases & trolley bags",
+    "backpacks",
+    "school bags",
+    "laptop bags",
+    "travel accessories",
+    "duffle bags"
+   ]
+  },
+  {
+   "sector": "339910",
+   "label": "Jewellery",
+   "crumbs": [
+    "jewellery",
+    "jewelry",
+    "fashion jewellery",
+    "gold & diamond jewellery",
+    "silver jewellery",
+    "earrings",
+    "necklaces",
+    "rings",
+    "bangles",
+    "bracelets",
+    "pendants",
+    "anklets",
+    "mangalsutras"
+   ]
+  },
+  {
+   "sector": "33451A",
+   "label": "Wristwatches",
+   "crumbs": [
+    "watches",
+    "wrist watches",
+    "analog watches",
+    "men's watches",
+    "women's watches",
+    "kids' watches",
+    "wall clocks"
+   ]
+  },
+  {
+   "sector": "339115",
+   "label": "Eyewear",
+   "crumbs": [
+    "eyewear",
+    "sunglasses",
+    "spectacle frames",
+    "contact lenses",
+    "eyeglasses"
+   ]
+  },
+  {
+   "sector": "325620",
+   "label": "Beauty and personal care products",
+   "crumbs": [
+    "beauty",
+    "beauty & grooming",
+    "makeup",
+    "make-up",
+    "skin care",
+    "skincare",
+    "hair care",
+    "shampoo & conditioner",
+    "shampoos",
+    "conditioners",
+    "hair oils",
+    "hair colour",
+    "fragrance",
+    "perfumes",
+    "deodorants",
+    "bath & shower",
+    "body wash",
+    "face wash",
+    "moisturisers",
+    "sunscreens",
+    "lipsticks",
+    "nail polish",
+    "shaving & hair removal",
+    "shaving cream",
+    "oral care",
+    "toothpaste",
+    "mouthwash",
+    "personal care",
+    "feminine care",
+    "baby bath & skin care",
+    "men's grooming",
+    "health & personal care",
+    "beauty & personal care",
+    "bath & body",
+    "hair & skin care",
+    "body lotions",
+    "lotions",
+    "creams"
+   ]
+  },
+  {
+   "sector": "325610",
+   "label": "Soaps, detergents and cleaners",
+   "crumbs": [
+    "laundry",
+    "laundry detergents",
+    "liquid detergent",
+    "detergent powder",
+    "detergent bars",
+    "fabric conditioners",
+    "household cleaners",
+    "dishwashing",
+    "dishwash liquids",
+    "dishwash bars",
+    "floor cleaners",
+    "toilet cleaners",
+    "bathroom cleaners",
+    "glass cleaners",
+    "soaps",
+    "bathing soaps",
+    "hand wash",
+    "handwash",
+    "household supplies",
+    "cleaning supplies",
+    "cleaning & laundry",
+    "disinfectants",
+    "surface cleaners"
+   ]
+  },
+  {
+   "sector": "322291",
+   "label": "Tissues, diapers and sanitary paper",
+   "crumbs": [
+    "diapers",
+    "diapers & nappies",
+    "baby diapers",
+    "adult diapers",
+    "sanitary pads",
+    "sanitary napkins",
+    "tissues",
+    "facial tissues",
+    "toilet paper",
+    "toilet rolls",
+    "paper towels",
+    "kitchen rolls",
+    "wet wipes",
+    "baby wipes",
+    "napkins"
+   ]
+  },
+  {
+   "sector": "325412",
+   "label": "Medicines and health supplements",
+   "crumbs": [
+    "health care",
+    "health & wellness",
+    "medicines",
+    "ayurveda",
+    "vitamins",
+    "vitamins & supplements",
+    "vitamins, minerals & supplements",
+    "sports nutrition",
+    "protein supplements",
+    "first aid",
+    "pain relief",
+    "cough & cold"
+   ]
+  },
+  {
+   "sector": "339112",
+   "label": "Medical devices",
+   "crumbs": [
+    "medical supplies",
+    "medical devices",
+    "health monitors",
+    "blood pressure monitors",
+    "thermometers",
+    "pulse oximeters",
+    "glucometers",
+    "nebulizers",
+    "masks",
+    "face masks"
+   ]
+  },
+  {
+   "sector": "1111B0",
+   "label": "Grains",
+   "crumbs": [
+    "rice",
+    "basmati",
+    "basmati rice",
+    "rice, flour & pulses",
+    "atta",
+    "atta & flours",
+    "flours",
+    "pulses",
+    "dals & pulses",
+    "dals",
+    "grains",
+    "millets",
+    "poha",
+    "rava & sooji",
+    "flour & sooji",
+    "flours & sooji",
+    "sooji",
+    "suji",
+    "besan",
+    "maida",
+    "wheat flour",
+    "multigrain atta"
+   ]
+  },
+  {
+   "sector": "311990",
+   "label": "Packaged food",
+   "crumbs": [
+    "grocery & gourmet foods",
+    "grocery",
+    "gourmet foods",
+    "staples",
+    "packaged food",
+    "ready to cook",
+    "ready to eat",
+    "noodles",
+    "pasta",
+    "noodles & pasta",
+    "sauces",
+    "sauces & spreads",
+    "spreads",
+    "jams",
+    "pickles",
+    "spices",
+    "masalas & spices",
+    "salt",
+    "baking supplies",
+    "breakfast foods",
+    "dry fruits",
+    "dry fruits, nuts & seeds",
+    "nuts",
+    "honey",
+    "baby food",
+    "food products",
+    "food & beverages",
+    "packaged foods",
+    "ready meals",
+    "instant noodles",
+    "ketchup",
+    "dry fruits & nuts"
+   ]
+  },
+  {
+   "sector": "311225",
+   "label": "Edible oils and ghee",
+   "crumbs": [
+    "edible oils",
+    "cooking oils",
+    "oils",
+    "oils & ghee",
+    "ghee",
+    "edible oils & ghee",
+    "olive oil",
+    "mustard oil",
+    "sunflower oil",
+    "cooking oil",
+    "refined oil",
+    "groundnut oil",
+    "coconut oil"
+   ]
+  },
+  {
+   "sector": "311300",
+   "label": "Sugar, sweets and chocolate",
+   "crumbs": [
+    "sugar",
+    "sugar & jaggery",
+    "jaggery",
+    "chocolates",
+    "chocolate",
+    "sweets",
+    "indian sweets",
+    "candy",
+    "confectionery",
+    "candy & chocolate"
+   ]
+  },
+  {
+   "sector": "311910",
+   "label": "Snacks",
+   "crumbs": [
+    "snacks",
+    "namkeen",
+    "chips",
+    "snack foods",
+    "snacks & namkeen",
+    "snacks & sweets"
+   ]
+  },
+  {
+   "sector": "3118A0",
+   "label": "Biscuits",
+   "crumbs": [
+    "biscuits",
+    "cookies",
+    "biscuits & cookies",
+    "crackers",
+    "rusks"
+   ]
+  },
+  {
+   "sector": "311230",
+   "label": "Breakfast cereals",
+   "crumbs": [
+    "breakfast cereals",
+    "cereals",
+    "muesli",
+    "oats",
+    "cornflakes",
+    "granola"
+   ]
+  },
+  {
+   "sector": "311920",
+   "label": "Tea and coffee",
+   "crumbs": [
+    "tea",
+    "coffee",
+    "tea & coffee",
+    "coffee, tea & beverages",
+    "green tea",
+    "instant coffee",
+    "ground coffee",
+    "coffee beans",
+    "tea powder",
+    "tea bags",
+    "coffee powder",
+    "leaf tea",
+    "dust tea"
+   ]
+  },
+  {
+   "sector": "312110",
+   "label": "Soft drinks and water",
+   "crumbs": [
+    "beverages",
+    "soft drinks",
+    "juices",
+    "drinks",
+    "energy drinks",
+    "packaged water",
+    "drinking water",
+    "drink mixes"
+   ]
+  },
+  {
+   "sector": "311514",
+   "label": "Milk powder and dairy",
+   "crumbs": [
+    "dairy",
+    "milk",
+    "milk powder",
+    "dairy & eggs",
+    "dairy, bread & eggs"
+   ]
+  },
+  {
+   "sector": "311111",
+   "label": "Pet food",
+   "crumbs": [
+    "pet supplies",
+    "dog food",
+    "cat food",
+    "pet food",
+    "dogs",
+    "cats",
+    "dog treats",
+    "cat treats",
+    "dog dry food",
+    "dog wet food",
+    "cat dry food",
+    "cat wet food"
+   ]
+  },
+  {
+   "sector": "311119",
+   "label": "Other animal food",
+   "crumbs": [
+    "bird food",
+    "fish food",
+    "fish & aquatics"
+   ]
+  },
+  {
+   "sector": "511130",
+   "label": "Books",
+   "crumbs": [
+    "books",
+    "school books",
+    "textbooks",
+    "children's books",
+    "fiction",
+    "literature & fiction",
+    "non-fiction",
+    "comics",
+    "comics & mangas",
+    "comics & graphic novels",
+    "reference",
+    "encyclopaedias & reference works",
+    "exam preparation",
+    "exam central",
+    "higher education textbooks",
+    "academic",
+    "biographies",
+    "religion",
+    "self-help",
+    "mythology & folklore"
+   ]
+  },
+  {
+   "sector": "322230",
+   "label": "Stationery and notebooks",
+   "crumbs": [
+    "office products",
+    "stationery",
+    "office supplies",
+    "notebooks",
+    "notebooks, writing pads & diaries",
+    "diaries",
+    "notebooks & diaries",
+    "paper products",
+    "paper",
+    "printer paper",
+    "copier & multipurpose paper",
+    "envelopes",
+    "sticky notes",
+    "files & folders",
+    "craft paper",
+    "pens & stationery",
+    "school & office supplies"
+   ]
+  },
+  {
+   "sector": "339940",
+   "label": "Pens, art and office supplies",
+   "crumbs": [
+    "pens",
+    "pens, pencils & writing supplies",
+    "pencils",
+    "markers",
+    "highlighters",
+    "art & craft supplies",
+    "arts & crafts",
+    "art supplies",
+    "colours",
+    "crayons",
+    "paints",
+    "geometry boxes",
+    "staplers",
+    "calculators",
+    "school supplies"
+   ]
+  },
+  {
+   "sector": "339930",
+   "label": "Toys and games",
+   "crumbs": [
+    "toys & games",
+    "toys",
+    "games",
+    "board games",
+    "puzzles",
+    "dolls",
+    "dolls & accessories",
+    "soft toys",
+    "stuffed animals & plush toys",
+    "building blocks",
+    "construction toys",
+    "remote control toys",
+    "action figures",
+    "learning & education",
+    "educational toys",
+    "baby & toddler toys",
+    "outdoor toys",
+    "ride-ons",
+    "kites"
+   ]
+  },
+  {
+   "sector": "339920",
+   "label": "Sports and fitness equipment",
+   "crumbs": [
+    "sports, fitness & outdoors",
+    "sports",
+    "fitness",
+    "exercise & fitness",
+    "gym equipment",
+    "strength training",
+    "yoga",
+    "yoga mats",
+    "dumbbells",
+    "cricket",
+    "badminton",
+    "football",
+    "tennis",
+    "table tennis",
+    "cycling accessories",
+    "camping & hiking",
+    "swimming",
+    "skating",
+    "fitness accessories",
+    "sports equipment"
+   ]
+  },
+  {
+   "sector": "336991",
+   "label": "Bicycles",
+   "crumbs": [
+    "bicycles",
+    "cycles",
+    "kids' bikes",
+    "mountain bikes",
+    "road bikes"
+   ]
+  },
+  {
+   "sector": "332200",
+   "label": "Cookware, cutlery and hand tools",
+   "crumbs": [
+    "cookware",
+    "pots & pans",
+    "pressure cookers",
+    "kadhais",
+    "tawas",
+    "frying pans",
+    "cookware sets",
+    "kitchen tools",
+    "kitchen utensils",
+    "kitchen knives",
+    "knives",
+    "cutlery",
+    "spoons",
+    "graters & slicers",
+    "hand tools",
+    "tools & home improvement",
+    "power & hand tools",
+    "screwdrivers",
+    "wrenches",
+    "pliers",
+    "tool kits",
+    "garden tools",
+    "kitchen, cookware & serveware",
+    "cookware & serveware",
+    "kitchen tools & utensils",
+    "pans",
+    "kadai",
+    "tawa",
+    "cookers"
+   ]
+  },
+  {
+   "sector": "332999",
+   "label": "Bottles, flasks and lunch boxes (metal)",
+   "crumbs": [
+    "water bottles",
+    "bottles",
+    "flasks",
+    "flasks & thermos",
+    "vacuum flasks",
+    "lunch boxes",
+    "tiffin boxes",
+    "lunch boxes & tiffins",
+    "steel containers"
+   ],
+   "byTitle": [
+    {
+     "words": [
+      "plastic",
+      "tritan",
+      "bpa free",
+      "bpa-free",
+      "polypropylene"
+     ],
+     "sector": "326160",
+     "label": "Bottles and lunch boxes (plastic)"
+    },
+    {
+     "words": [
+      "glass",
+      "borosilicate"
+     ],
+     "sector": "327200",
+     "label": "Bottles and lunch boxes (glass)"
+    }
+   ]
+  },
+  {
+   "sector": "326190",
+   "label": "Plastic household goods",
+   "crumbs": [
+    "kitchen storage & containers",
+    "storage & containers",
+    "containers",
+    "food storage",
+    "storage",
+    "home storage & organization",
+    "storage & organisation",
+    "buckets",
+    "mugs & buckets",
+    "dustbins",
+    "waste bins",
+    "bins",
+    "organisers",
+    "hangers",
+    "plastic containers"
+   ],
+   "byTitle": [
+    {
+     "words": [
+      "glass",
+      "borosilicate"
+     ],
+     "sector": "327200",
+     "label": "Glass jars and containers"
+    },
+    {
+     "words": [
+      "steel",
+      "stainless"
+     ],
+     "sector": "332999",
+     "label": "Steel jars and containers"
+    }
+   ]
+  },
+  {
+   "sector": "326160",
+   "label": "Plastic bottles",
+   "crumbs": [
+    "plastic bottles",
+    "sipper bottles",
+    "sippers"
+   ]
+  },
+  {
+   "sector": "327200",
+   "label": "Glassware",
+   "crumbs": [
+    "glassware",
+    "glasses",
+    "drinkware",
+    "glassware & drinkware",
+    "mugs",
+    "coffee mugs",
+    "tumblers"
+   ]
+  },
+  {
+   "sector": "327100",
+   "label": "Crockery and ceramics",
+   "crumbs": [
+    "dinnerware",
+    "dinnerware & serveware",
+    "dinner sets",
+    "plates",
+    "bowls",
+    "crockery",
+    "serveware",
+    "tableware",
+    "ceramics"
+   ],
+   "byTitle": [
+    {
+     "words": [
+      "steel",
+      "stainless"
+     ],
+     "sector": "332200",
+     "label": "Steel cutlery and tableware"
+    }
+   ]
+  },
+  {
+   "sector": "314120",
+   "label": "Bedding, curtains and linen",
+   "crumbs": [
+    "home furnishing",
+    "home furnishings",
+    "furnishing",
+    "bedsheets",
+    "bedsheets & covers",
+    "bed linen",
+    "bedding",
+    "bedding & linen",
+    "blankets",
+    "comforters",
+    "quilts",
+    "pillows",
+    "pillow covers",
+    "cushions",
+    "cushion covers",
+    "curtains",
+    "curtains & accessories",
+    "towels",
+    "bath towels",
+    "bath linen",
+    "table linen",
+    "kitchen linen",
+    "doormats"
+   ]
+  },
+  {
+   "sector": "314110",
+   "label": "Carpets and rugs",
+   "crumbs": [
+    "carpets",
+    "rugs",
+    "carpets & rugs",
+    "runners"
+   ]
+  },
+  {
+   "sector": "337121",
+   "label": "Upholstered furniture",
+   "crumbs": [
+    "sofas",
+    "sofa sets",
+    "sofa beds",
+    "recliners",
+    "sofas & couches",
+    "bean bags"
+   ]
+  },
+  {
+   "sector": "337122",
+   "label": "Wooden furniture",
+   "crumbs": [
+    "furniture",
+    "home furniture",
+    "beds",
+    "bed frames",
+    "wardrobes",
+    "tables",
+    "dining tables",
+    "dining sets",
+    "coffee tables",
+    "tv units",
+    "tv units & cabinets",
+    "bookshelves",
+    "shoe racks",
+    "cabinets",
+    "dressing tables",
+    "side tables"
+   ]
+  },
+  {
+   "sector": "33721A",
+   "label": "Office furniture",
+   "crumbs": [
+    "study & home office furniture",
+    "office furniture",
+    "desk chairs",
+    "office chairs",
+    "chairs & sofas",
+    "study tables",
+    "computer tables",
+    "desks",
+    "office desks",
+    "gaming chairs"
+   ]
+  },
+  {
+   "sector": "337900",
+   "label": "Mattresses",
+   "crumbs": [
+    "mattresses",
+    "mattresses & toppers",
+    "mattress toppers"
+   ]
+  },
+  {
+   "sector": "335110",
+   "label": "Light bulbs",
+   "crumbs": [
+    "light bulbs",
+    "led bulbs",
+    "bulbs",
+    "tube lights",
+    "led tubes",
+    "batten lights"
+   ]
+  },
+  {
+   "sector": "335120",
+   "label": "Lamps and light fittings",
+   "crumbs": [
+    "indoor lighting",
+    "lighting",
+    "lamps",
+    "table lamps",
+    "floor lamps",
+    "ceiling lights",
+    "wall lights",
+    "string lights",
+    "decorative lights",
+    "night lights",
+    "outdoor lighting",
+    "torches",
+    "torches & flashlights",
+    "emergency lights"
+   ]
+  },
+  {
+   "sector": "339990",
+   "label": "Other household goods",
+   "crumbs": [
+    "home & kitchen",
+    "home",
+    "home decor",
+    "home décor",
+    "decor",
+    "wall decor",
+    "clocks",
+    "photo frames",
+    "showpieces",
+    "showpieces & figurines",
+    "artificial flowers",
+    "candles",
+    "vases",
+    "festive decor",
+    "pooja needs",
+    "umbrellas",
+    "kitchen & dining",
+    "kitchen & home appliances",
+    "incense sticks",
+    "home fragrance",
+    "agarbatti",
+    "dhoop",
+    "diyas"
+   ]
+  },
+  {
+   "sector": "335210",
+   "label": "Small home appliances",
+   "crumbs": [
+    "small kitchen appliances",
+    "kitchen appliances",
+    "mixer grinders",
+    "mixers & grinders",
+    "juicers",
+    "juicer mixer grinders",
+    "electric kettles",
+    "kettles",
+    "toasters",
+    "sandwich makers",
+    "induction cooktops",
+    "rice cookers",
+    "hand blenders",
+    "coffee makers",
+    "irons",
+    "steam irons",
+    "dry irons",
+    "hair dryers",
+    "hair straighteners",
+    "trimmers",
+    "shavers",
+    "electric toothbrushes",
+    "fans",
+    "ceiling fans",
+    "table fans",
+    "pedestal fans",
+    "wall fans",
+    "exhaust fans",
+    "room heaters",
+    "heaters",
+    "car vacuums",
+    "handheld vacuums"
+   ]
+  },
+  {
+   "sector": "335221",
+   "label": "Cooking appliances",
+   "crumbs": [
+    "gas stoves",
+    "cooktops",
+    "hobs",
+    "ovens",
+    "otg ovens",
+    "oven toaster grills",
+    "air fryers"
+   ]
+  },
+  {
+   "sector": "335911",
+   "label": "Rechargeable batteries and power banks",
+   "crumbs": [
+    "power banks",
+    "rechargeable batteries",
+    "inverter batteries",
+    "inverters & batteries"
+   ]
+  },
+  {
+   "sector": "335912",
+   "label": "Disposable batteries",
+   "crumbs": [
+    "batteries",
+    "household batteries",
+    "aa batteries",
+    "aaa batteries"
+   ]
+  },
+  {
+   "sector": "335920",
+   "label": "Cables",
+   "crumbs": [
+    "cables",
+    "usb cables",
+    "charging cables",
+    "hdmi cables",
+    "cables & adapters",
+    "extension cords",
+    "wires & cables"
+   ]
+  },
+  {
+   "sector": "335930",
+   "label": "Switches, plugs and wiring",
+   "crumbs": [
+    "electrical",
+    "electricals",
+    "switches",
+    "plugs",
+    "sockets",
+    "extension boards",
+    "surge protectors",
+    "smart plugs",
+    "wiring devices",
+    "electrical supplies"
+   ]
+  },
+  {
+   "sector": "335999",
+   "label": "Chargers and other electrical goods",
+   "crumbs": [
+    "chargers",
+    "mobile chargers",
+    "wall chargers",
+    "chargers & adapters",
+    "car chargers",
+    "wireless chargers",
+    "adapters"
+   ]
+  },
+  {
+   "sector": "326190",
+   "label": "Phone and tablet accessories",
+   "crumbs": [
+    "mobile accessories",
+    "cases & covers",
+    "basic cases",
+    "back covers",
+    "screen protectors",
+    "screen guards",
+    "mobile holders",
+    "selfie sticks",
+    "phone grips",
+    "tablet accessories"
+   ]
+  },
+  {
+   "sector": "334118",
+   "label": "Computer accessories",
+   "crumbs": [
+    "computer accessories",
+    "computer accessories & peripherals",
+    "keyboards",
+    "mice",
+    "keyboard & mouse sets",
+    "webcams",
+    "usb hubs",
+    "laptop accessories",
+    "pen drives",
+    "memory cards",
+    "hard drives",
+    "external hard drives",
+    "ssds",
+    "printers",
+    "printer ink & toner",
+    "ink cartridges",
+    "monitors",
+    "routers",
+    "networking devices"
+   ]
+  },
+  {
+   "sector": "334300",
+   "label": "Audio and video equipment",
+   "crumbs": [
+    "headphones",
+    "headphones, earbuds & accessories",
+    "wired earphones",
+    "in-ear",
+    "on-ear",
+    "over-ear",
+    "speakers",
+    "bluetooth speakers",
+    "soundbars",
+    "home theatre systems",
+    "home audio",
+    "projectors",
+    "streaming devices",
+    "radios"
+   ]
+  },
+  {
+   "sector": "333316",
+   "label": "Cameras",
+   "crumbs": [
+    "cameras",
+    "cameras & photography",
+    "digital cameras",
+    "dslr cameras",
+    "mirrorless cameras",
+    "action cameras",
+    "security cameras",
+    "camera accessories"
+   ]
+  },
+  {
+   "sector": "325520",
+   "label": "Glue and adhesives",
+   "crumbs": [
+    "adhesives",
+    "glue",
+    "glues",
+    "adhesive",
+    "craft glue",
+    "glue sticks",
+    "tapes",
+    "adhesive tapes",
+    "sealants",
+    "tapes, adhesives & sealers",
+    "adhesives & sealants",
+    "waterproofers"
+   ]
+  },
+  {
+   "sector": "325320",
+   "label": "Garden chemicals",
+   "crumbs": [
+    "pesticides",
+    "insecticides",
+    "pest control",
+    "insect repellents",
+    "mosquito repellents"
+   ]
+  },
+  {
+   "sector": "325310",
+   "label": "Fertilisers and soil",
+   "crumbs": [
+    "fertilisers",
+    "fertilizers",
+    "plant food",
+    "soil & fertilisers",
+    "soil & soil amendments",
+    "potting soil",
+    "compost"
+   ]
+  },
+  {
+   "sector": "111400",
+   "label": "Plants and seeds",
+   "crumbs": [
+    "garden & outdoors",
+    "gardening",
+    "plants",
+    "live plants",
+    "plant seeds",
+    "bulbs & seeds",
+    "flower seeds",
+    "vegetable seeds"
+   ]
+  },
+  {
+   "sector": "326190",
+   "label": "Pots and planters",
+   "crumbs": [
+    "pots & planters",
+    "planters",
+    "plant pots"
+   ]
+  },
+  {
+   "sector": "336390",
+   "label": "Car and bike parts",
+   "crumbs": [
+    "car & motorbike",
+    "car accessories",
+    "bike accessories",
+    "motorbike accessories",
+    "car parts",
+    "motorbike parts",
+    "car electronics",
+    "helmets",
+    "car mats",
+    "seat covers",
+    "tyres",
+    "tyres & rims"
+   ]
+  },
+  {
+   "sector": "324190",
+   "label": "Engine oils and lubricants",
+   "crumbs": [
+    "oils & fluids",
+    "engine oils",
+    "lubricants"
+   ]
+  },
+  {
+   "sector": "339990",
+   "label": "Musical instruments",
+   "crumbs": [
+    "musical instruments",
+    "guitars",
+    "keyboards & pianos",
+    "drums & percussion",
+    "string instruments",
+    "wind instruments",
+    "microphones"
+   ]
+  },
+  {
+   "sector": "325620",
+   "label": "Baby care products",
+   "crumbs": [
+    "baby products",
+    "baby",
+    "baby care",
+    "nursing & feeding"
+   ]
+  },
+  {
+   "sector": "339990",
+   "label": "Industrial and scientific supplies",
+   "crumbs": [
+    "industrial & scientific",
+    "lab supplies",
+    "test, measure & inspect",
+    "safety & security",
+    "packaging materials"
+   ]
+  }
+ ]
+}

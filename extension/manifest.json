@@ -1,0 +1,67 @@
+{
+  "manifest_version": 3,
+  "name": "EcoCart",
+  "version": "0.8.2",
+  "description": "See sourced device facts, footprint estimates and eco labels on Amazon.in and Flipkart, then plan where your old device goes.",
+  "homepage_url": "https://main.d3ogmfe7tt7uwb.amplifyapp.com/",
+  "icons": {
+    "16": "icons/icon-16.png",
+    "32": "icons/icon-32.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://www.amazon.in/*",
+    "https://www.flipkart.com/*",
+    "https://8el9hdnif0.execute-api.ap-south-1.amazonaws.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://www.amazon.in/*",
+        "https://www.flipkart.com/*"
+      ],
+      "js": [
+        "content/common.js",
+        "content/match.js",
+        "content/sites.js",
+        "content/labels.js",
+        "content/options.js",
+        "ui/plant.js",
+        "content/product.js",
+        "content/search.js",
+        "content/thankyou.js",
+        "content/main.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "styles/card.css",
+        "styles/badge.css",
+        "fonts/*.woff2"
+      ],
+      "matches": [
+        "https://www.amazon.in/*",
+        "https://www.flipkart.com/*"
+      ]
+    }
+  ],
+  "action": {
+    "default_title": "EcoCart",
+    "default_popup": "ui/popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "32": "icons/icon-32.png"
+    }
+  }
+}

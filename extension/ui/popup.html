@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>EcoCart</title>
+    <link rel="stylesheet" href="theme.css" />
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body class="popup-page">
+    <header class="bar">
+      <span class="logo"><span class="mark" aria-hidden="true"></span>EcoCart</span>
+      <span class="tag">Your plant</span>
+    </header>
+    <p class="popup-intro">Small steps for the devices you already own.</p>
+    <section class="hero">
+      <div id="plant" class="plant"></div>
+      <div class="counts" aria-live="polite">
+        <div>
+          <span id="saved-count" class="big-num">--</span>
+          <span class="eyebrow">Plans saved</span>
+        </div>
+        <div>
+          <span id="done-count" class="big-num">--</span>
+          <span class="eyebrow">Completed</span>
+        </div>
+      </div>
+    </section>
+    <p id="status" class="status" role="status"></p>
+    <main id="list"></main>
+    <footer>
+      <a href="dashboard.html" target="_blank">Open dashboard</a>
+      <span class="meta">Completed is self-reported</span>
+    </footer>
+    <script src="plant.js"></script>
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

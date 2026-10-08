@@ -1,0 +1,48 @@
+{
+  "about": "Pages each maker publishes about its own devices. The Source Scout may only open these pages and links on the same domains.",
+  "makers": {
+    "Apple": {
+      "domains": ["apple.com", "regulatoryinfo.apple.com"],
+      "pages": [
+        {"url": "https://www.apple.com/environment/", "holds": "Product Environmental Reports (lifecycle carbon) for every model, as PDF links"},
+        {"url": "https://support.apple.com/en-us/108044", "holds": "iPhone model numbers, needed to find the UK PSTI security statement"}
+      ]
+    },
+    "Google": {
+      "domains": ["google.com"],
+      "pages": [
+        {"url": "https://support.google.com/pixelphone/answer/4457705", "holds": "How long each Pixel phone gets software and security updates"}
+      ]
+    },
+    "Samsung": {
+      "domains": ["samsung.com"],
+      "pages": [
+        {"url": "https://news.samsung.com/in/", "holds": "Samsung India launch announcements, which state update commitments for new models"}
+      ]
+    },
+    "Xiaomi": {
+      "domains": ["mi.com"],
+      "pages": [
+        {"url": "https://trust.mi.com/misrc/updates/detail?tab=phone", "holds": "Security update end date for every Xiaomi, Redmi and POCO model"}
+      ]
+    },
+    "OnePlus": {
+      "domains": ["oneplus.com"],
+      "pages": [
+        {"url": "https://www.oneplus.com/uk/psti", "holds": "Security update end date for each OnePlus model"}
+      ]
+    },
+    "realme": {
+      "domains": ["realme.com"],
+      "pages": [
+        {"url": "https://www.realme.com/uk/legal/psti", "holds": "Security update end date for each realme model sold in the UK"}
+      ]
+    },
+    "OPPO": {
+      "domains": ["oppo.com"],
+      "pages": [
+        {"url": "https://www.oppo.com/uk/psti/", "holds": "UK PSTI statements of compliance for each OPPO model, as PDF links"}
+      ]
+    }
+  }
+}

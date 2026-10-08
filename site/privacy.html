@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EcoCart Privacy</title>
+    <meta name="description" content="What the EcoCart browser extension sends, what it stores, and what it never collects." />
+    <link rel="icon" href="icons/icon-32.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&family=Instrument+Serif&family=JetBrains+Mono:wght@400..600&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: oklch(0.06 0.008 260);
+        --ink: oklch(0.94 0.005 90);
+        --muted: oklch(0.55 0.015 90);
+        --line: oklch(0.94 0.005 90 / 0.1);
+        --pink: #eca8d6;
+        color-scheme: dark;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font: 16px/1.65 "Instrument Sans", system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      main { max-width: 860px; margin: 0 auto; padding: 64px 16px 96px; }
+      h1, h2 { font-family: "Instrument Serif", Georgia, serif; font-weight: 400; line-height: 0.95; }
+      h1 { font-size: clamp(56px, 10vw, 112px); margin: 40px 0 16px; letter-spacing: -0.025em; }
+      h2 { font-size: 34px; margin: 56px 0 14px; }
+      a { color: var(--ink); text-decoration-color: oklch(0.94 0.005 90 / 0.3); text-underline-offset: 4px; }
+      .back { display: inline-flex; align-items: center; gap: 12px; font: 14px "JetBrains Mono", monospace; color: var(--muted); text-decoration: none; }
+      .back::before { content: ""; width: 48px; height: 1px; background: oklch(0.94 0.005 90 / 0.3); }
+      .muted { color: var(--muted); font: 13px "JetBrains Mono", monospace; }
+      .box { border: 1px solid var(--line); }
+      table { width: 100%; border-collapse: collapse; font-size: 15px; }
+      th, td { text-align: left; vertical-align: top; padding: 18px 20px; border-bottom: 1px solid var(--line); }
+      th { width: 34%; font: 400 20px/1.2 "Instrument Serif", Georgia, serif; }
+      td { color: oklch(0.94 0.005 90 / 0.7); }
+      tr:last-child th, tr:last-child td { border-bottom: 0; }
+      ul { padding-left: 20px; color: oklch(0.94 0.005 90 / 0.75); }
+      li { margin-bottom: 8px; }
+      li::marker { color: var(--pink); }
+      b { color: var(--ink); font-weight: 600; }
+      @media (max-width: 600px) { th, td { display: block; width: 100%; } th { border-bottom: 0; padding-bottom: 4px; } }
+    </style>
+  </head>
+  <body>
+    <main>
+      <a class="back" href="./">EcoCart</a>
+      <h1>Privacy</h1>
+      <p class="muted">Last updated 2 October 2026. This covers the EcoCart browser extension and this website.</p>
+
+      <p>
+        EcoCart has no accounts. It never asks for your name, email, phone number or address, and it does not use ads,
+        analytics or trackers. Nothing is sold or shared for marketing.
+      </p>
+
+      <h2>What the extension sends to the EcoCart server</h2>
+      <div class="box">
+        <table>
+          <tr>
+            <th>On a product page on Amazon.in or Flipkart</th>
+            <td>The product title, the shop's category path, the listing's details table and the price. They are used to answer that one request and are not stored. The one exception: when no category rule matches, the category path alone (never the title or anything about you) is counted, so we know which rules to add.</td>
+          </tr>
+          <tr>
+            <th>Looking for a renewed version</th>
+            <td>On a device page, the extension may run one search on Amazon.in itself (for example "iPhone 16 renewed") to find a renewed listing of the same model. That request goes to Amazon, as if you had typed the search, and the results stay in your browser.</td>
+          </tr>
+          <tr>
+            <th>On a search page</th>
+            <td>Nothing about your search. The extension downloads the list of covered devices and matches results inside your browser.</td>
+          </tr>
+          <tr>
+            <th>On an order confirmation page</th>
+            <td>Nothing. The page is not read.</td>
+          </tr>
+          <tr>
+            <th>When you save a plan for an old device</th>
+            <td>The device you are buying (its name), the brand and age of the old device, your city, the option you picked, and later whether you marked it done. Plans are linked to a random token, not to you.</td>
+          </tr>
+        </table>
+      </div>
+
+      <h2>What is stored, and where</h2>
+      <ul>
+        <li><b>On our server (Amazon Web Services, Mumbai region):</b> your saved plans, linked to a one-way hash of a random token. We cannot tell who you are from it. Totals shown on this site (plans saved and done) are simple counters.</li>
+        <li><b>In your browser only:</b> the random token, the devices you recently looked at (for the dashboard and the order-page reminder), device matches you confirmed, and the city you last picked.</li>
+        <li><b>Server logs:</b> errors are logged to help fix problems and deleted after 14 days. They do not contain your plans.</li>
+      </ul>
+
+      <h2>AI</h2>
+      <p>
+        If a product's category cannot be matched by our fixed rules, its title and category path may be sent to a model on
+        Amazon Bedrock, inside the same AWS account, to pick a category from a fixed list. Amazon Bedrock does not use this
+        data to train models. The model never produces any of the numbers shown to you.
+      </p>
+
+      <h2>Your choices</h2>
+      <ul>
+        <li>Delete any plan from the EcoCart dashboard. It is removed from the server straight away.</li>
+        <li>Removing the extension deletes everything it kept in your browser. Plans left on the server can no longer be linked to anyone.</li>
+        <li>Each product card has a Hide button if you would rather not see it.</li>
+      </ul>
+
+      <h2>Permissions the extension asks for</h2>
+      <ul>
+        <li><b>amazon.in and flipkart.com:</b> to read product pages and show the card.</li>
+        <li><b>The EcoCart API address:</b> to fetch facts and save plans.</li>
+        <li><b>Storage:</b> for the browser-only data listed above.</li>
+      </ul>
+
+      <h2>Questions</h2>
+      <p>Use the support link on EcoCart's Chrome Web Store page. We will update this page if anything here changes.</p>
+    </main>
+  </body>
+</html>

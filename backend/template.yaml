@@ -1,0 +1,317 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: EcoCart API. Serves sourced device facts and category estimates, and stores old-device plans.
+
+Parameters:
+  BedrockModelId:
+    Type: String
+    Default: ""
+    Description: Bedrock model or inference profile ID for the summary and for sorting products with unknown breadcrumbs. Leave empty to use rules and template text only.
+
+  AlertTopicArn:
+    Type: String
+    Default: ""
+    Description: SNS topic that receives an alert when the daily price refresh fails. Leave empty for no alert.
+
+Conditions:
+  UseBedrock: !Not [!Equals [!Ref BedrockModelId, ""]]
+  UseAlerts: !Not [!Equals [!Ref AlertTopicArn, ""]]
+
+Globals:
+  Function:
+    Runtime: python3.12
+    Architectures: [arm64]
+    MemorySize: 256
+    Timeout: 15
+    Environment:
+      Variables:
+        PRODUCTS_TABLE: !Ref ProductsTable
+        FACTORS_TABLE: !Ref FactorsTable
+        OPTIONS_TABLE: !Ref OptionsTable
+        ACTIONS_TABLE: !Ref ActionsTable
+        SESSIONS_TABLE: !Ref SessionsTable
+        STATS_TABLE: !Ref StatsTable
+        BEDROCK_MODEL_ID: !Ref BedrockModelId
+
+Resources:
+  HttpApi:
+    Type: AWS::Serverless::HttpApi
+    Properties:
+      DefaultRouteSettings:
+        ThrottlingRateLimit: 10
+        ThrottlingBurstLimit: 20
+
+  ApiLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${AWS::StackName}-api"
+      RetentionInDays: 14
+
+  ApiFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${AWS::StackName}-api"
+      LoggingConfig:
+        LogGroup: !Ref ApiLogGroup
+      CodeUri: src/
+      Handler: app.handler
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref ProductsTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref OptionsTable
+        - DynamoDBReadPolicy:
+            TableName: !Ref FactorsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ActionsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref SessionsTable
+        - DynamoDBCrudPolicy:
+            TableName: !Ref StatsTable
+        - !If
+          - UseBedrock
+          - Statement:
+              - Effect: Allow
+                Action: bedrock:InvokeModel
+                Resource: "*"
+          - !Ref AWS::NoValue
+      Events:
+        Match:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: POST
+            Path: /match
+        Estimate:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: POST
+            Path: /estimate
+        GetProduct:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: GET
+            Path: /products/{modelId}
+        GetCatalog:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: GET
+            Path: /catalog
+        GetFactors:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: GET
+            Path: /factors
+        GetStats:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: GET
+            Path: /stats
+        ListOptions:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: GET
+            Path: /options
+        CreateSession:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: POST
+            Path: /sessions
+        CreateAction:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: POST
+            Path: /actions
+        ListActions:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: GET
+            Path: /actions
+        UpdateAction:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: PATCH
+            Path: /actions/{actionId}
+        DeleteAction:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: DELETE
+            Path: /actions/{actionId}
+
+  PriceRefreshLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${AWS::StackName}-price-refresh"
+      RetentionInDays: 14
+
+  # Reads the official store pages once a day, so alternatives never run out of fresh prices.
+  PriceRefreshFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${AWS::StackName}-price-refresh"
+      LoggingConfig:
+        LogGroup: !Ref PriceRefreshLogGroup
+      CodeUri: src/
+      Handler: price_job.handler
+      Timeout: 120
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProductsTable
+      Events:
+        Daily:
+          Type: ScheduleV2
+          Properties:
+            ScheduleExpression: "cron(30 3 * * ? *)"
+            ScheduleExpressionTimezone: UTC
+            RetryPolicy:
+              MaximumRetryAttempts: 0
+
+  SupportListsLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/lambda/${AWS::StackName}-support-lists"
+      RetentionInDays: 14
+
+  # Re-reads makers' official per-model support lists once a week and updates the catalog.
+  SupportListsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: !Sub "${AWS::StackName}-support-lists"
+      LoggingConfig:
+        LogGroup: !Ref SupportListsLogGroup
+      CodeUri: src/
+      Handler: support_job.handler
+      Timeout: 120
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref ProductsTable
+      Events:
+        Weekly:
+          Type: ScheduleV2
+          Properties:
+            ScheduleExpression: "cron(0 3 ? * SUN *)"
+            ScheduleExpressionTimezone: Asia/Kolkata
+            RetryPolicy:
+              MaximumRetryAttempts: 1
+
+  SupportListsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Condition: UseAlerts
+    Properties:
+      AlarmName: !Sub "${AWS::StackName}-support-lists-failed"
+      AlarmDescription: The weekly support-list job could not read any maker's list.
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref SupportListsFunction
+      Statistic: Sum
+      Period: 86400
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref AlertTopicArn
+
+  PriceRefreshAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Condition: UseAlerts
+    Properties:
+      AlarmName: !Sub "${AWS::StackName}-price-refresh-failed"
+      AlarmDescription: The daily price refresh could not read one or more store prices.
+      Namespace: AWS/Lambda
+      MetricName: Errors
+      Dimensions:
+        - Name: FunctionName
+          Value: !Ref PriceRefreshFunction
+      Statistic: Sum
+      Period: 86400
+      EvaluationPeriods: 1
+      Threshold: 1
+      ComparisonOperator: GreaterThanOrEqualToThreshold
+      TreatMissingData: notBreaching
+      AlarmActions:
+        - !Ref AlertTopicArn
+
+  ProductsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - { AttributeName: modelId, AttributeType: S }
+      KeySchema:
+        - { AttributeName: modelId, KeyType: HASH }
+
+  FactorsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - { AttributeName: factorId, AttributeType: S }
+      KeySchema:
+        - { AttributeName: factorId, KeyType: HASH }
+
+  OptionsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - { AttributeName: city, AttributeType: S }
+        - { AttributeName: optionId, AttributeType: S }
+      KeySchema:
+        - { AttributeName: city, KeyType: HASH }
+        - { AttributeName: optionId, KeyType: RANGE }
+
+  ActionsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - { AttributeName: sessionId, AttributeType: S }
+        - { AttributeName: actionId, AttributeType: S }
+      KeySchema:
+        - { AttributeName: sessionId, KeyType: HASH }
+        - { AttributeName: actionId, KeyType: RANGE }
+
+  SessionsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - { AttributeName: tokenHash, AttributeType: S }
+      KeySchema:
+        - { AttributeName: tokenHash, KeyType: HASH }
+
+  StatsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - { AttributeName: statsId, AttributeType: S }
+      KeySchema:
+        - { AttributeName: statsId, KeyType: HASH }
+
+Outputs:
+  ApiUrl:
+    Description: Base URL for the extension config
+    Value: !Sub "https://${HttpApi}.execute-api.${AWS::Region}.${AWS::URLSuffix}"
+  ProductsTableName:
+    Value: !Ref ProductsTable
+  OptionsTableName:
+    Value: !Ref OptionsTable
+  FactorsTableName:
+    Value: !Ref FactorsTable
+  StatsTableName:
+    Value: !Ref StatsTable

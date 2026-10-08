@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EcoCart</title>
+    <meta name="description" content="EcoCart is a free browser extension for Amazon.in and Flipkart. Sourced facts for devices, a clearly labelled footprint estimate for everything else, and a plan for your old device." />
+    <link rel="icon" href="icons/icon-32.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400..700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400..600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="site.css" />
+  </head>
+  <body>
+    <!-- ---------- Navigation ---------- -->
+    <header class="nav" id="nav">
+      <nav class="nav-inner" aria-label="Main">
+        <a class="nav-logo" href="#top">EcoCart</a>
+        <div class="nav-links">
+          <a href="#features">Product</a>
+          <a href="#process">Process</a>
+          <a href="#metrics">Live</a>
+          <a href="#sources">Sources</a>
+          <a href="privacy.html">Privacy</a>
+        </div>
+        <a class="pill-btn light nav-cta" href="#install">Get the extension</a>
+        <button class="nav-toggle" id="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+          <span></span><span></span>
+        </button>
+      </nav>
+      <div class="mobile-menu" id="mobile-menu" hidden>
+        <a href="#features">Product</a>
+        <a href="#process">Process</a>
+        <a href="#metrics">Live</a>
+        <a href="#sources">Sources</a>
+        <a href="privacy.html">Privacy</a>
+        <a class="pill-btn light" href="#install">Get the extension</a>
+      </div>
+    </header>
+
+    <main id="top">
+      <!-- ---------- Hero ---------- -->
+      <section class="hero" aria-labelledby="hero-title">
+        <video class="hero-video" id="hero-video" autoplay muted loop playsinline preload="auto" poster="hero-poster.jpg" aria-hidden="true">
+          <source src="hero.mp4" type="video/mp4" />
+        </video>
+        <div class="hero-shade" aria-hidden="true"></div>
+        <div class="grid-lines" aria-hidden="true"></div>
+
+        <div class="wrap hero-copy">
+          <p class="eyebrow fade-up">A browser extension for Amazon.in and Flipkart</p>
+          <h1 id="hero-title" class="fade-up delay-1">
+            <span class="line">Shop with the facts,</span>
+            <span class="line">choices that <span class="blur-word" id="blur-word" aria-live="off">last</span></span>
+          </h1>
+          <p class="hero-lead fade-up delay-2">
+            Sourced update support and lifecycle carbon for devices, a clearly labelled estimate for everything else,
+            and a plan for the old device you are replacing.
+          </p>
+          <div class="hero-cta fade-up delay-3">
+            <a class="pill-btn light big" href="#install">Get the extension <span aria-hidden="true">&rarr;</span></a>
+            <a class="pill-btn outline big" href="#features">See what it shows</a>
+          </div>
+        </div>
+
+        <div class="wrap hero-stats fade-up delay-4" aria-label="EcoCart so far">
+          <div><span class="stat-num" id="stat-saved">0</span><span class="stat-label">old-device plans made</span></div>
+          <div><span class="stat-num" id="stat-devices">0</span><span class="stat-label">devices with sourced facts</span></div>
+          <div><span class="stat-num">59</span><span class="stat-label">product types with estimates</span></div>
+        </div>
+      </section>
+
+      <!-- ---------- Capabilities ---------- -->
+      <section id="features" class="section" aria-labelledby="features-title">
+        <div class="wrap">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow reveal">Capabilities</p>
+              <h2 id="features-title" class="display reveal">Facts you<br /><span class="dim">can check.</span></h2>
+            </div>
+            <p class="section-lead reveal">
+              A card on every product page. Each fact links to the official document it came from, and anything we could not
+              verify says so instead of guessing.
+            </p>
+          </div>
+
+          <div class="bento">
+            <article class="bento-main reveal">
+              <canvas class="particles" id="particles" aria-hidden="true"></canvas>
+              <div class="bento-copy">
+                <span class="num-label">01</span>
+                <h3>Device passport</h3>
+                <p>For phones, laptops, tablets, watches, earbuds, TVs and appliances: how long the maker promises security updates, and the lifecycle carbon the maker reports, in everyday terms.</p>
+                <p class="big-stat" id="devices-stat">49</p>
+                <span class="mono-label">devices with official sources</span>
+              </div>
+              <div class="preview" aria-label="Example card for the Apple iPhone 16">
+                <div class="preview-bar"><span class="preview-logo"><span class="dot"></span>EcoCart</span><span class="preview-tag">Phone passport</span></div>
+                <p class="preview-lede">Apple promises security updates for the iPhone 16 until at least September 2029.</p>
+                <div class="preview-row">
+                  <span class="preview-label">Security updates</span>
+                  <div><p class="preview-value">Until at least Sep 2029</p><span class="rail"><i style="--at: 0%"></i></span></div>
+                </div>
+                <div class="preview-row">
+                  <span class="preview-label">Reported footprint</span>
+                  <div><p class="preview-value">56 kg CO2e</p><span class="rail"><i style="--at: 20%"></i></span></div>
+                </div>
+                <div class="preview-option"><span class="preview-kind">Similar price, longer support</span><p>Google Pixel 10</p><span class="preview-n">01</span></div>
+              </div>
+            </article>
+
+            <article class="bento-card reveal">
+              <span class="num-label">02</span>
+              <h3>Category estimate</h3>
+              <p>Everything else, from T-shirts to rice, gets the average footprint for its category at that price in India, from Open CEDA. Always labelled as an estimate.</p>
+              <p class="mid-stat">59</p>
+              <span class="mono-label">product types covered</span>
+            </article>
+            <article class="bento-card reveal">
+              <span class="num-label">03</span>
+              <h3>Before you buy</h3>
+              <p>A short scorecard of separate facts and better options where there is evidence: longer support, a lower footprint, a renewed listing, a 5 star appliance.</p>
+              <p class="mid-stat">0</p>
+              <span class="mono-label">verdicts made up</span>
+            </article>
+            <article class="bento-card reveal">
+              <span class="num-label">04</span>
+              <h3>Old-device plan</h3>
+              <p>Exchange, sell or recycle the device you are replacing, with routes taken from each company's own page. Mark it done and your plant grows.</p>
+              <p class="mid-stat">7</p>
+              <span class="mono-label">cities with routes</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- Process ---------- -->
+      <section id="process" class="section process" aria-labelledby="process-title">
+        <div class="glow" aria-hidden="true"></div>
+        <div class="wrap">
+          <p class="eyebrow light reveal">Process</p>
+          <h2 id="process-title" class="display stacked reveal">
+            <span>Open.</span>
+            <span class="dim-1">Check.</span>
+            <span class="dim-2">Hand over.</span>
+          </h2>
+
+          <div class="steps" role="tablist" aria-label="How EcoCart works">
+            <button class="step active" type="button" role="tab" aria-selected="true">
+              <span class="step-head"><span class="step-num">01</span><span class="step-line"><i></i></span></span>
+              <span class="step-title">Open</span>
+              <span class="step-sub">any product</span>
+              <span class="step-text">Browse Amazon.in or Flipkart as usual. EcoCart adds a card under the price, and a badge in search results for devices with sourced facts.</span>
+            </button>
+            <button class="step" type="button" role="tab" aria-selected="false">
+              <span class="step-head"><span class="step-num">02</span><span class="step-line"><i></i></span></span>
+              <span class="step-title">Check</span>
+              <span class="step-sub">the facts</span>
+              <span class="step-text">Update support, reported carbon, energy rating and labels, each with its source. Better options appear only when the evidence allows a fair comparison.</span>
+            </button>
+            <button class="step" type="button" role="tab" aria-selected="false">
+              <span class="step-head"><span class="step-num">03</span><span class="step-line"><i></i></span></span>
+              <span class="step-title">Hand over</span>
+              <span class="step-sub">the old one</span>
+              <span class="step-text">Pick an exchange, resale or recycling route for the device you are replacing. Mark it done after the handover and your plant grows a stage.</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- Live metrics ---------- -->
+      <section id="metrics" class="section metrics" aria-labelledby="metrics-title">
+        <canvas class="metric-grid" id="metric-grid" aria-hidden="true"></canvas>
+        <div class="wrap">
+          <div class="live-row reveal">
+            <span class="live-chip"><span class="live-dot"></span>LIVE</span>
+            <span class="clock" id="clock"></span>
+          </div>
+          <h2 id="metrics-title" class="display reveal">Real-time<br /><span class="dim">EcoCart totals.</span></h2>
+
+          <div class="metric-cards">
+            <article class="metric big reveal">
+              <p class="metric-value" data-live="plansSaved">0</p>
+              <canvas class="dots" data-dots="white" aria-hidden="true"></canvas>
+              <p class="metric-label">Old-device plans made</p>
+              <p class="metric-sub">across every EcoCart user</p>
+            </article>
+            <article class="metric reveal">
+              <div>
+                <p class="metric-sub">self-reported</p>
+                <p class="metric-label">Plans marked done</p>
+                <canvas class="dots small" data-dots="pink" aria-hidden="true"></canvas>
+              </div>
+              <p class="metric-value" data-live="plansCompleted">0</p>
+            </article>
+            <article class="metric reveal">
+              <div>
+                <p class="metric-sub">with official sources</p>
+                <p class="metric-label">Devices covered</p>
+                <canvas class="dots small" data-dots="white" aria-hidden="true"></canvas>
+              </div>
+              <p class="metric-value" data-live="devicesCovered">0</p>
+            </article>
+          </div>
+
+          <div class="ticker reveal" aria-label="Where the facts come from">
+            <span>Apple environmental reports</span>
+            <span>Google Pixel reports</span>
+            <span>Samsung LCA results</span>
+            <span>Open CEDA by Watershed</span>
+            <span>Central Electricity Authority</span>
+            <span class="bright">India GHG Program</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- Why it matters ---------- -->
+      <section class="section" aria-labelledby="why-title">
+        <div class="wrap">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow reveal">Why it matters</p>
+              <h2 id="why-title" class="display reveal">Most old devices<br /><span class="dim">never get recycled.</span></h2>
+            </div>
+            <p class="section-lead reveal">
+              Phones pile up in drawers because nobody decides what happens to them. EcoCart asks at the one moment you are
+              already thinking about it: when you buy the next one.
+            </p>
+          </div>
+          <div class="fact-row">
+            <article class="fact reveal">
+              <p class="fact-value"><span data-count="62">0</span><small> billion kg</small></p>
+              <p>of e-waste was generated worldwide in 2022.</p>
+            </article>
+            <article class="fact reveal">
+              <p class="fact-value"><span data-count="22.3" data-decimals="1">0</span><small>%</small></p>
+              <p>of it was documented as formally collected and recycled.</p>
+            </article>
+            <article class="fact source-fact reveal">
+              <p class="mono-label">Source</p>
+              <a href="https://www.itu.int/en/ITU-D/Environment/Pages/Publications/The-Global-E-waste-Monitor-2024.aspx">Global E-waste Monitor 2024 &nearr;</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- Hand it on ---------- -->
+      <section class="section handover" id="handover" aria-labelledby="handover-title">
+        <div class="wrap handover-copy">
+          <p class="eyebrow reveal">Second life</p>
+          <h2 id="handover-title" class="display reveal">Hand it on.<br /><span class="dim">Not in a drawer.</span></h2>
+          <p class="section-lead reveal">
+            Every phone left in a drawer could be someone's next one. EcoCart puts an exchange, resale or recycling route right
+            next to the device you are buying, so the old one moves on.
+          </p>
+        </div>
+        <div class="hands" aria-hidden="true">
+          <div class="hand left"><img src="art/hands.webp" alt="" loading="lazy" /></div>
+          <div class="hand right"><img src="art/hands.webp" alt="" loading="lazy" /></div>
+          <div class="spark"></div>
+        </div>
+      </section>
+
+      <!-- ---------- Sources ---------- -->
+      <section id="sources" class="section" aria-labelledby="sources-title">
+        <div class="wrap">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow reveal">Sources</p>
+              <h2 id="sources-title" class="display reveal">Unknown means<br /><span class="stroke">unknown.</span></h2>
+            </div>
+            <p class="section-lead reveal">
+              No number is made up by AI or filled in with a guess. Estimates are labelled as estimates, and if a maker has not
+              published something, the card says so.
+            </p>
+          </div>
+          <div class="source-list">
+            <article class="source reveal"><span class="num-label">01</span><h3>Security updates</h3><p>Google's Pixel update policy, Apple's UK security statements and Samsung India's announcements.</p></article>
+            <article class="source reveal"><span class="num-label">02</span><h3>Lifecycle carbon</h3><p>Each maker's own environmental report or life cycle assessment, with the storage size or years of use it assumes.</p></article>
+            <article class="source reveal"><span class="num-label">03</span><h3>Everyday comparisons</h3><p>India GHG Program road transport factors and the Central Electricity Authority's grid emission factor.</p></article>
+            <article class="source reveal"><span class="num-label">04</span><h3>Category estimates</h3><p>Open CEDA 2025 by Watershed: average emissions per rupee for each kind of product in India.</p></article>
+            <article class="source reveal"><span class="num-label">05</span><h3>Old-device routes</h3><p>Taken from each company's own page, with the date we last checked it.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- Plant ---------- -->
+      <section class="section" aria-labelledby="plant-title">
+        <div class="wrap">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow reveal">Your plant</p>
+              <h2 id="plant-title" class="display reveal">It grows when<br /><span class="dim">devices leave the drawer.</span></h2>
+            </div>
+            <p class="section-lead reveal">One stage for every completed plan, six stages from seed to bloom. It rewards what happens to the old device, never buying more.</p>
+          </div>
+          <div class="stages" id="stages"></div>
+        </div>
+      </section>
+
+      <!-- ---------- Install ---------- -->
+      <section id="install" class="section" aria-labelledby="install-title">
+        <div class="wrap">
+          <div class="cta-box reveal" id="cta-box">
+            <div class="cta-spot" aria-hidden="true"></div>
+            <div class="cta-copy">
+              <h2 id="install-title" class="cta-title">Ready to shop<br />with the facts?</h2>
+              <p class="section-lead">Free, with no account. It is not in the Chrome Web Store yet, so it installs in developer mode in about a minute.</p>
+              <div class="hero-cta">
+                <a class="pill-btn light big" href="ecocart-extension.zip" download>Download the extension <span aria-hidden="true">&darr;</span></a>
+                <a class="pill-btn outline big" href="privacy.html">Read the privacy page</a>
+              </div>
+            </div>
+            <div class="bridge" aria-hidden="true">
+              <div class="bridge-glow"></div>
+              <img src="art/bridge.webp" alt="" loading="lazy" />
+            </div>
+            <ol class="install-steps">
+              <li><span>01</span><p>Unzip the file</p></li>
+              <li><span>02</span><p>Open <code>chrome://extensions</code></p></li>
+              <li><span>03</span><p>Turn on Developer mode</p></li>
+              <li><span>04</span><p>Load unpacked and pick the folder</p></li>
+              <li><span>05</span><p>Open any product on Amazon.in or Flipkart</p></li>
+            </ol>
+            <span class="corner tr" aria-hidden="true"></span>
+            <span class="corner bl" aria-hidden="true"></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- Privacy ---------- -->
+      <section class="section privacy" aria-labelledby="privacy-title">
+        <div class="wrap">
+          <p class="eyebrow reveal">Privacy</p>
+          <h2 id="privacy-title" class="display small reveal">What EcoCart keeps,<br /><span class="dim">and what it never sees.</span></h2>
+          <div class="privacy-grid">
+            <p class="reveal"><b>No account.</b> No name, email or phone number, ever.</p>
+            <p class="reveal"><b>Only what it needs.</b> On a product page, the title, category path and price are sent to work out the facts, and are not stored.</p>
+            <p class="reveal"><b>Anonymous plans.</b> Your plans are tied to a random token. Our servers store only a hash of it.</p>
+            <p class="reveal"><b>Your history stays home.</b> The devices you checked stay in your browser. Order pages are never read.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- ---------- Footer ---------- -->
+    <footer class="footer">
+      <div class="meadow" aria-hidden="true">
+        <img src="art/meadow.webp" alt="" loading="lazy" />
+        <canvas class="waves" id="waves"></canvas>
+      </div>
+      <div class="wrap">
+        <p class="footer-word">EcoCart</p>
+        <div class="footer-grid">
+          <div>
+            <p class="footer-head">Product</p>
+            <a href="#features">Capabilities</a>
+            <a href="#process">How it works</a>
+            <a href="#install">Install</a>
+          </div>
+          <div>
+            <p class="footer-head">Facts</p>
+            <a href="#sources">Sources</a>
+            <a href="#metrics">Live totals</a>
+          </div>
+          <div>
+            <p class="footer-head">Legal</p>
+            <a href="privacy.html">Privacy</a>
+          </div>
+        </div>
+        <p class="fine">
+          EcoCart shows figures published by manufacturers and public bodies and links each one to its source. It does not certify
+          products or recyclers, and completed plans are reported by users. Built on AWS: Lambda, API Gateway, DynamoDB and Amplify
+          Hosting, deployed with AWS SAM, with agent teams built on the open-source Strands Agents SDK that propose new
+          devices and category rules for a person to approve. Inspired by the 2023 <a href="https://github.com/Sebastian-Chai/EcoCart/">EcoCart</a> project.
+          Written with help from Claude Code.
+        </p>
+      </div>
+    </footer>
+
+    <script src="config.js"></script>
+    <script src="plant.js"></script>
+    <script src="site.js" defer></script>
+  </body>
+</html>

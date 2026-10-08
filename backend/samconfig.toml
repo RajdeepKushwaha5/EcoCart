@@ -1,0 +1,15 @@
+version = 0.1
+
+[default.global.parameters]
+stack_name = "ecocart-india"
+
+[default.build.parameters]
+cached = true
+
+[default.deploy.parameters]
+region = "ap-south-1"
+profile = "ecocart"
+capabilities = "CAPABILITY_IAM"
+resolve_s3 = true
+parameter_overrides = "AlertTopicArn=arn:aws:sns:ap-south-1:177106921603:ecocart-alerts"
+confirm_changeset = true

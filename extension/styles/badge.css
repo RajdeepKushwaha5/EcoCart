@@ -1,0 +1,26 @@
+:host {
+  all: initial;
+  display: block;
+  margin: 6px 0 2px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 11px/1 "EcoCart Mono", "JetBrains Mono", ui-monospace, monospace;
+  letter-spacing: 0.02em;
+  color: oklch(0.94 0.005 90);
+  background: oklch(0.06 0.008 260);
+  border: 1px solid oklch(0.94 0.005 90 / 0.15);
+  border-radius: 4px;
+  padding: 6px 10px 6px 8px;
+}
+
+.mark {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #eca8d6;
+  box-shadow: 0 0 8px #eca8d6;
+}

@@ -1,0 +1,369 @@
+@font-face {
+  font-family: "EcoCart Sans";
+  src: url("../fonts/instrument-sans.woff2") format("woff2");
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "EcoCart Serif";
+  src: url("../fonts/instrument-serif.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "EcoCart Serif";
+  src: url("../fonts/instrument-serif-italic.woff2") format("woff2");
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "EcoCart Mono";
+  src: url("../fonts/jetbrains-mono.woff2") format("woff2");
+  font-weight: 400 600;
+  font-display: swap;
+}
+
+:root {
+  --bg: oklch(0.06 0.008 260);
+  --card: oklch(0.09 0.008 260);
+  --raise: oklch(0.12 0.008 260);
+  --hover: oklch(0.14 0.01 260);
+  --line: oklch(0.94 0.005 90 / 0.1);
+  --line-strong: oklch(0.94 0.005 90 / 0.25);
+  --ink: oklch(0.94 0.005 90);
+  --soft: oklch(0.94 0.005 90 / 0.7);
+  --muted: oklch(0.55 0.015 90);
+  --faint: oklch(0.94 0.005 90 / 0.3);
+  --pink: #eca8d6;
+  --amber: #fbbf24;
+  --pot: #3a3328;
+  --pot-line: #5c5140;
+  --soil: #2a2118;
+  --bloom: #eca8d6;
+  /* Leaves of the plant drawing. */
+  --accent: #8fd3a8;
+
+  --sans: "EcoCart Sans", "Instrument Sans", system-ui, sans-serif;
+  --serif: "EcoCart Serif", "Instrument Serif", Georgia, serif;
+  --mono: "EcoCart Mono", "JetBrains Mono", ui-monospace, monospace;
+
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font: 14px/1.55 var(--sans);
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+p {
+  margin: 0;
+}
+
+a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 4px;
+  transition: text-decoration-color 200ms ease;
+}
+
+a:hover {
+  text-decoration-color: var(--ink);
+}
+
+::selection {
+  background: var(--pink);
+  color: var(--bg);
+}
+
+/* ---------- Header ---------- */
+
+.bar {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.logo {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  font: 400 24px/1 var(--serif);
+  letter-spacing: -0.01em;
+}
+
+.mark {
+  align-self: center;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--pink);
+  box-shadow: 0 0 12px var(--pink);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  font: 12px/1 var(--mono);
+  color: var(--muted);
+}
+
+.tag::before {
+  content: "";
+  width: 24px;
+  height: 1px;
+  background: var(--faint);
+}
+
+/* ---------- Type ---------- */
+
+.eyebrow,
+.meta {
+  font: 12px/1.5 var(--mono);
+  color: var(--muted);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.note {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.status {
+  color: var(--amber);
+  font: 12px/1.5 var(--mono);
+}
+
+.big-num {
+  font: 400 52px/0.95 var(--serif);
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+/* ---------- Plant ---------- */
+
+.plant-art svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.plant-name {
+  font: 400 22px/1.1 var(--serif);
+}
+
+.plant-next {
+  font: 11px/1.5 var(--mono);
+  color: var(--muted);
+}
+
+/* ---------- Plans ---------- */
+
+.action {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  padding: 16px;
+  transition: border-color 300ms ease;
+}
+
+.action:hover {
+  border-color: var(--line-strong);
+}
+
+.action.done {
+  border-color: color-mix(in srgb, var(--pink) 55%, transparent);
+}
+
+.action.done::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: var(--pink);
+}
+
+.action-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.action-title {
+  font: 400 19px/1.2 var(--serif);
+}
+
+.action .muted,
+.action p {
+  font-size: 13px;
+}
+
+.pill {
+  font: 10px/1 var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  padding: 5px 7px 4px;
+  color: var(--muted);
+  border: 1px solid var(--line-strong);
+  white-space: nowrap;
+}
+
+.pill.done {
+  color: var(--pink);
+  background: color-mix(in srgb, var(--pink) 10%, transparent);
+  border-color: transparent;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+/* ---------- Buttons ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font: 500 13px/1 var(--sans);
+  border-radius: 999px;
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: background-color 200ms ease, border-color 200ms ease;
+}
+
+.btn.primary {
+  color: var(--bg);
+  background: var(--ink);
+  border: 1px solid var(--ink);
+}
+
+.btn.primary:hover {
+  background: color-mix(in srgb, var(--ink) 90%, transparent);
+}
+
+.btn.ghost {
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid var(--line-strong);
+}
+
+.btn.ghost:hover {
+  background: color-mix(in srgb, var(--ink) 5%, transparent);
+}
+
+.btn:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--pink);
+  outline-offset: 2px;
+}
+
+.empty {
+  display: grid;
+  gap: 6px;
+  padding: 20px 0;
+  color: var(--muted);
+}
+
+.empty-title {
+  font: 400 24px/1.1 var(--serif);
+  color: var(--ink);
+}
+
+/* ---------- Celebration after a plan is marked done ---------- */
+
+.celebrate {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: oklch(0.06 0.008 260 / 0.8);
+  backdrop-filter: blur(10px);
+  animation: fade-in 300ms ease-out;
+}
+
+.celebrate-panel {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  width: min(360px, 100%);
+  padding: 28px 24px 24px;
+  text-align: center;
+  background: var(--bg);
+  border: 1px solid var(--ink);
+}
+
+.celebrate-panel .plant-art {
+  width: 140px;
+}
+
+.celebrate-title {
+  font: 12px/1.5 var(--mono);
+  color: var(--pink);
+}
+
+.celebrate-stage {
+  font: 400 40px/1 var(--serif);
+  letter-spacing: -0.02em;
+}
+
+.celebrate-panel .btn {
+  margin-top: 12px;
+  min-width: 140px;
+}
+
+.plant-art.growing .plant-growth {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: grow 900ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes grow {
+  from { transform: scaleY(0.2); opacity: 0.3; }
+  to { transform: scaleY(1); opacity: 1; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(16px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .celebrate,
+  .plant-art.growing .plant-growth {
+    animation: none;
+  }
+}

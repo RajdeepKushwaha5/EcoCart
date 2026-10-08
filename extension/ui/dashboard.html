@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>EcoCart Dashboard</title>
+    <link rel="icon" href="../icons/icon-32.png" />
+    <link rel="stylesheet" href="theme.css" />
+    <link rel="stylesheet" href="dashboard.css" />
+  </head>
+  <body class="dashboard-page">
+    <header class="bar">
+      <span class="logo"><span class="mark" aria-hidden="true"></span>EcoCart</span>
+      <span class="tag">Dashboard</span>
+    </header>
+
+    <section class="dashboard-hero" aria-labelledby="dashboard-title">
+      <div class="dashboard-hero-copy">
+        <span class="dashboard-kicker">Your impact, one device at a time</span>
+        <h1 id="dashboard-title">Give your old devices <span>a second life.</span></h1>
+        <p>See the plans you made, the devices you checked, and the next step you can take.</p>
+      </div>
+    </section>
+
+    <div class="layout">
+      <aside class="side">
+        <div id="plant" class="plant"></div>
+        <dl class="numbers" aria-live="polite">
+          <div><dt class="eyebrow">Plans saved</dt><dd id="saved-count" class="big-num">--</dd></div>
+          <div><dt class="eyebrow">Completed</dt><dd id="done-count" class="big-num">--</dd></div>
+          <div><dt class="eyebrow">Devices checked</dt><dd id="viewed-count" class="big-num">--</dd></div>
+        </dl>
+        <p class="side-note">Your plant grows one stage for each plan you mark done. Completed counts are self-reported.</p>
+      </aside>
+
+      <main>
+        <section>
+          <div class="section-head">
+            <h2>Your old-device plans</h2>
+            <p id="status" class="status" role="status"></p>
+          </div>
+          <div id="plans" class="plans"></div>
+        </section>
+
+        <section>
+          <div class="section-head">
+            <h2>Compare the devices you checked</h2>
+          </div>
+          <div id="compare" class="compare"></div>
+        </section>
+
+        <section>
+          <div class="section-head">
+            <h2>Devices you checked</h2>
+            <button id="clear-history" class="btn ghost" type="button">Clear history</button>
+          </div>
+          <p class="muted">Kept only in this browser. Carbon figures are lifecycle totals reported by each manufacturer.</p>
+          <div id="viewed" class="viewed"></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="plant.js"></script>
+    <script type="module" src="dashboard.js"></script>
+  </body>
+</html>

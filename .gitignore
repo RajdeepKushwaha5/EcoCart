@@ -1,0 +1,14 @@
+*.zip
+.env
+.pytest_cache/
+.venv/
+__pycache__/
+backend/.aws-sam/
+research/
+drafts/
+dist/
+node_modules/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,1026 @@
+[
+  {
+    "brand": "OnePlus",
+    "model": "OnePlus 11",
+    "category": "phone",
+    "supportEndDate": "2028-02-01",
+    "source": "https://www.oneplus.com/uk/psti",
+    "checked": "2026-10-02"
+  },
+  {
+    "brand": "OnePlus",
+    "model": "OnePlus 12",
+    "category": "phone",
+    "supportEndDate": "2029-02-01",
+    "source": "https://www.oneplus.com/uk/psti",
+    "checked": "2026-10-02"
+  },
+  {
+    "brand": "OnePlus",
+    "model": "OnePlus 12R",
+    "category": "phone",
+    "supportEndDate": "2028-02-01",
+    "source": "https://www.oneplus.com/uk/psti",
+    "checked": "2026-10-02"
+  },
+  {
+    "brand": "OnePlus",
+    "model": "OnePlus 13",
+    "category": "phone",
+    "supportEndDate": "2031-01-07",
+    "source": "https://www.oneplus.com/uk/psti",
+    "checked": "2026-10-02"
+  },
+  {
+    "brand": "OnePlus",
+    "model": "OnePlus 13R",
+    "category": "phone",
+    "supportEndDate": "2031-01-07",
+    "source": "https://www.oneplus.com/uk/psti",
+    "checked": "2026-10-02"
+  },
+  {
+    "brand": "OnePlus",
+    "model": "OnePlus 15",
+    "category": "phone",
+    "supportEndDate": "2031-11-13",
+    "source": "https://www.oneplus.com/uk/psti",
+    "checked": "2026-10-02"
+  },
+  {
+    "brand": "OnePlus",
+    "model": "OnePlus 15R",
+    "category": "phone",
+    "supportEndDate": "2031-12-31",
+    "source": "https://www.oneplus.com/uk/psti",
+    "checked": "2026-10-02"
+  },
+  {
+    "brand": "OnePlus",
+    "model": "OnePlus Nord 3",
+    "category": "phone",
+    "supportEndDate": "2027-07-01",
+    "source": "https://www.oneplus.com/uk/psti",
+    "checked": "2026-10-02"
+  },
+  {
+    "brand": "OnePlus",
+    "model": "OnePlus Nord 4",
+    "category": "phone",
+    "supportEndDate": "2030-08-08",
+    "source": "https://www.oneplus.com/uk/psti",
+    "checked": "2026-10-02"
+  },
+  {
+    "brand": "OnePlus",
+    "model": "OnePlus Nord 5",
+    "category": "phone",
+    "supportEndDate": "2031-07-08",
+    "source": "https://www.oneplus.com/uk/psti",
+    "checked": "2026-10-02"
+  },
+  {
+    "brand": "OnePlus",
+    "model": "OnePlus Nord CE 4 Lite",
+    "category": "phone",
+    "supportEndDate": "2027-07-01",
+    "source": "https://www.oneplus.com/uk/psti",
+    "checked": "2026-10-02"
+  },
+  {
+    "brand": "OnePlus",
+    "model": "OnePlus Nord CE5",
+    "category": "phone",
+    "supportEndDate": "2031-07-08",
+    "source": "https://www.oneplus.com/uk/psti",
+    "checked": "2026-10-02"
+  },
+  {
+    "brand": "OnePlus",
+    "model": "OnePlus Open",
+    "category": "phone",
+    "supportEndDate": "2028-10-01",
+    "source": "https://www.oneplus.com/uk/psti",
+    "checked": "2026-10-02"
+  },
+  {
+    "brand": "OnePlus",
+    "model": "OnePlus Pad 3",
+    "category": "tablet",
+    "supportEndDate": "2031-06-19",
+    "source": "https://www.oneplus.com/uk/psti",
+    "checked": "2026-10-02"
+  },
+  {
+    "brand": "OnePlus",
+    "model": "OnePlus Pad Go",
+    "category": "tablet",
+    "supportEndDate": "2026-10-30",
+    "source": "https://www.oneplus.com/uk/psti",
+    "checked": "2026-10-02"
+  },
+  {
+    "brand": "OnePlus",
+    "model": "OnePlus Pad Go 2",
+    "category": "tablet",
+    "supportEndDate": "2031-12-24",
+    "source": "https://www.oneplus.com/uk/psti",
+    "checked": "2026-10-02"
+  },
+  {
+    "brand": "OnePlus",
+    "model": "OnePlus Pad Lite",
+    "category": "tablet",
+    "supportEndDate": "2031-07-08",
+    "source": "https://www.oneplus.com/uk/psti",
+    "checked": "2026-10-02"
+  },
+  {
+    "brand": "OnePlus",
+    "model": "OnePlus Watch 3",
+    "category": "watch",
+    "supportEndDate": "2027-03-01",
+    "source": "https://www.oneplus.com/uk/psti",
+    "checked": "2026-10-02"
+  },
+  {
+    "brand": "OnePlus",
+    "model": "OnePlus Watch 3 43mm",
+    "category": "watch",
+    "supportEndDate": "2027-07-04",
+    "source": "https://www.oneplus.com/uk/psti",
+    "checked": "2026-10-02"
+  },
+  {
+    "brand": "OnePlus",
+    "model": "OnePlus Watch Lite",
+    "category": "watch",
+    "supportEndDate": "2027-11-01",
+    "source": "https://www.oneplus.com/uk/psti",
+    "checked": "2026-10-02"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO C65",
+    "category": "phone",
+    "supportEndDate": "2026-11-06",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO C75",
+    "category": "phone",
+    "supportEndDate": "2028-09-26",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO C81 Pro",
+    "category": "phone",
+    "supportEndDate": "2032-06-23",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO C85",
+    "category": "phone",
+    "supportEndDate": "2031-08-28",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO F6",
+    "category": "phone",
+    "supportEndDate": "2028-05-23",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO F6 Pro",
+    "category": "phone",
+    "supportEndDate": "2028-05-22",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO F7",
+    "category": "phone",
+    "supportEndDate": "2031-06-24",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO F7 Pro",
+    "category": "phone",
+    "supportEndDate": "2031-03-27",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO F7 Ultra",
+    "category": "phone",
+    "supportEndDate": "2031-03-27",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO F8 Pro",
+    "category": "phone",
+    "supportEndDate": "2031-11-26",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO F8 Ultra",
+    "category": "phone",
+    "supportEndDate": "2031-11-26",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO F9 Pro",
+    "category": "phone",
+    "supportEndDate": "2032-09-01",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO F9 Ultra",
+    "category": "phone",
+    "supportEndDate": "2032-09-01",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO M6",
+    "category": "phone",
+    "supportEndDate": "2028-06-05",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO M6 Pro",
+    "category": "phone",
+    "supportEndDate": "2028-01-11",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO M7",
+    "category": "phone",
+    "supportEndDate": "2031-08-19",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO M7 Pro 5G",
+    "category": "phone",
+    "supportEndDate": "2029-01-09",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO M8 5G",
+    "category": "phone",
+    "supportEndDate": "2032-01-08",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO M8 Pro 5G",
+    "category": "phone",
+    "supportEndDate": "2032-01-08",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO Pad M1",
+    "category": "tablet",
+    "supportEndDate": "2029-09-22",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO X5 5G",
+    "category": "phone",
+    "supportEndDate": "2027-02-06",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO X6 5G",
+    "category": "phone",
+    "supportEndDate": "2028-01-11",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO X6 Pro",
+    "category": "phone",
+    "supportEndDate": "2028-01-11",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO X7",
+    "category": "phone",
+    "supportEndDate": "2029-01-30",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO X7 Pro",
+    "category": "phone",
+    "supportEndDate": "2029-01-07",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO X8",
+    "category": "phone",
+    "supportEndDate": "2032-09-01",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO X8 Pro",
+    "category": "phone",
+    "supportEndDate": "2032-03-17",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "POCO",
+    "model": "POCO X8 Pro Max",
+    "category": "phone",
+    "supportEndDate": "2032-03-17",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "REDMI 17",
+    "category": "phone",
+    "supportEndDate": "2032-08-07",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "REDMI 17 5G",
+    "category": "phone",
+    "supportEndDate": "2032-08-06",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "REDMI A5",
+    "category": "phone",
+    "supportEndDate": "2029-04-30",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "REDMI A7 Pro",
+    "category": "phone",
+    "supportEndDate": "2032-04-01",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "REDMI Note 15",
+    "category": "phone",
+    "supportEndDate": "2032-01-15",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "REDMI Note 15 5G",
+    "category": "phone",
+    "supportEndDate": "2032-01-15",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "REDMI Note 15 Pro",
+    "category": "phone",
+    "supportEndDate": "2032-01-15",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "REDMI Note 15 Pro 5G",
+    "category": "phone",
+    "supportEndDate": "2032-01-15",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "REDMI Note 15 Pro+ 5G",
+    "category": "phone",
+    "supportEndDate": "2032-01-15",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "REDMI Note 17",
+    "category": "phone",
+    "supportEndDate": "2032-08-31",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "REDMI Note 17 5G",
+    "category": "phone",
+    "supportEndDate": "2032-08-27",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "REDMI Note 17 Pro 5G",
+    "category": "phone",
+    "supportEndDate": "2032-08-27",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "REDMI Pad 2 9.7",
+    "category": "tablet",
+    "supportEndDate": "2033-04-28",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "REDMI Pad 2 9.7 4G",
+    "category": "tablet",
+    "supportEndDate": "2029-04-28",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi 12",
+    "category": "phone",
+    "supportEndDate": "2027-06-16",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi 12 5G",
+    "category": "phone",
+    "supportEndDate": "2027-09-01",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi 13C",
+    "category": "phone",
+    "supportEndDate": "2026-11-10",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi 14C",
+    "category": "phone",
+    "supportEndDate": "2028-09-26",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi 15",
+    "category": "phone",
+    "supportEndDate": "2029-09-22",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi 15 5G",
+    "category": "phone",
+    "supportEndDate": "2029-08-01",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi 15C",
+    "category": "phone",
+    "supportEndDate": "2031-08-28",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi 15C 5G",
+    "category": "phone",
+    "supportEndDate": "2031-09-30",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi A3",
+    "category": "phone",
+    "supportEndDate": "2027-02-21",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi Note 12",
+    "category": "phone",
+    "supportEndDate": "2027-03-23",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi Note 12 Pro 5G",
+    "category": "phone",
+    "supportEndDate": "2027-03-23",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi Note 12 Pro+ 5G",
+    "category": "phone",
+    "supportEndDate": "2027-03-23",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi Note 12S",
+    "category": "phone",
+    "supportEndDate": "2027-05-10",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi Note 13",
+    "category": "phone",
+    "supportEndDate": "2028-01-15",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi Note 13 5G",
+    "category": "phone",
+    "supportEndDate": "2028-01-15",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi Note 13 Pro",
+    "category": "phone",
+    "supportEndDate": "2028-01-15",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi Note 13 Pro 5G",
+    "category": "phone",
+    "supportEndDate": "2028-01-15",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi Note 13 Pro+ 5G",
+    "category": "phone",
+    "supportEndDate": "2028-01-15",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi Note 14",
+    "category": "phone",
+    "supportEndDate": "2031-03-01",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi Note 14 5G",
+    "category": "phone",
+    "supportEndDate": "2029-01-09",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi Note 14 Pro",
+    "category": "phone",
+    "supportEndDate": "2029-01-15",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi Note 14 Pro 5G",
+    "category": "phone",
+    "supportEndDate": "2029-01-30",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi Note 14 Pro+ 5G",
+    "category": "phone",
+    "supportEndDate": "2029-01-01",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi Pad 2",
+    "category": "tablet",
+    "supportEndDate": "2032-06-15",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi Pad 2 4G",
+    "category": "tablet",
+    "supportEndDate": "2032-06-15",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi Pad 2 Pro",
+    "category": "tablet",
+    "supportEndDate": "2029-09-22",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi Pad 2 Pro 5G",
+    "category": "tablet",
+    "supportEndDate": "2029-09-22",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Redmi",
+    "model": "Redmi Pad Pro 5G",
+    "category": "tablet",
+    "supportEndDate": "2027-06-11",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Xiaomi",
+    "model": "Leica Leitzphone powered by Xiaomi",
+    "category": "phone",
+    "supportEndDate": "2032-02-28",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Xiaomi",
+    "model": "Xiaomi 12T",
+    "category": "phone",
+    "supportEndDate": "2026-10-13",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Xiaomi",
+    "model": "Xiaomi 12T Pro",
+    "category": "phone",
+    "supportEndDate": "2026-10-13",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Xiaomi",
+    "model": "Xiaomi 13",
+    "category": "phone",
+    "supportEndDate": "2028-03-08",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Xiaomi",
+    "model": "Xiaomi 13 Lite",
+    "category": "phone",
+    "supportEndDate": "2027-03-02",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Xiaomi",
+    "model": "Xiaomi 13 Pro",
+    "category": "phone",
+    "supportEndDate": "2028-03-08",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Xiaomi",
+    "model": "Xiaomi 13 Ultra",
+    "category": "phone",
+    "supportEndDate": "2028-06-12",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Xiaomi",
+    "model": "Xiaomi 13T",
+    "category": "phone",
+    "supportEndDate": "2028-10-04",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Xiaomi",
+    "model": "Xiaomi 13T Pro",
+    "category": "phone",
+    "supportEndDate": "2028-10-04",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Xiaomi",
+    "model": "Xiaomi 14",
+    "category": "phone",
+    "supportEndDate": "2029-02-25",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Xiaomi",
+    "model": "Xiaomi 14 Ultra",
+    "category": "phone",
+    "supportEndDate": "2029-03-15",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Xiaomi",
+    "model": "Xiaomi 14T",
+    "category": "phone",
+    "supportEndDate": "2029-09-26",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Xiaomi",
+    "model": "Xiaomi 14T Pro",
+    "category": "phone",
+    "supportEndDate": "2029-09-26",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Xiaomi",
+    "model": "Xiaomi 15",
+    "category": "phone",
+    "supportEndDate": "2031-03-01",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Xiaomi",
+    "model": "Xiaomi 15 Ultra",
+    "category": "phone",
+    "supportEndDate": "2031-03-01",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Xiaomi",
+    "model": "Xiaomi 15T",
+    "category": "phone",
+    "supportEndDate": "2031-09-24",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Xiaomi",
+    "model": "Xiaomi 15T Pro",
+    "category": "phone",
+    "supportEndDate": "2031-09-24",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Xiaomi",
+    "model": "Xiaomi 17",
+    "category": "phone",
+    "supportEndDate": "2032-02-28",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Xiaomi",
+    "model": "Xiaomi 17 Ultra",
+    "category": "phone",
+    "supportEndDate": "2032-02-28",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Xiaomi",
+    "model": "Xiaomi 17T",
+    "category": "phone",
+    "supportEndDate": "2032-05-28",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Xiaomi",
+    "model": "Xiaomi 17T Pro",
+    "category": "phone",
+    "supportEndDate": "2032-05-28",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Xiaomi",
+    "model": "Xiaomi MIX Flip",
+    "category": "phone",
+    "supportEndDate": "2029-07-18",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Xiaomi",
+    "model": "Xiaomi Pad 7",
+    "category": "tablet",
+    "supportEndDate": "2028-03-01",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "Xiaomi",
+    "model": "Xiaomi Pad 7 Pro",
+    "category": "tablet",
+    "supportEndDate": "2028-03-01",
+    "source": "https://trust.mi.com/misrc/updates/detail?tab=phone",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "realme",
+    "model": "realme 14 Pro 5G",
+    "category": "phone",
+    "supportEndDate": "2031-01-01",
+    "source": "https://www.realme.com/uk/legal/psti",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "realme",
+    "model": "realme 14 Pro+ 5G",
+    "category": "phone",
+    "supportEndDate": "2031-02-01",
+    "source": "https://www.realme.com/uk/legal/psti",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "realme",
+    "model": "realme 14T 5G",
+    "category": "phone",
+    "supportEndDate": "2031-04-01",
+    "source": "https://www.realme.com/uk/legal/psti",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "realme",
+    "model": "realme 14x 5G",
+    "category": "phone",
+    "supportEndDate": "2031-03-01",
+    "source": "https://www.realme.com/uk/legal/psti",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "realme",
+    "model": "realme 16 5G",
+    "category": "phone",
+    "supportEndDate": "2032-03-01",
+    "source": "https://www.realme.com/uk/legal/psti",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "realme",
+    "model": "realme 16 Pro",
+    "category": "phone",
+    "supportEndDate": "2032-04-01",
+    "source": "https://www.realme.com/uk/legal/psti",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "realme",
+    "model": "realme 16 Pro+",
+    "category": "phone",
+    "supportEndDate": "2032-04-01",
+    "source": "https://www.realme.com/uk/legal/psti",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "realme",
+    "model": "realme C100 5G",
+    "category": "phone",
+    "supportEndDate": "2032-04-01",
+    "source": "https://www.realme.com/uk/legal/psti",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "realme",
+    "model": "realme GT 7",
+    "category": "phone",
+    "supportEndDate": "2031-06-01",
+    "source": "https://www.realme.com/uk/legal/psti",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "realme",
+    "model": "realme GT 7T",
+    "category": "phone",
+    "supportEndDate": "2031-05-01",
+    "source": "https://www.realme.com/uk/legal/psti",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "realme",
+    "model": "realme Note 70T",
+    "category": "phone",
+    "supportEndDate": "2031-08-01",
+    "source": "https://www.realme.com/uk/legal/psti",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "realme",
+    "model": "realme P3 5G",
+    "category": "phone",
+    "supportEndDate": "2031-03-01",
+    "source": "https://www.realme.com/uk/legal/psti",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "realme",
+    "model": "realme P4 Lite",
+    "category": "phone",
+    "supportEndDate": "2032-06-01",
+    "source": "https://www.realme.com/uk/legal/psti",
+    "checked": "2026-10-08"
+  },
+  {
+    "brand": "realme",
+    "model": "realme P4x",
+    "category": "phone",
+    "supportEndDate": "2032-06-01",
+    "source": "https://www.realme.com/uk/legal/psti",
+    "checked": "2026-10-08"
+  }
+]

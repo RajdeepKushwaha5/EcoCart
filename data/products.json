@@ -1,0 +1,1483 @@
+[
+  {
+    "modelId": "google-pixel-8a",
+    "brand": "Google",
+    "displayName": "Google Pixel 8a",
+    "aliases": [
+      "Pixel 8a"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Pixel 8 and later phones will get updates for 7 years starting from when the device first became available on the Google Store in the US.",
+      "supportEndDate": "2031-05",
+      "source": "https://support.google.com/pixelphone/answer/4457705",
+      "checked": "2026-09-30",
+      "startSource": "https://support.google.com/pixelphone/answer/15738422",
+      "derived": true
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 60,
+      "basis": "3 years of use",
+      "source": "https://www.gstatic.com/gumdrop/sustainability/pixel-8a-product-environmental-report.pdf",
+      "checked": "2026-09-30"
+    },
+    "takeBack": null,
+    "notes": "Google lists US Google Store availability as May 2024 (https://support.google.com/pixelphone/answer/15738422), so updates run until at least 2031-05.",
+    "category": "phone"
+  },
+  {
+    "modelId": "google-pixel-9",
+    "brand": "Google",
+    "displayName": "Google Pixel 9",
+    "aliases": [
+      "Pixel 9"
+    ],
+    "modelNumbers": [],
+    "excludes": [
+      "Pro",
+      "Fold"
+    ],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Pixel 8 and later phones will get updates for 7 years starting from when the device first became available on the Google Store in the US.",
+      "supportEndDate": "2031-08",
+      "source": "https://support.google.com/pixelphone/answer/4457705",
+      "checked": "2026-09-30",
+      "startSource": "https://support.google.com/pixelphone/answer/15738422",
+      "derived": true
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 64,
+      "basis": "3 years of use",
+      "source": "https://www.gstatic.com/gumdrop/sustainability/pixel-9-product-environmental-report.pdf",
+      "checked": "2026-09-30"
+    },
+    "takeBack": null,
+    "notes": "Google lists US Google Store availability as August 2024 (https://support.google.com/pixelphone/answer/15738422), so updates run until at least 2031-08.",
+    "category": "phone"
+  },
+  {
+    "modelId": "google-pixel-9a",
+    "brand": "Google",
+    "displayName": "Google Pixel 9a",
+    "aliases": [
+      "Pixel 9a"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": {
+      "value": 49999,
+      "source": "https://store.google.com/in/product/pixel_9a?hl=en-GB",
+      "checked": "2026-10-02"
+    },
+    "updatePolicy": {
+      "value": "Pixel 8 and later phones will get updates for 7 years starting from when the device first became available on the Google Store in the US.",
+      "supportEndDate": "2032-04",
+      "source": "https://support.google.com/pixelphone/answer/4457705",
+      "checked": "2026-09-30",
+      "startSource": "https://support.google.com/pixelphone/answer/15738422",
+      "derived": true
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 56,
+      "basis": "Google estimate, see report",
+      "source": "https://www.gstatic.com/gumdrop/sustainability/google-pixel-9a-product-environmental-report.pdf",
+      "checked": "2026-09-30"
+    },
+    "takeBack": null,
+    "notes": "Google lists US Google Store availability as April 2025 (https://support.google.com/pixelphone/answer/15738422), so updates run until at least 2032-04.",
+    "category": "phone"
+  },
+  {
+    "modelId": "google-pixel-10",
+    "brand": "Google",
+    "displayName": "Google Pixel 10",
+    "aliases": [
+      "Pixel 10"
+    ],
+    "modelNumbers": [],
+    "excludes": [
+      "Pro",
+      "Fold"
+    ],
+    "priceInr": {
+      "value": 74999,
+      "source": "https://store.google.com/in/product/pixel_10?hl=en-GB",
+      "checked": "2026-10-02"
+    },
+    "updatePolicy": {
+      "value": "Pixel 8 and later phones will get updates for 7 years starting from when the device first became available on the Google Store in the US.",
+      "supportEndDate": "2032-08",
+      "source": "https://support.google.com/pixelphone/answer/4457705",
+      "checked": "2026-09-30",
+      "startSource": "https://support.google.com/pixelphone/answer/15738422",
+      "derived": true
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 82,
+      "basis": "3 years of use",
+      "source": "https://storage.googleapis.com/gweb-mobius-cdn/sustainability/uploads/907a14b4a1c37bd2716bb2d91109dd592b4257e5/Google%20Pixel%2010%20Product%20Environmental%20Report_Rev%2009102026.pdf",
+      "checked": "2026-09-30"
+    },
+    "takeBack": null,
+    "notes": "Google lists US Google Store availability as August 2025 (https://support.google.com/pixelphone/answer/15738422), so updates run until at least 2032-08.",
+    "category": "phone"
+  },
+  {
+    "modelId": "google-pixel-10a",
+    "brand": "Google",
+    "displayName": "Google Pixel 10a",
+    "aliases": [
+      "Pixel 10a"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": {
+      "value": 55999,
+      "source": "https://store.google.com/in/product/pixel_10a?hl=en-GB",
+      "checked": "2026-10-02"
+    },
+    "updatePolicy": {
+      "value": "Pixel 8 and later phones will get updates for 7 years starting from when the device first became available on the Google Store in the US.",
+      "supportEndDate": "2033-03",
+      "source": "https://support.google.com/pixelphone/answer/4457705",
+      "checked": "2026-09-30",
+      "startSource": "https://support.google.com/pixelphone/answer/15738422",
+      "derived": true
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 70,
+      "basis": "3 years of use",
+      "source": "https://storage.googleapis.com/gweb-mobius-cdn/sustainability/uploads/5f1985ab5da9c5e08c62764e14e98b3b0ce41db3/Google%20Pixel%2010a%20Product%20Environmental%20Report.pdf",
+      "checked": "2026-09-30"
+    },
+    "takeBack": null,
+    "notes": "Google lists US Google Store availability as March 2026 (https://support.google.com/pixelphone/answer/15738422), so updates run until at least 2033-03.",
+    "category": "phone"
+  },
+  {
+    "modelId": "apple-iphone-16",
+    "brand": "Apple",
+    "displayName": "Apple iPhone 16",
+    "aliases": [
+      "iPhone 16"
+    ],
+    "modelNumbers": [],
+    "excludes": [
+      "Plus",
+      "Pro"
+    ],
+    "priceInr": {
+      "value": 89900,
+      "source": "https://www.apple.com/in/shop/buy-iphone/iphone-16",
+      "checked": "2026-10-02"
+    },
+    "updatePolicy": {
+      "value": "Minimum 5 years from the first supply date (20 September 2024), per Apple's UK PSTI statement for model A3287.",
+      "supportEndDate": "2029-09",
+      "source": "https://regulatoryinfo.apple.com/cwt/api/ext/file?fileId=securityTelecommunication%2FiPhone+16+%28Model+A3287%29.numbers_V1.pdf",
+      "checked": "2026-09-30",
+      "derived": true
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 56,
+      "basis": "128GB model",
+      "source": "https://www.apple.com/environment/pdf/products/iphone/iPhone_16_and_iPhone_16_Plus_PER_Sept2024.pdf",
+      "checked": "2026-09-30"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-09-30"
+    },
+    "notes": "Apple publishes the support period in UK statements; India receives the same iOS updates.",
+    "category": "phone"
+  },
+  {
+    "modelId": "apple-iphone-16e",
+    "brand": "Apple",
+    "displayName": "Apple iPhone 16e",
+    "aliases": [
+      "iPhone 16e"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Minimum 5 years from the first supply date (28 February 2025), per Apple's UK PSTI statement for model A3409.",
+      "supportEndDate": "2030-02",
+      "source": "https://regulatoryinfo.apple.com/cwt/api/ext/file?fileId=securityTelecommunication/A3409_UKPSTI_DoC_Annex_V1.pdf",
+      "checked": "2026-09-30",
+      "derived": true
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 48,
+      "basis": "128GB model",
+      "source": "https://www.apple.com/environment/pdf/products/iphone/iPhone_16e_PER_Feb2025.pdf",
+      "checked": "2026-09-30"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-09-30"
+    },
+    "notes": "Apple publishes the support period in UK statements; India receives the same iOS updates.",
+    "category": "phone"
+  },
+  {
+    "modelId": "apple-iphone-17",
+    "brand": "Apple",
+    "displayName": "Apple iPhone 17",
+    "aliases": [
+      "iPhone 17"
+    ],
+    "modelNumbers": [],
+    "excludes": [
+      "Pro"
+    ],
+    "priceInr": {
+      "value": 99900,
+      "source": "https://www.apple.com/in/shop/buy-iphone/iphone-17",
+      "checked": "2026-10-02"
+    },
+    "updatePolicy": {
+      "value": "Minimum 5 years from the first supply date (19 September 2025), per Apple's UK PSTI statement for model A3520.",
+      "supportEndDate": "2030-09",
+      "source": "https://regulatoryinfo.apple.com/cwt/api/ext/file?fileId=securityTelecommunication/A3520_UKPSTI_DoC_Annex_V1.pdf",
+      "checked": "2026-09-30",
+      "derived": true
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 55,
+      "basis": "256GB model",
+      "source": "https://www.apple.com/environment/pdf/products/iphone/iPhone_17_PER_Sept2025.pdf",
+      "checked": "2026-09-30"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-09-30"
+    },
+    "notes": "Apple publishes the support period in UK statements; India receives the same iOS updates.",
+    "category": "phone"
+  },
+  {
+    "modelId": "apple-iphone-17e",
+    "brand": "Apple",
+    "displayName": "Apple iPhone 17e",
+    "aliases": [
+      "iPhone 17e"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": {
+      "value": 79900,
+      "source": "https://www.apple.com/in/shop/buy-iphone/iphone-17e",
+      "checked": "2026-10-02"
+    },
+    "updatePolicy": {
+      "value": "Minimum 5 years from the first supply date (11 March 2026), per Apple's UK PSTI statement for model A3634.",
+      "supportEndDate": "2031-03",
+      "source": "https://regulatoryinfo.apple.com/cwt/api/ext/file?fileId=securityTelecommunication/A3634_UKPSTI_DoC_Annex_V1.pdf",
+      "checked": "2026-09-30",
+      "derived": true
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 47,
+      "basis": "256GB model",
+      "source": "https://www.apple.com/sg/environment/pdf/products/iphone/iPhone_17e_PER_Mar2026.pdf",
+      "checked": "2026-09-30"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-09-30"
+    },
+    "notes": "Apple publishes the support period in UK statements; India receives the same iOS updates.",
+    "category": "phone"
+  },
+  {
+    "modelId": "samsung-galaxy-a56",
+    "brand": "Samsung",
+    "displayName": "Samsung Galaxy A56 5G",
+    "aliases": [
+      "Galaxy A56"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Six generations of Android OS and six years of security updates",
+      "supportEndDate": null,
+      "source": "https://news.samsung.com/in/samsung-india-launches-galaxy-a56-5g-galaxy-a36-5g-featuring-awesome-intelligence-all-new-design-and-enhanced-durability",
+      "checked": "2026-09-30"
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 38.25,
+      "basis": "EU model SM-A566B, 3 years of use",
+      "source": "https://www.samsung.com/global/sustainability/policy-file/AYVhR1k6BicAIx95/LCA_Results_for_Smartphones.pdf",
+      "checked": "2026-09-30"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.samsung.com/in/support/mobile-devices/what-is-the-process-to-drop-off-my-e-waste-old-product/",
+      "checked": "2026-09-30"
+    },
+    "notes": "Carbon figure from page 79 of Samsung's LCA results. Samsung does not state an end date.",
+    "category": "phone"
+  },
+  {
+    "modelId": "samsung-galaxy-a36",
+    "brand": "Samsung",
+    "displayName": "Samsung Galaxy A36 5G",
+    "aliases": [
+      "Galaxy A36"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Six generations of Android OS and six years of security updates",
+      "supportEndDate": null,
+      "source": "https://news.samsung.com/in/samsung-india-launches-galaxy-a56-5g-galaxy-a36-5g-featuring-awesome-intelligence-all-new-design-and-enhanced-durability",
+      "checked": "2026-09-30"
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 41.08,
+      "basis": "EU model SM-A366B, 3 years of use",
+      "source": "https://www.samsung.com/global/sustainability/policy-file/AYVhR1k6BicAIx95/LCA_Results_for_Smartphones.pdf",
+      "checked": "2026-09-30"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.samsung.com/in/support/mobile-devices/what-is-the-process-to-drop-off-my-e-waste-old-product/",
+      "checked": "2026-09-30"
+    },
+    "notes": "Carbon figure from page 81 of Samsung's LCA results. Samsung does not state an end date.",
+    "category": "phone"
+  },
+  {
+    "modelId": "samsung-galaxy-a55",
+    "brand": "Samsung",
+    "displayName": "Samsung Galaxy A55 5G",
+    "aliases": [
+      "Galaxy A55"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Up to four generations of Android OS upgrades and five years of security updates",
+      "supportEndDate": null,
+      "source": "https://news.samsung.com/in/samsung-launches-galaxy-a55-5g-and-galaxy-a35-5g-with-flagship-like-camera-innovations-and-samsung-knox-vault-protection",
+      "checked": "2026-09-30"
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 47.9,
+      "basis": "EU model SM-A556B, 3 years of use",
+      "source": "https://www.samsung.com/global/sustainability/policy-file/AYVhR1k6BicAIx95/LCA_Results_for_Smartphones.pdf",
+      "checked": "2026-09-30"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.samsung.com/in/support/mobile-devices/what-is-the-process-to-drop-off-my-e-waste-old-product/",
+      "checked": "2026-09-30"
+    },
+    "notes": "Carbon figure from page 123 of Samsung's LCA results. Samsung does not state an end date.",
+    "category": "phone"
+  },
+  {
+    "modelId": "samsung-galaxy-a35",
+    "brand": "Samsung",
+    "displayName": "Samsung Galaxy A35 5G",
+    "aliases": [
+      "Galaxy A35"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Up to four generations of Android OS upgrades and five years of security updates",
+      "supportEndDate": null,
+      "source": "https://news.samsung.com/in/samsung-launches-galaxy-a55-5g-and-galaxy-a35-5g-with-flagship-like-camera-innovations-and-samsung-knox-vault-protection",
+      "checked": "2026-09-30"
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 46.9,
+      "basis": "EU model SM-A356B, 3 years of use",
+      "source": "https://www.samsung.com/global/sustainability/policy-file/AYVhR1k6BicAIx95/LCA_Results_for_Smartphones.pdf",
+      "checked": "2026-09-30"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.samsung.com/in/support/mobile-devices/what-is-the-process-to-drop-off-my-e-waste-old-product/",
+      "checked": "2026-09-30"
+    },
+    "notes": "Carbon figure from page 121 of Samsung's LCA results. Samsung does not state an end date.",
+    "category": "phone"
+  },
+  {
+    "modelId": "oneplus-13",
+    "brand": "OnePlus",
+    "displayName": "OnePlus 13",
+    "category": "phone",
+    "aliases": [
+      "OnePlus 13"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Security update period ends 7 Jan 2031, per OnePlus's UK PSTI table.",
+      "supportEndDate": "2031-01-07",
+      "source": "https://www.oneplus.com/uk/psti",
+      "checked": "2026-09-30"
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": null,
+    "takeBack": null
+  },
+  {
+    "modelId": "oneplus-13r",
+    "brand": "OnePlus",
+    "displayName": "OnePlus 13R",
+    "category": "phone",
+    "aliases": [
+      "OnePlus 13R"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Security update period ends 7 Jan 2031, per OnePlus's UK PSTI table.",
+      "supportEndDate": "2031-01-07",
+      "source": "https://www.oneplus.com/uk/psti",
+      "checked": "2026-09-30"
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": null,
+    "takeBack": null
+  },
+  {
+    "modelId": "oneplus-15",
+    "brand": "OnePlus",
+    "displayName": "OnePlus 15",
+    "category": "phone",
+    "aliases": [
+      "OnePlus 15"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Security update period ends 13 Nov 2031, per OnePlus's UK PSTI table.",
+      "supportEndDate": "2031-11-13",
+      "source": "https://www.oneplus.com/uk/psti",
+      "checked": "2026-09-30"
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": null,
+    "takeBack": null
+  },
+  {
+    "modelId": "oneplus-15r",
+    "brand": "OnePlus",
+    "displayName": "OnePlus 15R",
+    "category": "phone",
+    "aliases": [
+      "OnePlus 15R"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Security update period ends 31 Dec 2031, per OnePlus's UK PSTI table.",
+      "supportEndDate": "2031-12-31",
+      "source": "https://www.oneplus.com/uk/psti",
+      "checked": "2026-09-30"
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": null,
+    "takeBack": null
+  },
+  {
+    "modelId": "oneplus-nord-5",
+    "brand": "OnePlus",
+    "displayName": "OnePlus Nord 5",
+    "category": "phone",
+    "aliases": [
+      "OnePlus Nord 5"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Security update period ends 8 Jul 2031, per OnePlus's UK PSTI table.",
+      "supportEndDate": "2031-07-08",
+      "source": "https://www.oneplus.com/uk/psti",
+      "checked": "2026-09-30"
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": null,
+    "takeBack": null
+  },
+  {
+    "modelId": "oneplus-nord-ce5",
+    "brand": "OnePlus",
+    "displayName": "OnePlus Nord CE5",
+    "category": "phone",
+    "aliases": [
+      "OnePlus Nord CE5",
+      "OnePlus Nord CE 5"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Security update period ends 8 Jul 2031, per OnePlus's UK PSTI table.",
+      "supportEndDate": "2031-07-08",
+      "source": "https://www.oneplus.com/uk/psti",
+      "checked": "2026-09-30"
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": null,
+    "takeBack": null
+  },
+  {
+    "modelId": "samsung-galaxy-s25",
+    "brand": "Samsung",
+    "displayName": "Samsung Galaxy S25",
+    "category": "phone",
+    "aliases": [
+      "Galaxy S25"
+    ],
+    "modelNumbers": [],
+    "excludes": [
+      "Ultra",
+      "Plus",
+      "Edge",
+      "FE"
+    ],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Seven generations of OS upgrades and seven years of security updates",
+      "supportEndDate": null,
+      "source": "https://news.samsung.com/in/samsung-india-launches-galaxy-s25-series-your-true-ai-companion-pre-order-now-for-exciting-offers",
+      "checked": "2026-09-30"
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 45.75,
+      "basis": "EU/UK model SM-S931B, 3 years of use",
+      "source": "https://www.samsung.com/global/sustainability/policy-file/AYVhR1k6BicAIx95/LCA_Results_for_Smartphones.pdf",
+      "checked": "2026-09-30"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.samsung.com/in/support/mobile-devices/what-is-the-process-to-drop-off-my-e-waste-old-product/",
+      "checked": "2026-09-30"
+    },
+    "notes": "Carbon figure from page 91 of Samsung's LCA results."
+  },
+  {
+    "modelId": "samsung-galaxy-a57",
+    "brand": "Samsung",
+    "displayName": "Samsung Galaxy A57 5G",
+    "category": "phone",
+    "aliases": [
+      "Galaxy A57"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Up to six generations of Android OS and One UI upgrades, along with up to six years of security updates",
+      "supportEndDate": null,
+      "source": "https://news.samsung.com/in/samsung-unveils-galaxy-a57-5g-and-galaxy-a37-5g-packing-pro-level-features-in-camera-and-ai",
+      "checked": "2026-09-30"
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 34.5,
+      "basis": "EU/UK model SM-A576B, 3 years of use",
+      "source": "https://www.samsung.com/global/sustainability/policy-file/AYVhR1k6BicAIx95/LCA_Results_for_Smartphones.pdf",
+      "checked": "2026-09-30"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.samsung.com/in/support/mobile-devices/what-is-the-process-to-drop-off-my-e-waste-old-product/",
+      "checked": "2026-09-30"
+    },
+    "notes": "Carbon figure from page 29 of Samsung's LCA results."
+  },
+  {
+    "modelId": "samsung-galaxy-a37",
+    "brand": "Samsung",
+    "displayName": "Samsung Galaxy A37 5G",
+    "category": "phone",
+    "aliases": [
+      "Galaxy A37"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Up to six generations of Android OS and One UI upgrades, along with up to six years of security updates",
+      "supportEndDate": null,
+      "source": "https://news.samsung.com/in/samsung-unveils-galaxy-a57-5g-and-galaxy-a37-5g-packing-pro-level-features-in-camera-and-ai",
+      "checked": "2026-09-30"
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 36.6,
+      "basis": "EU/UK model SM-A376B, 3 years of use",
+      "source": "https://www.samsung.com/global/sustainability/policy-file/AYVhR1k6BicAIx95/LCA_Results_for_Smartphones.pdf",
+      "checked": "2026-09-30"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.samsung.com/in/support/mobile-devices/what-is-the-process-to-drop-off-my-e-waste-old-product/",
+      "checked": "2026-09-30"
+    },
+    "notes": "Carbon figure from page 25 of Samsung's LCA results."
+  },
+  {
+    "modelId": "samsung-galaxy-a17-5g",
+    "brand": "Samsung",
+    "displayName": "Samsung Galaxy A17 5G",
+    "category": "phone",
+    "aliases": [
+      "Galaxy A17 + 5G"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "6 generations of Android upgrades and 6 years of security updates",
+      "supportEndDate": null,
+      "source": "https://news.samsung.com/in/samsung-launches-stylish-galaxy-a17-5g-with-ai-innovations-enhanced-durability-and-ois-enabled-no-shake-camera",
+      "checked": "2026-09-30"
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 38.8,
+      "basis": "EU/UK model SM-A176B, 3 years of use",
+      "source": "https://www.samsung.com/global/sustainability/policy-file/AYVhR1k6BicAIx95/LCA_Results_for_Smartphones.pdf",
+      "checked": "2026-09-30"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.samsung.com/in/support/mobile-devices/what-is-the-process-to-drop-off-my-e-waste-old-product/",
+      "checked": "2026-09-30"
+    },
+    "notes": "Carbon figure from page 53 of Samsung's LCA results."
+  },
+  {
+    "modelId": "apple-macbook-air-13-m4",
+    "brand": "Apple",
+    "displayName": "Apple MacBook Air 13-inch (M4)",
+    "category": "laptop",
+    "aliases": [
+      "MacBook Air + M4 + 13"
+    ],
+    "modelNumbers": [
+      "MC654",
+      "MC6A4",
+      "MC6C4",
+      "MC6T4",
+      "MC6U4",
+      "MC6V4",
+      "MDG24",
+      "MDG54",
+      "MDG64",
+      "MW0W3",
+      "MW0X3",
+      "MW0Y3",
+      "MW103",
+      "MW123",
+      "MW133"
+    ],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Minimum 5 years from the first supply date (12 March 2025), per Apple's UK PSTI statement for model A3240.",
+      "supportEndDate": "2030-03",
+      "derived": true,
+      "source": "https://regulatoryinfo.apple.com/cwt/api/ext/file?fileId=securityTelecommunication/A3240_UKPSTI_DoC_Annex_V1.pdf",
+      "checked": "2026-09-30"
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 120,
+      "basis": "256GB SSD model",
+      "source": "https://www.apple.com/environment/pdf/products/notebooks/M4_MacBook_Air_PER_March2025.pdf",
+      "checked": "2026-09-30"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-09-30"
+    }
+  },
+  {
+    "modelId": "dell-inspiron-15-3530",
+    "brand": "Dell",
+    "displayName": "Dell Inspiron 15 3530",
+    "category": "laptop",
+    "aliases": [
+      "Inspiron 15 3530",
+      "Inspiron 3530"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": null,
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 288,
+      "basis": "mean estimate, Dell PAIA model, report January 2023",
+      "source": "https://www.delltechnologies.com/asset/en-us/products/laptops-and-2-in-1s/technical-support/dell-inspiron-15-3530-pcf-datasheet.pdf",
+      "checked": "2026-09-30"
+    },
+    "takeBack": null,
+    "notes": "Windows security updates follow Microsoft's lifecycle, not a Dell promise, so update support is left unknown."
+  },
+  {
+    "modelId": "apple-ipad-a16",
+    "brand": "Apple",
+    "displayName": "Apple iPad (A16)",
+    "category": "tablet",
+    "aliases": [
+      "iPad + A16"
+    ],
+    "modelNumbers": [],
+    "excludes": [
+      "Air",
+      "Pro",
+      "mini"
+    ],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Minimum 5 years from the first supply date (12 March 2024), per Apple's UK PSTI statement for model A3354.",
+      "supportEndDate": "2029-03",
+      "derived": true,
+      "source": "https://regulatoryinfo.apple.com/cwt/api/ext/file?fileId=securityTelecommunication/A3354_UKPSTI_DoC_Annex_V1.pdf",
+      "checked": "2026-09-30"
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 74,
+      "basis": "128GB model",
+      "source": "https://www.apple.com/environment/pdf/products/ipad/iPad_A16_PER_MAR2025.pdf",
+      "checked": "2026-09-30"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-09-30"
+    },
+    "notes": "Apple's statement gives a first supply date of 12 March 2024, used as written; the device launched in March 2025, so the real date is likely later."
+  },
+  {
+    "modelId": "apple-ipad-air-11-m3",
+    "brand": "Apple",
+    "displayName": "Apple iPad Air 11-inch (M3)",
+    "category": "tablet",
+    "aliases": [
+      "iPad Air + M3 + 11"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Minimum 5 years from the first supply date (12 March 2025), per Apple's UK PSTI statement for model A3266.",
+      "supportEndDate": "2030-03",
+      "derived": true,
+      "source": "https://regulatoryinfo.apple.com/cwt/api/ext/file?fileId=securityTelecommunication/A3266_UKPSTI_DoC_Annex_V1.pdf",
+      "checked": "2026-09-30"
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 76,
+      "basis": "128GB model",
+      "source": "https://www.apple.com/environment/pdf/products/ipad/iPad_Air_11_and_13_inch_M3_PER_MAR2025.pdf",
+      "checked": "2026-09-30"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-09-30"
+    }
+  },
+  {
+    "modelId": "apple-ipad-air-13-m3",
+    "brand": "Apple",
+    "displayName": "Apple iPad Air 13-inch (M3)",
+    "category": "tablet",
+    "aliases": [
+      "iPad Air + M3 + 13"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Minimum 5 years from the first supply date (12 March 2025), per Apple's UK PSTI statement for model A3268.",
+      "supportEndDate": "2030-03",
+      "derived": true,
+      "source": "https://regulatoryinfo.apple.com/cwt/api/ext/file?fileId=securityTelecommunication/A3268_UKPSTI_DoC_Annex_V1.pdf",
+      "checked": "2026-09-30"
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 89,
+      "basis": "128GB model",
+      "source": "https://www.apple.com/environment/pdf/products/ipad/iPad_Air_11_and_13_inch_M3_PER_MAR2025.pdf",
+      "checked": "2026-09-30"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-09-30"
+    }
+  },
+  {
+    "modelId": "oneplus-pad-3",
+    "brand": "OnePlus",
+    "displayName": "OnePlus Pad 3",
+    "category": "tablet",
+    "aliases": [
+      "OnePlus Pad 3"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Security update period ends 19 Jun 2031, per OnePlus's UK PSTI table.",
+      "supportEndDate": "2031-06-19",
+      "source": "https://www.oneplus.com/uk/psti",
+      "checked": "2026-09-30"
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": null,
+    "takeBack": null
+  },
+  {
+    "modelId": "apple-watch-series-11",
+    "brand": "Apple",
+    "displayName": "Apple Watch Series 11",
+    "category": "watch",
+    "aliases": [
+      "Watch Series 11"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Minimum 5 years from the first supply date (19 September 2025), per Apple's UK PSTI statement for model A3331.",
+      "supportEndDate": "2030-09",
+      "derived": true,
+      "source": "https://regulatoryinfo.apple.com/cwt/api/ext/file?fileId=securityTelecommunication/A3331_UKPSTI_DoC_Annex_V1.pdf",
+      "checked": "2026-09-30"
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 8.1,
+      "basis": "aluminium case with Sport Loop",
+      "source": "https://www.apple.com/environment/pdf/products/watch/Apple_Watch_Series_11_PER_Sept2025.pdf",
+      "checked": "2026-09-30"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-09-30"
+    }
+  },
+  {
+    "modelId": "apple-watch-se-3",
+    "brand": "Apple",
+    "displayName": "Apple Watch SE 3",
+    "category": "watch",
+    "aliases": [
+      "Watch SE 3",
+      "Watch SE + 3rd Gen"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Minimum 5 years from the first supply date (19 September 2025), per Apple's UK PSTI statement for model A3324.",
+      "supportEndDate": "2030-09",
+      "derived": true,
+      "source": "https://regulatoryinfo.apple.com/cwt/api/ext/file?fileId=securityTelecommunication/A3324_UKPSTI_DoC_Annex_V1.pdf",
+      "checked": "2026-09-30"
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 8.2,
+      "basis": "with Sport Loop",
+      "source": "https://www.apple.com/environment/pdf/products/watch/Apple_Watch_SE_3_PER_Sept2025.pdf",
+      "checked": "2026-09-30"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-09-30"
+    }
+  },
+  {
+    "modelId": "oneplus-watch-3",
+    "brand": "OnePlus",
+    "displayName": "OnePlus Watch 3 (46mm)",
+    "category": "watch",
+    "aliases": [
+      "OnePlus Watch 3"
+    ],
+    "modelNumbers": [],
+    "excludes": [
+      "43mm",
+      "43 mm"
+    ],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Security update period ends 1 Mar 2027, per OnePlus's UK PSTI table.",
+      "supportEndDate": "2027-03-01",
+      "source": "https://www.oneplus.com/uk/psti",
+      "checked": "2026-09-30"
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": null,
+    "takeBack": null
+  },
+  {
+    "modelId": "apple-airpods-pro-3",
+    "brand": "Apple",
+    "displayName": "Apple AirPods Pro 3",
+    "category": "earbuds",
+    "aliases": [
+      "AirPods Pro 3",
+      "AirPods Pro + 3rd Gen"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": null,
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 13,
+      "basis": "as reported by Apple",
+      "source": "https://www.apple.com/environment/pdf/products/airpods/Apple_AirPods_Pro_3_PER_Sept2025.pdf",
+      "checked": "2026-09-30"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-09-30"
+    },
+    "notes": "Apple has not published a support period for AirPods, so update support is left unknown."
+  },
+  {
+    "modelId": "apple-iphone-18-pro",
+    "brand": "Apple",
+    "displayName": "Apple iPhone 18 Pro",
+    "aliases": [
+      "iPhone 18 Pro"
+    ],
+    "modelNumbers": [],
+    "excludes": [
+      "Max"
+    ],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Minimum 5 years from the first supply date (18 September 2026), per Apple's UK PSTI statement for model A3714.",
+      "supportEndDate": "2031-09",
+      "source": "https://regulatoryinfo.apple.com/cwt/api/ext/file?fileId=securityTelecommunication/A3714_UKPSTI_DoC_Annex_V1.pdf",
+      "checked": "2026-10-02",
+      "derived": true
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 63,
+      "basis": "256GB model",
+      "source": "https://www.apple.com/environment/pdf/products/iphone/iPhone_18_Pro_and_iPhone_18_Pro_Max_PER_Sept2026.pdf",
+      "checked": "2026-10-02"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-10-02"
+    },
+    "notes": "Apple publishes the support period in UK statements; India receives the same iOS updates.",
+    "category": "phone"
+  },
+  {
+    "modelId": "apple-iphone-18-pro-max",
+    "brand": "Apple",
+    "displayName": "Apple iPhone 18 Pro Max",
+    "aliases": [
+      "iPhone 18 Pro Max"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Minimum 5 years from the first supply date (18 September 2026), per Apple's UK PSTI statement for model A3717.",
+      "supportEndDate": "2031-09",
+      "source": "https://regulatoryinfo.apple.com/cwt/api/ext/file?fileId=securityTelecommunication/A3717_UKPSTI_DoC_Annex_V1.pdf",
+      "checked": "2026-10-02",
+      "derived": true
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 69,
+      "basis": "256GB model",
+      "source": "https://www.apple.com/environment/pdf/products/iphone/iPhone_18_Pro_and_iPhone_18_Pro_Max_PER_Sept2026.pdf",
+      "checked": "2026-10-02"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-10-02"
+    },
+    "notes": "Apple publishes the support period in UK statements; India receives the same iOS updates.",
+    "category": "phone"
+  },
+  {
+    "modelId": "apple-iphone-duo",
+    "brand": "Apple",
+    "displayName": "Apple iPhone Duo",
+    "aliases": [
+      "iPhone Duo"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": null,
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 93,
+      "basis": "256GB model",
+      "source": "https://www.apple.com/environment/pdf/products/iphone/iPhone_Duo_PER_Sept2026.pdf",
+      "checked": "2026-10-02"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-10-02"
+    },
+    "notes": "Apple publishes the support period in UK statements; India receives the same iOS updates.",
+    "category": "phone"
+  },
+  {
+    "modelId": "apple-iphone-air",
+    "brand": "Apple",
+    "displayName": "Apple iPhone Air",
+    "aliases": [
+      "iPhone Air"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Minimum 5 years from the first supply date (19 September 2025), per Apple's UK PSTI statement for model A3517.",
+      "supportEndDate": "2030-09",
+      "source": "https://regulatoryinfo.apple.com/cwt/api/ext/file?fileId=securityTelecommunication/A3517_UKPSTI_DoC_Annex_V1.pdf",
+      "checked": "2026-10-02",
+      "derived": true
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 55,
+      "basis": "256GB model",
+      "source": "https://www.apple.com/environment/pdf/products/iphone/iPhone_Air_PER_Sept2025.pdf",
+      "checked": "2026-10-02"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-10-02"
+    },
+    "notes": "Apple publishes the support period in UK statements; India receives the same iOS updates.",
+    "category": "phone"
+  },
+  {
+    "modelId": "apple-iphone-17-pro",
+    "brand": "Apple",
+    "displayName": "Apple iPhone 17 Pro",
+    "aliases": [
+      "iPhone 17 Pro"
+    ],
+    "modelNumbers": [],
+    "excludes": [
+      "Max"
+    ],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Minimum 5 years from the first supply date (19 September 2025), per Apple's UK PSTI statement for model A3523.",
+      "supportEndDate": "2030-09",
+      "source": "https://regulatoryinfo.apple.com/cwt/api/ext/file?fileId=securityTelecommunication/A3523_UKPSTI_DoC_Annex_V1.pdf",
+      "checked": "2026-10-02",
+      "derived": true
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 64,
+      "basis": "256GB model",
+      "source": "https://www.apple.com/environment/pdf/products/iphone/iPhone_17_Pro_and_iPhone_17_Pro_Max_PER_Sept2025.pdf",
+      "checked": "2026-10-02"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-10-02"
+    },
+    "notes": "Apple publishes the support period in UK statements; India receives the same iOS updates.",
+    "category": "phone"
+  },
+  {
+    "modelId": "apple-iphone-17-pro-max",
+    "brand": "Apple",
+    "displayName": "Apple iPhone 17 Pro Max",
+    "aliases": [
+      "iPhone 17 Pro Max"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Minimum 5 years from the first supply date (19 September 2025), per Apple's UK PSTI statement for model A3526.",
+      "supportEndDate": "2030-09",
+      "source": "https://regulatoryinfo.apple.com/cwt/api/ext/file?fileId=securityTelecommunication/A3526_UKPSTI_DoC_Annex_V1.pdf",
+      "checked": "2026-10-02",
+      "derived": true
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 67,
+      "basis": "256GB model",
+      "source": "https://www.apple.com/environment/pdf/products/iphone/iPhone_17_Pro_and_iPhone_17_Pro_Max_PER_Sept2025.pdf",
+      "checked": "2026-10-02"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-10-02"
+    },
+    "notes": "Apple publishes the support period in UK statements; India receives the same iOS updates.",
+    "category": "phone"
+  },
+  {
+    "modelId": "apple-iphone-16-pro",
+    "brand": "Apple",
+    "displayName": "Apple iPhone 16 Pro",
+    "aliases": [
+      "iPhone 16 Pro"
+    ],
+    "modelNumbers": [],
+    "excludes": [
+      "Max"
+    ],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Minimum 5 years from the first supply date (20 September 2024), per Apple's UK PSTI statement for model A3293.",
+      "supportEndDate": "2029-09",
+      "source": "https://regulatoryinfo.apple.com/cwt/api/ext/file?fileId=securityTelecommunication%2FiPhone+16+Pro+%28Model+A3293%29.numbers_V1.pdf",
+      "checked": "2026-10-02",
+      "derived": true
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 66,
+      "basis": "128GB model",
+      "source": "https://www.apple.com/environment/pdf/products/iphone/iPhone_16_Pro_and_iPhone_16_Pro_Max_PER_Sept2024.pdf",
+      "checked": "2026-10-02"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-10-02"
+    },
+    "notes": "Apple publishes the support period in UK statements; India receives the same iOS updates.",
+    "category": "phone"
+  },
+  {
+    "modelId": "apple-iphone-16-pro-max",
+    "brand": "Apple",
+    "displayName": "Apple iPhone 16 Pro Max",
+    "aliases": [
+      "iPhone 16 Pro Max"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Minimum 5 years from the first supply date (20 September 2024), per Apple's UK PSTI statement for model A3296.",
+      "supportEndDate": "2029-09",
+      "source": "https://regulatoryinfo.apple.com/cwt/api/ext/file?fileId=securityTelecommunication%2FiPhone+16+Pro+Max+%28Model+A3296%29.numbers_V1.pdf",
+      "checked": "2026-10-02",
+      "derived": true
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 74,
+      "basis": "256GB model",
+      "source": "https://www.apple.com/environment/pdf/products/iphone/iPhone_16_Pro_and_iPhone_16_Pro_Max_PER_Sept2024.pdf",
+      "checked": "2026-10-02"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-10-02"
+    },
+    "notes": "Apple publishes the support period in UK statements; India receives the same iOS updates.",
+    "category": "phone"
+  },
+  {
+    "modelId": "apple-iphone-16-plus",
+    "brand": "Apple",
+    "displayName": "Apple iPhone 16 Plus",
+    "aliases": [
+      "iPhone 16 Plus"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": {
+      "value": "Minimum 5 years from the first supply date (20 September 2024), per Apple's UK PSTI statement for model A3290.",
+      "supportEndDate": "2029-09",
+      "source": "https://regulatoryinfo.apple.com/cwt/api/ext/file?fileId=securityTelecommunication%2FiPhone+16+Plus+%28Model+A3290%29.numbers_V1.pdf",
+      "checked": "2026-10-02",
+      "derived": true
+    },
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 60,
+      "basis": "128GB model",
+      "source": "https://www.apple.com/environment/pdf/products/iphone/iPhone_16_and_iPhone_16_Plus_PER_Sept2024.pdf",
+      "checked": "2026-10-02"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-10-02"
+    },
+    "notes": "Apple publishes the support period in UK statements; India receives the same iOS updates.",
+    "category": "phone"
+  },
+  {
+    "modelId": "apple-iphone-15",
+    "brand": "Apple",
+    "displayName": "Apple iPhone 15",
+    "aliases": [
+      "iPhone 15"
+    ],
+    "modelNumbers": [],
+    "excludes": [
+      "Pro",
+      "Plus"
+    ],
+    "priceInr": null,
+    "updatePolicy": null,
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 56,
+      "basis": "128GB model",
+      "source": "https://www.apple.com/environment/pdf/products/iphone/iPhone_15_and_iPhone_15_Plus_PER_Sept2023.pdf",
+      "checked": "2026-10-02"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-10-02"
+    },
+    "notes": "Apple publishes the support period in UK statements; India receives the same iOS updates.",
+    "category": "phone"
+  },
+  {
+    "modelId": "apple-iphone-15-plus",
+    "brand": "Apple",
+    "displayName": "Apple iPhone 15 Plus",
+    "aliases": [
+      "iPhone 15 Plus"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": null,
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 61,
+      "basis": "128GB model",
+      "source": "https://www.apple.com/environment/pdf/products/iphone/iPhone_15_and_iPhone_15_Plus_PER_Sept2023.pdf",
+      "checked": "2026-10-02"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-10-02"
+    },
+    "notes": "Apple publishes the support period in UK statements; India receives the same iOS updates.",
+    "category": "phone"
+  },
+  {
+    "modelId": "apple-macbook-air-13-m5",
+    "brand": "Apple",
+    "displayName": "Apple MacBook Air 13-inch (M5)",
+    "aliases": [
+      "MacBook Air + M5 + 13"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": null,
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 119,
+      "basis": "M5, 8-core GPU, 16GB, 512GB",
+      "source": "https://www.apple.com/environment/pdf/products/notebooks/MacBook_Air_M5_PER_Mar2026.pdf",
+      "checked": "2026-10-02"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-10-02"
+    },
+    "category": "laptop"
+  },
+  {
+    "modelId": "apple-macbook-air-15-m5",
+    "brand": "Apple",
+    "displayName": "Apple MacBook Air 15-inch (M5)",
+    "aliases": [
+      "MacBook Air + M5 + 15"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": null,
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 145,
+      "basis": "M5, 10-core GPU, 16GB, 512GB",
+      "source": "https://www.apple.com/environment/pdf/products/notebooks/MacBook_Air_M5_PER_Mar2026.pdf",
+      "checked": "2026-10-02"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-10-02"
+    },
+    "category": "laptop"
+  },
+  {
+    "modelId": "apple-ipad-air-11-m4",
+    "brand": "Apple",
+    "displayName": "Apple iPad Air 11-inch (M4)",
+    "aliases": [
+      "iPad Air + M4 + 11"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": null,
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 74,
+      "basis": "128GB Wi-Fi + Cellular",
+      "source": "https://www.apple.com/environment/pdf/products/ipad/iPad_Air_11-inch_and_13-inch_M4_PER_Mar2026.pdf",
+      "checked": "2026-10-02"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-10-02"
+    },
+    "category": "tablet"
+  },
+  {
+    "modelId": "apple-ipad-air-13-m4",
+    "brand": "Apple",
+    "displayName": "Apple iPad Air 13-inch (M4)",
+    "aliases": [
+      "iPad Air + M4 + 13"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": null,
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 89,
+      "basis": "128GB Wi-Fi + Cellular",
+      "source": "https://www.apple.com/environment/pdf/products/ipad/iPad_Air_11-inch_and_13-inch_M4_PER_Mar2026.pdf",
+      "checked": "2026-10-02"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-10-02"
+    },
+    "category": "tablet"
+  },
+  {
+    "modelId": "apple-airpods-5",
+    "brand": "Apple",
+    "displayName": "Apple AirPods 5",
+    "aliases": [
+      "AirPods 5"
+    ],
+    "modelNumbers": [],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": null,
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 11,
+      "basis": "with Wireless Charging Case",
+      "source": "https://www.apple.com/environment/pdf/products/airpods/Apple_AirPods_5_PER_Sept2026.pdf",
+      "checked": "2026-10-02"
+    },
+    "takeBack": {
+      "value": true,
+      "source": "https://www.apple.com/in/trade-in/",
+      "checked": "2026-10-02"
+    },
+    "category": "earbuds"
+  },
+  {
+    "modelId": "apple-watch-series-12",
+    "brand": "Apple",
+    "displayName": "Apple Watch Series 12",
+    "category": "watch",
+    "aliases": [
+      "Watch Series 12"
+    ],
+    "modelNumbers": [
+      "Apple Watch Series 12"
+    ],
+    "excludes": [],
+    "priceInr": null,
+    "updatePolicy": null,
+    "repairability": null,
+    "lifecycleCo2eKg": {
+      "value": 10.0,
+      "source": "https://www.apple.com/environment/pdf/products/watch/Apple_Watch_Series_12_PER_Sept2026.pdf",
+      "checked": "2026-10-02"
+    },
+    "takeBack": null
+  }
+]
