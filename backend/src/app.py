@@ -140,10 +140,10 @@ def post_session(event):
     return 201, {"token": create_session(db.table("SESSIONS_TABLE"))}
 
 
-def _count(saved=0, completed=0):
+def _count(saved=0, completed=0, verified=0):
     # The totals are a nice-to-have; a failed update must never fail the user's request.
     try:
-        stats.adjust(db.table("STATS_TABLE"), saved, completed)
+        stats.adjust(db.table("STATS_TABLE"), saved, completed, verified)
     except Exception:
         logger.exception("Could not update the public totals")
 
@@ -184,8 +184,8 @@ def patch_action(event):
 
 def delete_action(event):
     session_id = session_id_from_event(event, db.table("SESSIONS_TABLE"))
-    was_done = actions.delete_action(db.table("ACTIONS_TABLE"), session_id, _path_param(event, "actionId"))
-    _count(saved=-1, completed=-int(was_done))
+    was_done, was_verified = actions.delete_action(db.table("ACTIONS_TABLE"), session_id, _path_param(event, "actionId"))
+    _count(saved=-1, completed=-int(was_done), verified=-int(was_verified))
     return 204, None
 
 

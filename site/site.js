@@ -232,22 +232,57 @@ function whenVisible(node, callback) {
   }, { threshold: 0.4 }).observe(node);
 }
 
-async function loadTotals() {
-  let stats;
+const TOTALS_REFRESH_MS = 20000;
+let lastTotals = null;
+
+async function fetchTotals() {
   try {
     const response = await fetch(`${window.ECOCART_API}/stats`);
     if (!response.ok) throw new Error(`status ${response.status}`);
-    stats = await response.json();
+    return await response.json();
   } catch {
-    // Keep the zeros rather than showing made-up numbers.
-    return;
+    // Keep what is shown rather than showing made-up numbers.
+    return null;
   }
+}
+
+function flash(node) {
+  node.classList.remove("flash");
+  void node.offsetWidth;
+  node.classList.add("flash");
+}
+
+async function loadTotals() {
+  const stats = await fetchTotals();
+  if (!stats) return;
+  lastTotals = stats;
   countTo(document.getElementById("stat-saved"), stats.plansSaved);
   countTo(document.getElementById("stat-devices"), stats.devicesCovered);
   document.getElementById("devices-stat").textContent = stats.devicesCovered;
   for (const node of document.querySelectorAll("[data-live]")) {
     whenVisible(node, () => countTo(node, stats[node.dataset.live] ?? 0));
   }
+  // The totals are live: every user's saved, done and verified plans show up here within seconds.
+  setInterval(refreshTotals, TOTALS_REFRESH_MS);
+}
+
+async function refreshTotals() {
+  if (document.visibilityState !== "visible") return;
+  const stats = await fetchTotals();
+  if (!stats) return;
+  for (const node of document.querySelectorAll("[data-live]")) {
+    const key = node.dataset.live;
+    if (lastTotals && stats[key] !== lastTotals[key]) {
+      node.textContent = Number(stats[key] ?? 0).toLocaleString("en-IN");
+      flash(node);
+    }
+  }
+  if (lastTotals && stats.plansSaved !== lastTotals.plansSaved) {
+    const hero = document.getElementById("stat-saved");
+    hero.textContent = stats.plansSaved.toLocaleString("en-IN");
+    flash(hero);
+  }
+  lastTotals = stats;
 }
 
 function factCounters() {

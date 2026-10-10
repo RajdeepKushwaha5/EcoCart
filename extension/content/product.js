@@ -18,8 +18,15 @@ let productRunId = 0;
 // The card's host element. Shops that rebuild their page can remove it; keepCardAttached puts it back.
 let cardHost = null;
 
+// A card placed before the shop drew its title is marked provisional and moved next to the title once it appears.
 function keepCardAttached() {
-  if (cardHost && !cardHost.isConnected) SITE.placeCard(cardHost);
+  if (cardHost && (!cardHost.isConnected || cardHost.dataset.provisional)) SITE.placeCard(cardHost);
+}
+
+// A variant or price changed: show the existing card as loading at once, so it never shows the previous product's facts.
+function markCardLoading() {
+  const body = cardHost?.shadowRoot?.querySelector(".body");
+  if (body) renderLoading(body);
 }
 
 // ---------- Card frame and simple states ----------
@@ -53,6 +60,15 @@ function mountCard(tagText) {
   return body;
 }
 
+// The card reads in three steps: the evidence, what it means, and what the shopper can do about it.
+function cardStep(number, title, ...children) {
+  const content = children.flat().filter(Boolean);
+  if (content.length === 0) return null;
+  return el("section", { className: "step" },
+    el("header", { className: "step-head" }, el("span", { className: "step-num" }, number), el("h3", { className: "step-title" }, title)),
+    el("div", { className: "step-body" }, content));
+}
+
 function passportTag(category) {
   return `${capitalize(DEVICE_WORDS[category])} passport`;
 }
@@ -68,7 +84,8 @@ function renderMessage(body, title, text, action) {
 }
 
 function renderError(body, retry) {
-  renderMessage(body, "EcoCart couldn't load.", "Check your connection and try again.", button("Retry", () => retry()));
+  renderMessage(body, "EcoCart couldn't reach its server.",
+    "Nothing is shown rather than a guess. Check your connection and try again.", button("Retry", () => retry()));
 }
 
 // Devices outside the catalog still get the part that helps most: a plan for the old one.
@@ -76,15 +93,20 @@ async function renderUnsupported(body, page, category) {
   const word = DEVICE_WORDS[category];
   const planKey = `listing:${SITE.listingId()}`;
   const scorecard = await deviceScorecard(null, page, category, planKey);
+  const item = shortlistItem(page, null, category);
+  logActivity("checked", item);
   show(body,
-    el("div", { className: "message" },
-      el("p", { className: "message-title" }, `No official figures for this ${word} yet.`),
-      el("p", { className: "muted" }, `We only show what the maker has published. You can still check your options and plan for your old ${word}.`),
-    ),
-    scorecard,
-    renderLabels(page),
-    deviceOptions(null, page, category),
-    renderOldDevice({ modelId: null, listingName: page.title, category, planKey }, { showsExchange: page.showsExchange }),
+    cardStep("01", "What we know",
+      el("div", { className: "message" },
+        el("p", { className: "message-title" }, `No official figures for this ${word} yet.`),
+        el("p", { className: "muted" }, `We only show what the maker has published. You can still check your options and plan for your old ${word}.`),
+      ),
+      renderLabels(page)),
+    cardStep("02", "What this means", scorecard),
+    cardStep("03", "What you can do",
+      shortlistControl(item),
+      deviceOptions(null, page, category, item),
+      renderOldDevice({ modelId: null, listingName: page.title, category, planKey }, { showsExchange: page.showsExchange })),
   );
 }
 
@@ -174,14 +196,15 @@ async function renderCard(body, card, page) {
   const category = card.product.category;
   const planKey = `model:${card.product.modelId}`;
   const scorecard = await deviceScorecard(card, page, category, planKey);
+  const item = shortlistItem(page, card, category);
+  logActivity("checked", item);
   show(body,
-    renderLede(card),
-    scorecard,
-    renderEquivalents(card.carbon, DEVICE_WORDS[category]),
-    renderLabels(page),
-    deviceOptions(card, page, category),
-    renderOldDevice({ modelId: card.product.modelId, category, planKey }, { showsExchange: page.showsExchange }),
-    renderDetails(card),
+    cardStep("01", "What we know", renderLede(card), renderLabels(page), renderDetails(card)),
+    cardStep("02", "What this means", scorecard, renderEquivalents(card.carbon, DEVICE_WORDS[category])),
+    cardStep("03", "What you can do",
+      shortlistControl(item),
+      deviceOptions(card, page, category, item),
+      renderOldDevice({ modelId: card.product.modelId, category, planKey }, { showsExchange: page.showsExchange })),
   );
 }
 
@@ -295,6 +318,8 @@ function renderOldDevice(device, { showsExchange = false, intro } = {}) {
           optionId,
         }, true);
         if (device.planKey) await rememberPlan(device.planKey);
+        await logActivity("planned", { name: device.listingName || device.modelId, kind: "plan" });
+        await chrome.storage.local.set({ [PLANS_CHANGED_KEY]: Date.now() });
         show(section, await savedMessage(word));
       } catch {
         status.textContent = "Couldn't save. Please try again.";
@@ -328,6 +353,7 @@ async function savedMessage(word) {
       el("p", { className: "section-title" }, "Plan saved. Nice one."),
       el("p", { className: "muted" },
         `When the ${word} is handed over, mark it done from the EcoCart icon and your plant grows a stage.`),
+      dashboardLink("See it in your dashboard"),
     ),
   );
 }
@@ -357,16 +383,19 @@ function estimateMethod(estimate, page) {
   );
 }
 
-function renderEstimate(estimate, page) {
+function estimateMeaning(estimate) {
   const equivalent = estimate.equivalents?.[0];
+  if (!equivalent) return null;
+  return el("p", { className: "estimate-eq" },
+    `That is roughly the same as ${formatNumber(equivalent.amount)} ${equivalent.unit}. `, sourceLink(equivalent.source, "Factor"));
+}
+
+function renderEstimate(estimate, page) {
   return el("div", { className: "estimate" },
     el("p", { className: "estimate-flag" }, "Category estimate, not measured for this product"),
     el("p", { className: "stat-value" }, el("span", { className: "approx" }, "About "), formatNumber(estimate.kg),
       el("span", { className: "unit" }, " kg CO2e")),
     el("p", { className: "muted" }, `Typical for ${estimate.category.toLowerCase()} at this price in India.`),
-    equivalent
-      ? el("p", { className: "estimate-eq" }, `Roughly ${formatNumber(equivalent.amount)} ${equivalent.unit}. `, sourceLink(equivalent.source, "Factor"))
-      : null,
     el("p", { className: "note" },
       "This is an average for the whole category, worked out from the price. A specific product can be well above or below it."),
     estimateMethod(estimate, page),
@@ -389,6 +418,7 @@ function renderNoEstimate(reason) {
 
 async function showEstimate(page) {
   const id = ++productRunId;
+  markCardLoading();
   let result = null;
   try {
     result = await api("POST", "/estimate", { title: page.title, crumbs: page.crumbs, price: page.price });
@@ -404,16 +434,24 @@ async function showEstimate(page) {
     return;
   }
   const estimate = result.estimate;
+  const item = shortlistItem(page, null, null, estimate);
+  logActivity("checked", item);
   if (estimate) {
-    show(body, renderEstimate(estimate, page), estimateScorecard(estimate, page), renderLabels(page), estimateOptions(estimate, page));
+    show(body,
+      cardStep("01", "What we know", renderEstimate(estimate, page), renderLabels(page)),
+      cardStep("02", "What this means", estimateMeaning(estimate), estimateScorecard(estimate, page)),
+      cardStep("03", "What you can do", shortlistControl(item), estimateOptions(estimate, page)));
     return;
   }
   const facts = [energyRow(page), labelsRow(page)].filter(Boolean);
   show(body,
-    renderNoEstimate(result.reason === "no-price" && page.noFeaturedOffer ? "no-offer" : result.reason),
-    facts.length ? renderScorecard(facts) : null,
-    renderLabels(page),
-    renderBetterOptions([], [energyOptionRow(page, page.crumbs[page.crumbs.length - 1] || "product")], "general"),
+    cardStep("01", "What we know",
+      renderNoEstimate(result.reason === "no-price" && page.noFeaturedOffer ? "no-offer" : result.reason),
+      renderLabels(page)),
+    cardStep("02", "What this means", facts.length ? renderScorecard(facts) : null),
+    cardStep("03", "What you can do",
+      shortlistControl(item),
+      renderBetterOptions([], [energyOptionRow(page, page.crumbs[page.crumbs.length - 1] || "product")], "general")),
   );
 }
 
@@ -433,11 +471,11 @@ async function rememberModel(listingId, modelId) {
 const READY_ATTEMPTS = 8;
 
 // Returns false when the page is not ready yet, so the caller can try again shortly.
-function runProductPage(attempt = 0) {
+function runProductPage(attempt = 0, readPage = null) {
   const listingId = SITE.listingId();
-  const page = listingId ? SITE.readProductPage() : null;
+  const page = readPage || (listingId ? SITE.readProductPage() : null);
   const lastTry = attempt >= READY_ATTEMPTS - 1;
-  if (!page) return lastTry;
+  if (!page) return false;
   if (SITE.rendersLate && page.crumbs.length === 0 && !lastTry) return false;
   // Devices get the passport. Everything else, accessories included, gets labels and a category estimate.
   const category = detectCategory(page.crumbs, page.title, page.crumbsFromDetails);
@@ -449,6 +487,7 @@ function runProductPage(attempt = 0) {
 async function showProduct(listingId, page, category) {
   const id = ++productRunId;
   const isStale = () => id !== productRunId;
+  markCardLoading();
 
   let result;
   try {

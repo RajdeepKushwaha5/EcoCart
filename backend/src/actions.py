@@ -10,6 +10,9 @@ from responses import ApiError, require_string
 STATUSES = {"planned", "done"}
 MAX_AGE_YEARS = 20
 MAX_LISTING_NAME = 150
+# Plenty for a household, and it stops one session from inflating the public totals.
+MAX_PLANS_PER_SESSION = 50
+MAX_EVIDENCE = 300
 
 
 def new_action_id():
@@ -52,6 +55,8 @@ def _new_device(body, catalog):
 
 
 def create_action(actions_table, session_id, body, catalog, options):
+    if len(list_actions(actions_table, session_id)) >= MAX_PLANS_PER_SESSION:
+        raise ApiError(429, f"A session can keep at most {MAX_PLANS_PER_SESSION} plans")
     model_id, model_name, category = _new_device(body, catalog)
     # "oldPhone" is what earlier versions of the extension send.
     old_device = validate_old_device(body.get("oldDevice", body.get("oldPhone")))
@@ -106,6 +111,8 @@ def update_status(actions_table, session_id, action_id, body):
         raise ApiError(400, "'status' must be 'planned' or 'done'")
 
     item = _owned_action(actions_table, session_id, action_id)
+    if item.get("verified") and status != "done":
+        raise ApiError(409, "A verified handover cannot be undone")
     was_done = item["status"] == "done"
     item["status"] = status
     if status == "done":
@@ -117,7 +124,22 @@ def update_status(actions_table, session_id, action_id, body):
 
 
 def delete_action(actions_table, session_id, action_id):
-    """Delete the plan and return True if it had been marked done."""
+    """Delete the plan and return (whether it had been marked done, whether it had been verified)."""
     item = _owned_action(actions_table, session_id, action_id)
     actions_table.delete_item(Key={"sessionId": session_id, "actionId": action_id})
-    return item["status"] == "done"
+    return item["status"] == "done", bool(item.get("verified"))
+
+
+def verify(item, evidence, verified_at=None):
+    """Mark a reported handover as verified by the team, from a receipt or the collector's confirmation.
+
+    Only plans the shopper already marked done can be verified, and the evidence is kept with the plan.
+    Returns the updated item; the caller stores it.
+    """
+    if item["status"] != "done":
+        raise ApiError(409, "Only a plan marked done can be verified")
+    if not isinstance(evidence, str) or not evidence.strip():
+        raise ApiError(400, "Evidence is required")
+    if len(evidence) > MAX_EVIDENCE:
+        raise ApiError(400, "Evidence is too long")
+    return {**item, "verified": {"at": verified_at or _now(), "evidence": evidence.strip()}}

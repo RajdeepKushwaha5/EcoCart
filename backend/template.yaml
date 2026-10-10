@@ -8,6 +8,11 @@ Parameters:
     Default: ""
     Description: Bedrock model or inference profile ID for the summary and for sorting products with unknown breadcrumbs. Leave empty to use rules and template text only.
 
+  SiteOrigin:
+    Type: String
+    Default: "https://main.d3ogmfe7tt7uwb.amplifyapp.com"
+    Description: The public website, which reads the live totals and runs the Try EcoCart samples against this API.
+
   AlertTopicArn:
     Type: String
     Default: ""
@@ -40,6 +45,14 @@ Resources:
       DefaultRouteSettings:
         ThrottlingRateLimit: 10
         ThrottlingBurstLimit: 20
+      # Only the website may call the API from a browser page. The extension calls it from its service worker,
+      # which its host permission allows, so CORS does not apply to it.
+      CorsConfiguration:
+        AllowOrigins:
+          - !Ref SiteOrigin
+        AllowMethods: [GET, POST]
+        AllowHeaders: [content-type]
+        MaxAge: 3600
 
   ApiLogGroup:
     Type: AWS::Logs::LogGroup

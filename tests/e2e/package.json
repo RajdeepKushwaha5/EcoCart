@@ -1,0 +1,11 @@
+{
+  "name": "ecocart-e2e",
+  "private": true,
+  "description": "Drives the real EcoCart extension on live Amazon.in and Flipkart pages.",
+  "scripts": {
+    "journey": "node journey.js"
+  },
+  "dependencies": {
+    "puppeteer-core": "^23.0.0"
+  }
+}

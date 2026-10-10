@@ -50,6 +50,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     sendResponse({ ok: true, data: { cities: CITIES } });
     return false;
   }
+  if (message.type === "openDashboard") {
+    chrome.tabs.create({ url: chrome.runtime.getURL("ui/dashboard.html") });
+    return false;
+  }
   if (message.type === "api") {
     callApi(message)
       .then((data) => sendResponse({ ok: true, data }))

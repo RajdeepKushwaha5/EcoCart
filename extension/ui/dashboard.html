@@ -12,55 +12,100 @@
     <header class="bar">
       <span class="logo"><span class="mark" aria-hidden="true"></span>EcoCart</span>
       <span class="tag">Dashboard</span>
+      <span id="live" class="live" role="status"><span class="live-dot" aria-hidden="true"></span>Live</span>
     </header>
 
     <section class="dashboard-hero" aria-labelledby="dashboard-title">
       <div class="dashboard-hero-copy">
-        <span class="dashboard-kicker">Your impact, one device at a time</span>
-        <h1 id="dashboard-title">Give your old devices <span>a second life.</span></h1>
-        <p>See the plans you made, the devices you checked, and the next step you can take.</p>
+        <span class="dashboard-kicker">What changed because you used EcoCart</span>
+        <h1 id="dashboard-title">Check, choose, act. <span>Then see the result.</span></h1>
+        <p>Every number here comes from something you did, and you can open it to see where it comes from.</p>
       </div>
     </section>
 
     <div class="layout">
       <aside class="side">
         <div id="plant" class="plant"></div>
-        <dl class="numbers" aria-live="polite">
-          <div><dt class="eyebrow">Plans saved</dt><dd id="saved-count" class="big-num">--</dd></div>
-          <div><dt class="eyebrow">Completed</dt><dd id="done-count" class="big-num">--</dd></div>
-          <div><dt class="eyebrow">Devices checked</dt><dd id="viewed-count" class="big-num">--</dd></div>
-        </dl>
-        <p class="side-note">Your plant grows one stage for each plan you mark done. Completed counts are self-reported.</p>
+        <div id="next" class="next" aria-live="polite"></div>
+        <p class="side-note">Kept in this browser, except your old-device plans, which are stored under an anonymous session so you can mark them done from any page.</p>
       </aside>
 
       <main>
-        <section>
-          <div class="section-head">
-            <h2>Your old-device plans</h2>
-            <p id="status" class="status" role="status"></p>
+        <div class="toolbar">
+          <div class="tabs" role="tablist" aria-label="Dashboard sections">
+            <button class="tab" role="tab" id="tab-overview" aria-controls="panel-overview" aria-selected="true" type="button">Overview</button>
+            <button class="tab" role="tab" id="tab-actions" aria-controls="panel-actions" aria-selected="false" type="button">My actions</button>
+            <button class="tab" role="tab" id="tab-comparisons" aria-controls="panel-comparisons" aria-selected="false" type="button">My comparisons</button>
+            <button class="tab" role="tab" id="tab-progress" aria-controls="panel-progress" aria-selected="false" type="button">My progress</button>
           </div>
-          <div id="plans" class="plans"></div>
+          <div class="filters">
+            <label class="field">
+              <span class="eyebrow">Month</span>
+              <select id="month-filter"><option value="all">All time</option></select>
+            </label>
+            <label class="field">
+              <span class="eyebrow">Show</span>
+              <select id="type-filter">
+                <option value="all">Everything</option>
+                <option value="plans">Old-device plans</option>
+                <option value="choices">Choices</option>
+                <option value="checks">Products checked</option>
+              </select>
+            </label>
+          </div>
+        </div>
+        <p id="status" class="status" role="status"></p>
+
+        <section id="panel-overview" class="panel" role="tabpanel" aria-labelledby="tab-overview">
+          <div id="tiles" class="tiles"></div>
+          <p class="note">Tap any number to see what it counts, where it comes from and how sure it is.</p>
         </section>
 
-        <section>
+        <section id="panel-actions" class="panel" role="tabpanel" aria-labelledby="tab-actions" hidden>
           <div class="section-head">
-            <h2>Compare the devices you checked</h2>
+            <h2>Old-device plans</h2>
+            <p class="muted">Planned, then reported done by you, then verified with a receipt or partner confirmation.</p>
           </div>
-          <div id="compare" class="compare"></div>
+          <div id="timeline" class="timeline"></div>
         </section>
 
-        <section>
+        <section id="panel-comparisons" class="panel" role="tabpanel" aria-labelledby="tab-comparisons" hidden>
           <div class="section-head">
-            <h2>Devices you checked</h2>
+            <h2>Your shortlist</h2>
+            <p class="muted">Only products with the same kind of evidence are compared with each other.</p>
+          </div>
+          <div id="groups" class="groups"></div>
+          <div class="section-head sub">
+            <h2>Your choices</h2>
+          </div>
+          <div id="choices" class="choice-list"></div>
+          <div class="section-head sub">
+            <h2>Security updates left</h2>
+            <p class="muted">Support end dates come from each maker's own policy, so they compare across brands.</p>
+          </div>
+          <div id="support" class="compare"></div>
+        </section>
+
+        <section id="panel-progress" class="panel" role="tabpanel" aria-labelledby="tab-progress" hidden>
+          <div class="section-head">
+            <h2>Your activity</h2>
             <button id="clear-history" class="btn ghost" type="button">Clear history</button>
           </div>
-          <p class="muted">Kept only in this browser. Carbon figures are lifecycle totals reported by each manufacturer.</p>
-          <div id="viewed" class="viewed"></div>
+          <div id="activity-chart" class="activity-chart"></div>
+          <div id="activity-day" class="activity-day" aria-live="polite"></div>
         </section>
       </main>
     </div>
 
+    <div id="drawer" class="drawer" hidden>
+      <div class="drawer-panel" role="dialog" aria-modal="true" aria-labelledby="drawer-title">
+        <button id="drawer-close" class="btn ghost drawer-close" type="button">Close</button>
+        <div id="drawer-body"></div>
+      </div>
+    </div>
+
     <script src="plant.js"></script>
+    <script src="impact.js"></script>
     <script type="module" src="dashboard.js"></script>
   </body>
 </html>

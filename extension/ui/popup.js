@@ -1,4 +1,4 @@
-import { actionCard, celebrate, loadActions, node, pad, renderPlant } from "./shared.js";
+import { actionCard, celebrate, loadActions, node, pad, PLANS_CHANGED_KEY, renderPlant } from "./shared.js";
 
 const POPUP_LIMIT = 3;
 
@@ -43,5 +43,10 @@ async function load({ completed = false } = {}) {
   const shown = (open.length > 0 ? open : actions).slice(0, POPUP_LIMIT);
   list.replaceChildren(...shown.map((action) => actionCard(action, load, showError)));
 }
+
+// A plan saved or changed on a shop page shows up here at once.
+chrome.storage.onChanged.addListener((changes, area) => {
+  if (area === "local" && changes[PLANS_CHANGED_KEY]) load();
+});
 
 load();

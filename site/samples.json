@@ -1,0 +1,103 @@
+{
+  "about": "Listings saved from the shop pages on the date below, so the samples work without the extension. The answer for each comes live from the EcoCart API.",
+  "checked": "2026-10-10",
+  "samples": [
+    {
+      "id": "a56",
+      "kind": "Phone",
+      "name": "Samsung Galaxy A56 5G",
+      "shop": "Amazon",
+      "url": "https://www.amazon.in/dp/B0DYDPBM8K",
+      "title": "Samsung Galaxy A56 5G Mobile (Awesome Olive, 8GB, 128GB) | Segment Most Complete Triple Camera | 50MP | AI Editing | 4nm Processor | sAMOLED | 5000mAh | Gorilla Glass Victus+| Knox Security",
+      "crumbs": [
+        "Electronics",
+        "Mobiles & Accessories",
+        "Smartphones & Basic Mobiles",
+        "Smartphones"
+      ],
+      "price": 32999,
+      "category": "phone",
+      "labels": []
+    },
+    {
+      "id": "iphone",
+      "kind": "Phone",
+      "name": "Apple iPhone 18 Pro",
+      "shop": "Amazon",
+      "url": "https://www.amazon.in/dp/B0HJB7MQ97",
+      "title": "iPhone 18 Pro (256 GB) - Black",
+      "crumbs": [],
+      "price": 164900,
+      "category": "phone",
+      "labels": []
+    },
+    {
+      "id": "redmi",
+      "kind": "Phone",
+      "name": "REDMI Note 15 Pro 5G",
+      "shop": "Flipkart",
+      "url": "https://www.flipkart.com/redmi-note-15-pro-5g-silver-ash-128-gb/p/itm53c77b92f509c?pid=MOBHK464CQK9FDFM",
+      "title": "REDMI Note 15 Pro 5G (Silver Ash, 128 GB) (8 GB RAM)",
+      "crumbs": [
+        "Mobiles & Accessories",
+        "Mobiles",
+        "REDMI Mobiles"
+      ],
+      "price": 33999,
+      "category": "phone",
+      "labels": []
+    },
+    {
+      "id": "tea",
+      "kind": "Grocery",
+      "name": "Tata Tea Premium, 1.5 kg",
+      "shop": "Flipkart",
+      "url": "https://www.flipkart.com/tata-tea-premium-desh-ki-chai-pouch/p/itm01af7253c2b10?pid=TEAFVGGDNMYXFHGE",
+      "title": "Tata Tea Premium desh ki chai Tea Pouch (1.5 kg)",
+      "crumbs": [
+        "Food Products",
+        "Tea Powder",
+        "Tata Tea Premium Tea Powder"
+      ],
+      "price": 487,
+      "category": null,
+      "labels": []
+    },
+    {
+      "id": "rice",
+      "kind": "Grocery",
+      "name": "Daawat Rozana basmati rice",
+      "shop": "Flipkart",
+      "url": "https://www.flipkart.com/daawat-sehat-rozana-mini-mogra-basmati-rice-broken-grain/p/itmb0dfe156277b7?pid=RICF6YF2WGTRNFFR",
+      "title": "Daawat Sehat Rozana Mini Mogra Basmati Rice (Broken Grain) (10 kg...more",
+      "crumbs": [
+        "Food Products",
+        "Rice",
+        "Daawat Rice"
+      ],
+      "price": 420,
+      "category": null,
+      "labels": []
+    },
+    {
+      "id": "tshirt",
+      "kind": "Clothing",
+      "name": "Organic cotton T-shirt",
+      "shop": "Amazon",
+      "url": "https://www.amazon.in/dp/B0BGCMXYPC",
+      "title": "Men's 100% Organic Cotton Solid Casual T-Shirt - Round Neck - Half Sleeve - Soft and Comfortable Fabric for Men",
+      "crumbs": [
+        "Clothing & Accessories",
+        "Men",
+        "T-shirts, Polos & Shirts",
+        "T-Shirts"
+      ],
+      "price": 711,
+      "category": null,
+      "labels": [
+        "GOTS",
+        "Fairtrade"
+      ]
+    }
+  ]
+}

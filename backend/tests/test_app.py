@@ -109,7 +109,7 @@ def test_actions_need_token_and_are_scoped(app):
 
 
 def test_public_totals_follow_plans(app):
-    assert call(app, "GET /stats")[1] == {"plansSaved": 0, "plansCompleted": 0, "devicesCovered": 1}
+    assert call(app, "GET /stats")[1] == {"plansSaved": 0, "plansCompleted": 0, "plansVerified": 0, "devicesCovered": 1}
 
     _, session = call(app, "POST /sessions")
     token = session["token"]
@@ -117,10 +117,10 @@ def test_public_totals_follow_plans(app):
     _, action = call(app, "POST /actions", body, token=token)
     path = {"actionId": action["actionId"]}
     call(app, "PATCH /actions/{actionId}", {"status": "done"}, token=token, path=path)
-    assert call(app, "GET /stats")[1] == {"plansSaved": 1, "plansCompleted": 1, "devicesCovered": 1}
+    assert call(app, "GET /stats")[1] == {"plansSaved": 1, "plansCompleted": 1, "plansVerified": 0, "devicesCovered": 1}
 
     call(app, "DELETE /actions/{actionId}", token=token, path=path)
-    assert call(app, "GET /stats")[1] == {"plansSaved": 0, "plansCompleted": 0, "devicesCovered": 1}
+    assert call(app, "GET /stats")[1] == {"plansSaved": 0, "plansCompleted": 0, "plansVerified": 0, "devicesCovered": 1}
 
 
 def test_only_public_routes_allow_other_origins(app):

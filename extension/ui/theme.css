@@ -236,6 +236,12 @@ a:hover {
   border-color: transparent;
 }
 
+.pill.verified {
+  color: var(--bg);
+  background: var(--accent);
+  border-color: transparent;
+}
+
 .controls {
   display: flex;
   flex-wrap: wrap;

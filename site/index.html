@@ -18,7 +18,8 @@
         <a class="nav-logo" href="#top">EcoCart</a>
         <div class="nav-links">
           <a href="#features">Product</a>
-          <a href="#process">Process</a>
+          <a href="#use-cases">Use cases</a>
+          <a href="#try">Try it</a>
           <a href="#metrics">Live</a>
           <a href="#sources">Sources</a>
           <a href="privacy.html">Privacy</a>
@@ -30,7 +31,8 @@
       </nav>
       <div class="mobile-menu" id="mobile-menu" hidden>
         <a href="#features">Product</a>
-        <a href="#process">Process</a>
+        <a href="#use-cases">Use cases</a>
+        <a href="#try">Try it</a>
         <a href="#metrics">Live</a>
         <a href="#sources">Sources</a>
         <a href="privacy.html">Privacy</a>
@@ -79,8 +81,8 @@
               <h2 id="features-title" class="display reveal">Facts you<br /><span class="dim">can check.</span></h2>
             </div>
             <p class="section-lead reveal">
-              A card on every product page. Each fact links to the official document it came from, and anything we could not
-              verify says so instead of guessing.
+              On supported product pages, sourced device facts sit beside clearly labelled category estimates.
+              Each figure shows its source and method, and missing information is never filled with a guess.
             </p>
           </div>
 
@@ -168,6 +170,96 @@
         </div>
       </section>
 
+
+      <!-- ---------- Use cases ---------- -->
+      <section id="use-cases" class="section cases" aria-labelledby="cases-title">
+        <div class="wrap">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow reveal">Use cases</p>
+              <h2 id="cases-title" class="display reveal">Four moments.<br /><span class="dim">One useful action each.</span></h2>
+            </div>
+            <p class="section-lead reveal">Each journey ends with something the shopper can do, and the dashboard shows what came of it.</p>
+          </div>
+
+          <div class="case-tabs reveal" role="tablist" aria-label="Use cases">
+            <button class="case-tab" id="case-tab-phone" role="tab" aria-selected="true" aria-controls="case-phone" type="button"><span>01</span>Buying a phone</button>
+            <button class="case-tab" id="case-tab-old" role="tab" aria-selected="false" aria-controls="case-old" type="button" tabindex="-1"><span>02</span>The old phone</button>
+            <button class="case-tab" id="case-tab-grocery" role="tab" aria-selected="false" aria-controls="case-grocery" type="button" tabindex="-1"><span>03</span>Groceries</button>
+            <button class="case-tab" id="case-tab-clothing" role="tab" aria-selected="false" aria-controls="case-clothing" type="button" tabindex="-1"><span>04</span>Clothing</button>
+          </div>
+
+          <div class="case reveal" id="case-phone" role="tabpanel" aria-labelledby="case-tab-phone">
+            <div class="case-copy">
+              <h3 class="case-title">Compare what the makers promise and report.</h3>
+              <ol class="case-steps">
+                <li><strong>Know.</strong> Security updates promised, and the lifecycle footprint the maker reports, each linked to the official page.</li>
+                <li><strong>Understand.</strong> Where it sits against other phones, and the footprint in kilometres driven. Only one maker's reports are compared.</li>
+                <li><strong>Act.</strong> If the same maker sells a lower-footprint phone at a similar price, choose it. The choice is recorded in your dashboard.</li>
+              </ol>
+              <button class="pill-btn light" type="button" data-try="iphone">Try it with the iPhone 18 Pro <span aria-hidden="true">&rarr;</span></button>
+            </div>
+            <figure class="case-shot"><img src="shots/phone.webp" alt="The EcoCart card on an iPhone 18 Pro listing on Amazon.in, suggesting the iPhone Air as a lower-footprint choice from the same maker" loading="lazy" width="529" height="2154" /></figure>
+          </div>
+
+          <div class="case reveal" id="case-old" role="tabpanel" aria-labelledby="case-tab-old" hidden>
+            <div class="case-copy">
+              <h3 class="case-title">Plan where the old one goes, then track it.</h3>
+              <ol class="case-steps">
+                <li><strong>Plan.</strong> Pick an exchange, resale or recycling route in your city, taken from each company's own page.</li>
+                <li><strong>Hand over.</strong> Mark it done in the dashboard when it is handed over. The plant grows a stage.</li>
+                <li><strong>Verify.</strong> A handover counts as verified only when the team has seen the receipt or the collector's confirmation.</li>
+              </ol>
+              <button class="pill-btn light" type="button" data-try="a56">Try it with the Galaxy A56 <span aria-hidden="true">&rarr;</span></button>
+            </div>
+            <figure class="case-shot"><img src="shots/dashboard.webp" alt="The EcoCart dashboard showing an old-device plan moving from planned to reported done to verified" loading="lazy" width="1440" height="1000" /></figure>
+          </div>
+
+          <div class="case reveal" id="case-grocery" role="tabpanel" aria-labelledby="case-tab-grocery" hidden>
+            <div class="case-copy">
+              <h3 class="case-title">See a clearly labelled estimate for everyday buys.</h3>
+              <ol class="case-steps">
+                <li><strong>Know.</strong> A category estimate from Open CEDA's India data, worked out from the price, and labelled as an estimate every time.</li>
+                <li><strong>Understand.</strong> What it is roughly the same as, and where the category sits among 59 product types.</li>
+                <li><strong>Act.</strong> Refill and bigger packs where they apply, and tips that are marked as general.</li>
+              </ol>
+              <button class="pill-btn light" type="button" data-try="tea">Try it with Tata Tea <span aria-hidden="true">&rarr;</span></button>
+            </div>
+            <figure class="case-shot"><img src="shots/grocery.webp" alt="The EcoCart card on a Tata Tea listing on Flipkart, showing a category estimate" loading="lazy" width="468" height="1177" /></figure>
+          </div>
+
+          <div class="case reveal" id="case-clothing" role="tabpanel" aria-labelledby="case-tab-clothing" hidden>
+            <div class="case-copy">
+              <h3 class="case-title">Spot the labels a listing claims.</h3>
+              <ol class="case-steps">
+                <li><strong>Know.</strong> GOTS, OEKO-TEX, Fairtrade and other schemes named on the listing, each linked to the scheme.</li>
+                <li><strong>Understand.</strong> They are the seller's claims. EcoCart says so, and does not check them.</li>
+                <li><strong>Act.</strong> Shortlist it, and keep clothes longer: tips that are marked as general.</li>
+              </ol>
+              <button class="pill-btn light" type="button" data-try="tshirt">Try it with an organic T-shirt <span aria-hidden="true">&rarr;</span></button>
+            </div>
+            <figure class="case-shot"><img src="shots/clothing.webp" alt="The EcoCart card on an organic cotton T-shirt listing on Amazon.in, listing the GOTS and Fairtrade labels the seller states" loading="lazy" width="386" height="1650" /></figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- ---------- Try EcoCart ---------- -->
+      <section id="try" class="section try" aria-labelledby="try-title">
+        <div class="wrap">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow reveal">Try it</p>
+              <h2 id="try-title" class="display reveal">See the card.<br /><span class="dim">No install needed.</span></h2>
+            </div>
+            <p class="section-lead reveal">Pick a real listing. Its title, category and price were saved from the shop; the answer comes live from EcoCart's API on AWS, exactly as the extension gets it.</p>
+          </div>
+          <div class="try-grid">
+            <div class="try-list" id="try-list" aria-label="Sample listings"></div>
+            <div class="try-result" id="try-result" aria-live="polite"></div>
+          </div>
+        </div>
+      </section>
+
       <!-- ---------- Live metrics ---------- -->
       <section id="metrics" class="section metrics" aria-labelledby="metrics-title">
         <canvas class="metric-grid" id="metric-grid" aria-hidden="true"></canvas>
@@ -183,7 +275,7 @@
               <p class="metric-value" data-live="plansSaved">0</p>
               <canvas class="dots" data-dots="white" aria-hidden="true"></canvas>
               <p class="metric-label">Old-device plans made</p>
-              <p class="metric-sub">across every EcoCart user</p>
+              <p class="metric-sub">across every EcoCart user, updated live</p>
             </article>
             <article class="metric reveal">
               <div>
@@ -192,6 +284,14 @@
                 <canvas class="dots small" data-dots="pink" aria-hidden="true"></canvas>
               </div>
               <p class="metric-value" data-live="plansCompleted">0</p>
+            </article>
+            <article class="metric reveal">
+              <div>
+                <p class="metric-sub">receipt or collector confirmed</p>
+                <p class="metric-label">Verified handovers</p>
+                <canvas class="dots small" data-dots="pink" aria-hidden="true"></canvas>
+              </div>
+              <p class="metric-value" data-live="plansVerified">0</p>
             </article>
             <article class="metric reveal">
               <div>
@@ -373,7 +473,7 @@
           products or recyclers, and completed plans are reported by users. Built on AWS: Lambda, API Gateway, DynamoDB and Amplify
           Hosting, deployed with AWS SAM, with agent teams built on the open-source Strands Agents SDK that propose new
           devices and category rules for a person to approve. Inspired by the 2023 <a href="https://github.com/Sebastian-Chai/EcoCart/">EcoCart</a> project.
-          Written with help from Claude Code.
+          Written with help from Claude Code and OpenAI Codex.
         </p>
       </div>
     </footer>
@@ -381,5 +481,6 @@
     <script src="config.js"></script>
     <script src="plant.js"></script>
     <script src="site.js" defer></script>
+    <script src="try.js" defer></script>
   </body>
 </html>

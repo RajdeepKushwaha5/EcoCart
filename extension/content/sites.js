@@ -55,6 +55,11 @@ const DESCRIPTION_LIMIT = 4000;
 // Amazon's sustainability badge. The containers are on every Amazon.in page but are usually empty.
 const AMAZON_BADGE = "#climatePledgeFriendlyATF_feature_div, #climatePledgeFriendlyBTF_feature_div";
 
+function amazonPrice() {
+  return AMAZON_PRICES.map((selector) => numberFrom(document.querySelector(selector)?.textContent))
+    .find((value) => value !== null) ?? numberFrom(document.querySelector(AMAZON_CART_PRICE)?.value);
+}
+
 const AMAZON = {
   name: "Amazon",
   // The product page arrives complete from the server.
@@ -62,6 +67,14 @@ const AMAZON = {
 
   listingId() {
     return /\/(?:dp|gp\/product)\/([A-Z0-9]{10})(?:[/?]|$)/.exec(location.pathname)?.[1] ?? null;
+  },
+
+  quickProductState() {
+    return JSON.stringify([clean(document.querySelector("#productTitle")?.textContent), amazonPrice()]);
+  },
+
+  productUrl() {
+    return `https://www.amazon.in/dp/${this.listingId()}`;
   },
 
   readProductPage() {
@@ -82,8 +95,7 @@ const AMAZON = {
       if (label && value) details[label] = value;
     }
 
-    const price = AMAZON_PRICES.map((selector) => numberFrom(document.querySelector(selector)?.textContent))
-      .find((value) => value !== null) ?? numberFrom(document.querySelector(AMAZON_CART_PRICE)?.value);
+    const price = amazonPrice();
     const buyBox = clean(document.querySelector("#buybox, #desktop_buybox")?.textContent);
     const badge = [...document.querySelectorAll(AMAZON_BADGE)].map((node) => clean(node.innerText)).find(Boolean);
     const breadcrumb = crumbsFrom(document.querySelectorAll("#wayfinding-breadcrumbs_feature_div a"));
@@ -161,13 +173,26 @@ const AMAZON = {
 
 const FLIPKART_RESULT = "[data-id]";
 
-// Name and price come from the page's schema.org Product data, which is steadier than Flipkart's class names.
-function flipkartProductData() {
+// JSON-LD may wrap the Product and BreadcrumbList in @graph, or use an array of blocks.
+function structuredItem(value, type) {
+  if (Array.isArray(value)) {
+    for (const item of value) {
+      const found = structuredItem(item, type);
+      if (found) return found;
+    }
+    return null;
+  }
+  if (!value || typeof value !== "object") return null;
+  const types = Array.isArray(value["@type"]) ? value["@type"] : [value["@type"]];
+  if (types.some((name) => typeof name === "string" && name.split("/").pop() === type)) return value;
+  return structuredItem(value["@graph"] || value.mainEntity, type);
+}
+
+function flipkartStructuredData(type) {
   for (const script of document.querySelectorAll('script[type="application/ld+json"]')) {
     try {
-      const data = JSON.parse(script.textContent);
-      const product = (Array.isArray(data) ? data : [data]).find((item) => item?.["@type"] === "Product");
-      if (product) return product;
+      const found = structuredItem(JSON.parse(script.textContent), type);
+      if (found) return found;
     } catch {
       // Ignore blocks that are not valid JSON.
     }
@@ -175,7 +200,47 @@ function flipkartProductData() {
   return null;
 }
 
+// Name and price come from schema.org data where possible; its shape varies by listing.
+function flipkartProductData() {
+  return flipkartStructuredData("Product");
+}
+
+function flipkartOfferPrice(data) {
+  const offers = Array.isArray(data?.offers) ? data.offers : [data?.offers];
+  return offers.map((offer) => numberFrom(offer?.price ?? offer?.lowPrice))
+    .find((price) => price !== null) ?? null;
+}
+
+function flipkartPagePrice(data) {
+  const structured = flipkartOfferPrice(data);
+  if (structured !== null) return structured;
+  for (const selector of ['meta[property="product:price:amount"]', 'meta[property="og:price:amount"]',
+    '[itemprop="price"]']) {
+    const node = document.querySelector(selector);
+    const price = numberFrom(node?.getAttribute("content") || node?.textContent);
+    if (price !== null) return price;
+  }
+  return null;
+}
+
+// Checked in this order, so a breadcrumb or another product's name never wins over the product heading.
+const FLIPKART_TITLES = ["h1", '[data-testid="product-title"]'];
+
+function flipkartTitle() {
+  for (const selector of FLIPKART_TITLES) {
+    const node = document.querySelector(selector);
+    if (node && clean(node.textContent)) return node;
+  }
+  return null;
+}
+
 function flipkartCrumbs() {
+  const list = flipkartStructuredData("BreadcrumbList")?.itemListElement;
+  if (Array.isArray(list)) {
+    const crumbs = list.map((entry) => clean(entry?.name || entry?.item?.name))
+      .filter((name) => name && name !== "Home");
+    if (crumbs.length > 0) return crumbs;
+  }
   const home = [...document.querySelectorAll("a")].find((link) => clean(link.textContent) === "Home");
   let container = home?.parentElement;
   for (let depth = 0; container && depth < 5; depth += 1) {
@@ -197,9 +262,19 @@ const FLIPKART = {
     return new URLSearchParams(location.search).get("pid") || /\/p\/(itm[0-9a-z]+)/i.exec(location.pathname)?.[1] || null;
   },
 
+  productUrl() {
+    const pid = new URLSearchParams(location.search).get("pid");
+    return `${location.origin}${location.pathname}${pid ? `?pid=${encodeURIComponent(pid)}` : ""}`;
+  },
+
+  quickProductState() {
+    const data = flipkartProductData();
+    return JSON.stringify([clean(flipkartTitle()?.textContent) || clean(data?.name), flipkartPagePrice(data)]);
+  },
+
   readProductPage() {
     const data = flipkartProductData();
-    const title = clean(document.querySelector("h1")?.textContent) || clean(data?.name);
+    const title = clean(flipkartTitle()?.textContent) || clean(data?.name);
     if (!title) return null;
 
     const details = {};
@@ -208,11 +283,10 @@ const FLIPKART = {
       if (cells.length === 2) details[clean(cells[0].textContent)] = clean(cells[1].textContent);
       if (Object.keys(details).length >= 60) break;
     }
-    const offers = Array.isArray(data?.offers) ? data.offers[0] : data?.offers;
     return {
       title,
       details,
-      price: numberFrom(offers?.price ?? offers?.lowPrice),
+      price: flipkartPagePrice(data),
       crumbs: flipkartCrumbs(),
       crumbsFromDetails: false,
       bullets: [],
@@ -224,10 +298,16 @@ const FLIPKART = {
 
   // Right after the smallest block that holds both the title and the price.
   placeCard(host) {
-    const title = document.querySelector("h1");
-    if (!title) return false;
-    const offers = flipkartProductData()?.offers;
-    const price = numberFrom((Array.isArray(offers) ? offers[0] : offers)?.price);
+    const title = flipkartTitle();
+    if (!title) {
+      // Structured data can arrive before Flipkart draws the heading. Show the card at the top of the page for now;
+      // keepCardAttached moves it next to the title once the title appears.
+      host.dataset.provisional = "true";
+      if (!host.isConnected) (document.querySelector('main, [role="main"]') || document.body).prepend(host);
+      return true;
+    }
+    delete host.dataset.provisional;
+    const price = flipkartPagePrice(flipkartProductData());
     // Digits only: Flipkart renders the rupee sign in its own element.
     const priceText = price ? price.toLocaleString("en-IN") : null;
 
@@ -269,4 +349,6 @@ const FLIPKART = {
   },
 };
 
-const SITE = location.hostname.endsWith("flipkart.com") ? FLIPKART : AMAZON;
+const SITE = typeof location !== "undefined" && location.hostname.endsWith("flipkart.com") ? FLIPKART : AMAZON;
+
+if (typeof module !== "undefined") module.exports = { structuredItem, flipkartOfferPrice };

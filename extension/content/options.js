@@ -2,6 +2,8 @@
 // sourced facts, the listing's own labels, and real listings found on the shop. Nothing is combined into a score.
 
 const PLANNED_KEY = "plannedFor";
+// Written whenever a plan changes, so an open dashboard refreshes at once.
+const PLANS_CHANGED_KEY = "plansChangedAt";
 const REFILL_SECTORS = new Set(["325610", "325620"]);
 const KWH_LABEL = /energy consumption|power consumption|annual consumption/i;
 
@@ -49,6 +51,104 @@ async function rememberPlan(key) {
   const stored = await chrome.storage.local.get(PLANNED_KEY);
   const keys = [key, ...(stored[PLANNED_KEY] || []).filter((item) => item !== key)].slice(0, 50);
   await chrome.storage.local.set({ [PLANNED_KEY]: keys });
+}
+
+// Opens the dashboard in a new tab. Pages on the shop cannot link to extension pages directly.
+function dashboardLink(label) {
+  return el("button", { className: "text-btn", type: "button",
+    onClick: () => chrome.runtime.sendMessage({ type: "openDashboard" }) }, `${label} ${ARROW}`);
+}
+
+// ---------- Shortlist ----------
+
+// What the dashboard needs to compare this product later. Catalog devices are keyed by model, so the same phone on
+// Amazon and Flipkart is one entry.
+function shortlistItem(page, card, category, estimate = null) {
+  const kwhYear = annualKwh(page.details);
+  const base = {
+    key: card ? `model:${card.product.modelId}` : `${SITE.name.toLowerCase()}:${SITE.listingId()}`,
+    shop: SITE.name,
+    url: SITE.productUrl(),
+    name: (card?.product.displayName || page.title).slice(0, 150),
+    price: page.price,
+    type: clean(page.crumbs[page.crumbs.length - 1] || "").toLowerCase() || null,
+    kwhYear,
+    stars: energyStars(page),
+  };
+  if (kwhYear != null && (!category || category === "appliance" || category === "tv")) {
+    return { ...base, kind: "appliance", category: category || null };
+  }
+  if (category) {
+    return {
+      ...base,
+      kind: "device",
+      category,
+      brand: card?.product.brand || clean(page.details.Brand || "") || null,
+      modelId: card?.product.modelId || null,
+      carbonKg: card?.carbon?.kg ?? null,
+      carbonBasis: card?.carbon?.basis || null,
+      carbonSource: card?.carbon?.source || null,
+      support: card?.headline?.source ? card.headline.value : null,
+    };
+  }
+  return { ...base, kind: "product", estimateKg: estimate?.kg ?? null, estimateCategory: estimate?.category ?? null };
+}
+
+function shortlistHint(item) {
+  if (item.kind === "device" && item.carbonKg != null) {
+    return `Shortlist other ${item.brand} ${DEVICE_WORDS[item.category]}s to compare reported footprints. Makers measure differently, so only one maker is compared.`;
+  }
+  if (item.kind === "appliance") return "Shortlist others of this type with a stated yearly kWh to compare electricity use.";
+  if (item.kind === "device") return "Kept for later. With no published footprint, it is compared on update support only.";
+  return "Kept for later. A category estimate describes the category, so two products are not compared by it.";
+}
+
+function shortlistControl(item) {
+  const wrap = el("div", { className: "shortlist" });
+  const render = async () => {
+    if (await isShortlisted(item.key)) {
+      show(wrap, el("p", { className: "shortlist-state" }, el("span", { className: "tick", "aria-hidden": "true" }), "On your shortlist"),
+        el("div", { className: "row" }, dashboardLink("Compare in your dashboard"),
+          el("button", { className: "text-btn", type: "button", onClick: async () => { await removeFromShortlist(item.key); render(); } }, "Remove")));
+      return;
+    }
+    show(wrap, button("Add to my shortlist", async () => { await addToShortlist(item); render(); }, "ghost"),
+      el("p", { className: "note" }, shortlistHint(item)));
+  };
+  render();
+  // A choice made further down the card also shortlists this product, so the button follows the stored list.
+  const onChange = (changes, area) => {
+    if (!wrap.isConnected) {
+      chrome.storage.onChanged.removeListener(onChange);
+      return;
+    }
+    if (area === "local" && changes[SHORTLIST_KEY]) render();
+  };
+  chrome.storage.onChanged.addListener(onChange);
+  return wrap;
+}
+
+// Records that the shopper picked one product over a comparable one. Nothing is recorded for an unfair comparison.
+function choiceControls(chosen, instead, difference) {
+  const status = el("p", { className: "note", role: "status" });
+  const record = (stage) => async () => {
+    const choice = makeChoice(chosen, instead, stage);
+    if (!choice) {
+      status.textContent = "These two cannot be compared fairly, so nothing was recorded.";
+      return;
+    }
+    await addToShortlist(instead);
+    await addToShortlist(chosen);
+    await saveChoice(choice);
+    status.replaceChildren(stage === "chosen"
+      ? `Recorded: you chose the ${chosen.name}. By ${chosen.brand}'s own reports, that is ${difference} less. `
+      : "Both are on your shortlist. ", dashboardLink("Open dashboard"));
+  };
+  return el("div", { className: "choice" },
+    el("div", { className: "row" },
+      button("I'll choose this instead", record("chosen"), "primary"),
+      button("Compare later", record("considered"), "ghost")),
+    status);
 }
 
 // ---------- Scorecard ----------
@@ -166,7 +266,7 @@ function optionRow(kind, title, ...body) {
   );
 }
 
-function catalogAlternativeRows(card) {
+function catalogAlternativeRows(card, item) {
   const rows = [];
   const alt = card?.alternative;
   if (alt) {
@@ -180,11 +280,18 @@ function catalogAlternativeRows(card) {
   }
   const lower = card?.lowerFootprint;
   if (lower) {
+    const lowerItem = {
+      key: `model:${lower.modelId}`, kind: "device", category: card.product.category, brand: card.product.brand,
+      modelId: lower.modelId, name: lower.displayName, price: lower.price.value, shop: SITE.name, url: SITE.searchUrl(lower.displayName),
+      carbonKg: lower.kg, carbonBasis: lower.basis || null, carbonSource: lower.carbonSource,
+    };
+    const difference = `${formatNumber(Math.round((card.carbon.kg - lower.kg) * 10) / 10)} kg CO2e`;
     rows.push(optionRow("Same maker, similar price, lower footprint", lower.displayName,
       el("p", {}, lower.reason),
       el("p", { className: "meta" }, `${formatRupees(lower.price.value)} as of ${formatDate(lower.price.checked)}${DOT}`,
         sourceLink(lower.price.source, "Price"), DOT, sourceLink(lower.carbonSource, "Report"), DOT,
         shopSearchLink(lower.displayName, `Find on ${SITE.name}`)),
+      item ? choiceControls(lowerItem, item, difference) : null,
     ));
   }
   return rows;
@@ -301,7 +408,7 @@ function renderBetterOptions(immediateRows, pendingRows, kind) {
   return section;
 }
 
-function deviceOptions(card, page, category) {
+function deviceOptions(card, page, category, item = null) {
   const word = DEVICE_WORDS[category];
   const name = card ? card.product.displayName.replace(/^(Apple|Samsung|Google|OnePlus) /, "") : shortName(page.title);
   const typeName = page.crumbs[page.crumbs.length - 1] || word;
@@ -310,7 +417,7 @@ function deviceOptions(card, page, category) {
     : Promise.resolve(null);
   const pending = [catalogEntry.then((entry) => refurbishedRow(name, entry, word))];
   if (category === "tv" || category === "appliance") pending.push(energyOptionRow(page, typeName));
-  return renderBetterOptions(catalogAlternativeRows(card), pending, category === "appliance" ? "appliance" : "device");
+  return renderBetterOptions(catalogAlternativeRows(card, item), pending, category === "appliance" ? "appliance" : "device");
 }
 
 function estimateOptions(estimate, page) {

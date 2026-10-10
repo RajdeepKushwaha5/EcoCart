@@ -1014,11 +1014,90 @@ a:focus-visible,
   }
 }
 
+
+/* ---------- Three steps: what we know, what this means, what you can do ---------- */
+
+.step {
+  display: grid;
+  gap: 16px;
+}
+
+.step + .step {
+  padding-top: 20px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.step-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.step-num {
+  font: 12px/1 var(--mono);
+  color: var(--pink);
+}
+
+.step-title {
+  margin: 0;
+  font: 400 22px/1.15 var(--serif);
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.step-body {
+  display: grid;
+  gap: 18px;
+}
+
+/* ---------- Shortlist and choices ---------- */
+
+.shortlist {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+
+.shortlist-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font: 13px/1.4 var(--mono);
+  color: var(--accent);
+  animation: pop-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.tick {
+  width: 14px;
+  height: 8px;
+  border-left: 2px solid var(--accent);
+  border-bottom: 2px solid var(--accent);
+  transform: translateY(-2px) rotate(-45deg);
+}
+
+.choice {
+  display: grid;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.choice .note:not(:empty) {
+  color: var(--accent);
+  animation: pop-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes pop-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .card,
   .body > *,
   .score-mark,
-  .saved-plant svg {
+  .saved-plant svg,
+  .shortlist-state,
+  .choice .note:not(:empty) {
     animation: none;
   }
 

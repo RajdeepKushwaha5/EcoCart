@@ -3,13 +3,13 @@
 STATS_KEY = {"statsId": "global"}
 
 
-def adjust(stats_table, saved=0, completed=0):
-    if saved == 0 and completed == 0:
+def adjust(stats_table, saved=0, completed=0, verified=0):
+    if saved == 0 and completed == 0 and verified == 0:
         return
     stats_table.update_item(
         Key=STATS_KEY,
-        UpdateExpression="ADD plansSaved :saved, plansCompleted :completed",
-        ExpressionAttributeValues={":saved": saved, ":completed": completed},
+        UpdateExpression="ADD plansSaved :saved, plansCompleted :completed, plansVerified :verified",
+        ExpressionAttributeValues={":saved": saved, ":completed": completed, ":verified": verified},
     )
 
 
@@ -18,6 +18,7 @@ def read(stats_table):
     return {
         "plansSaved": max(int(item.get("plansSaved", 0)), 0),
         "plansCompleted": max(int(item.get("plansCompleted", 0)), 0),
+        "plansVerified": max(int(item.get("plansVerified", 0)), 0),
     }
 
 

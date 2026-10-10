@@ -12,3 +12,9 @@ node_modules/
 .idea/
 .DS_Store
 Thumbs.db
+# Temporary local browser verification files.
+.qa-chrome/
+.qa-amazon.html
+.qa-browser-2/
+.qa-selenium/
+.qa-flipkart-dom.html

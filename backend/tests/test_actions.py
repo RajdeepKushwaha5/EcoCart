@@ -44,7 +44,7 @@ def test_create_list_update_delete(table):
     assert change == 1
     assert actions.update_status(table, "s1", created["actionId"], {"status": "done"})[1] == 0
 
-    assert actions.delete_action(table, "s1", created["actionId"]) is True
+    assert actions.delete_action(table, "s1", created["actionId"]) == (True, False)
     assert actions.list_actions(table, "s1") == []
 
 
@@ -81,3 +81,32 @@ def test_older_extension_field_name_still_works(table):
     created = actions.create_action(table, "s1", body, CATALOG, OPTIONS)
     assert created["oldDevice"] == {"brand": "Nokia", "ageYears": 6}
     assert created["category"] == "phone"
+
+
+def test_a_session_cannot_flood_the_totals(table):
+    for _ in range(actions.MAX_PLANS_PER_SESSION):
+        actions.create_action(table, "s1", BODY, CATALOG, OPTIONS)
+    with pytest.raises(ApiError) as error:
+        actions.create_action(table, "s1", BODY, CATALOG, OPTIONS)
+    assert error.value.status == 429
+
+
+def test_only_a_reported_handover_can_be_verified_and_then_not_undone(table):
+    created = actions.create_action(table, "s1", BODY, CATALOG, OPTIONS)
+    stored = table.get_item(Key={"sessionId": "s1", "actionId": created["actionId"]})["Item"]
+    with pytest.raises(ApiError) as error:
+        actions.verify(stored, "Receipt 123")
+    assert error.value.status == 409
+
+    actions.update_status(table, "s1", created["actionId"], {"status": "done"})
+    stored = table.get_item(Key={"sessionId": "s1", "actionId": created["actionId"]})["Item"]
+    with pytest.raises(ApiError):
+        actions.verify(stored, "  ")
+    verified = actions.verify(stored, "Collection receipt 4411 from the collector", "2026-10-11T10:00:00+00:00")
+    table.put_item(Item=verified)
+    assert actions.list_actions(table, "s1")[0]["verified"]["evidence"] == "Collection receipt 4411 from the collector"
+
+    with pytest.raises(ApiError) as error:
+        actions.update_status(table, "s1", created["actionId"], {"status": "planned"})
+    assert error.value.status == 409
+    assert actions.delete_action(table, "s1", created["actionId"]) == (True, True)

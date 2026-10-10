@@ -1,11 +1,14 @@
 // Shared by the popup and the dashboard. plant.js is loaded first as a plain script,
 // so plantStage and plantSvg are globals here.
 
-export async function api(method, path, body) {
-  const response = await chrome.runtime.sendMessage({ type: "api", method, path, body, auth: true });
+export async function api(method, path, body, auth = true) {
+  const response = await chrome.runtime.sendMessage({ type: "api", method, path, body, auth });
   if (!response?.ok) throw new Error(response?.error || "No response from EcoCart");
   return response.data;
 }
+
+// Written whenever a plan changes, so every open EcoCart page refreshes at once.
+export const PLANS_CHANGED_KEY = "plansChangedAt";
 
 export function node(tag, className, text) {
   const element = document.createElement(tag);
@@ -25,6 +28,12 @@ export function pad(number) {
   return String(number).padStart(2, "0");
 }
 
+export function planStage(action) {
+  if (action.verified) return { key: "verified", label: "Verified" };
+  if (action.status === "done") return { key: "done", label: "Reported done" };
+  return { key: "planned", label: "Planned" };
+}
+
 export function formatDay(isoText) {
   return new Date(isoText).toLocaleDateString("en-IN", { dateStyle: "medium" });
 }
@@ -35,7 +44,7 @@ const DEVICE_WORDS = {
 };
 
 // Plans saved by earlier versions use "oldPhone" and have no category.
-function planSummary(action) {
+export function planSummary(action) {
   const old = action.oldDevice || action.oldPhone;
   const word = DEVICE_WORDS[action.category] || "phone";
   return `Old ${old.brand} ${word}, ${old.ageYears} years. Replacing with ${action.modelName}.`;
@@ -89,12 +98,13 @@ export function actionCard(action, onChange, onError) {
   const head = node("div", "action-head");
   head.append(
     node("span", "action-title", action.optionName),
-    node("span", `pill ${action.status}`, action.status === "done" ? "Done" : "Planned"),
+    node("span", `pill ${planStage(action).key}`, planStage(action).label),
   );
 
   const change = async (method, body) => {
     try {
       await api(method, `/actions/${encodeURIComponent(action.actionId)}`, body);
+      await chrome.storage.local.set({ [PLANS_CHANGED_KEY]: Date.now() });
       await onChange({ completed: body?.status === "done" });
     } catch {
       onError("Couldn't update that plan. Please try again.");
@@ -104,7 +114,7 @@ export function actionCard(action, onChange, onError) {
   const controls = node("div", "controls");
   if (action.status === "planned") {
     controls.append(button("Mark done", () => change("PATCH", { status: "done" }), "primary"));
-  } else {
+  } else if (!action.verified) {
     controls.append(button("Undo", () => change("PATCH", { status: "planned" }), "ghost"));
   }
   controls.append(button("Delete", () => change("DELETE"), "ghost"));

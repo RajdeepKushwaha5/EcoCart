@@ -10,7 +10,7 @@ Everything needed to fill in the store forms. Upload `dist/ecocart-<version>.zip
 - **Language:** English (India)
 - **Homepage:** https://main.d3ogmfe7tt7uwb.amplifyapp.com/
 - **Privacy policy:** https://main.d3ogmfe7tt7uwb.amplifyapp.com/privacy.html
-- **Screenshots (1280 x 800):** `docs/store/1-phone.png`, `2-tshirt.png`, `3-labels.png`, `4-flipkart.png`
+- **Screenshots (1280 x 800):** `docs/store/1-phone.png`, `2-labels.png`, `3-flipkart.png`, `4-choice.png`, `5-dashboard.png`
 - **Icon (128 x 128):** `extension/icons/icon-128.png`
 
 ## Description
@@ -21,7 +21,9 @@ Buying a phone, laptop, tablet, watch, earbuds or TV? See how long the maker pro
 
 Buying anything else, from T-shirts to rice to books? See a footprint estimate for that kind of product at that price. It is clearly labelled as a category estimate, not a measurement, and the method and dataset (Open CEDA by Watershed) are one tap away. Eco labels the listing mentions, such as GOTS, FSC or Fairtrade, are shown with a link to the scheme.
 
-Every card starts with a short "Before you buy" summary of separate facts, never a verdict, and lists better options only where there is evidence: a longer-supported or lower-footprint device at a similar price, a renewed listing of the same model, a 5 star appliance, or a refill pack.
+Every card reads in three steps: what we know, what this means, and what you can do. It never adds the facts up into a verdict, and it lists better options only where there is evidence: a longer-supported or lower-footprint device at a similar price, a renewed listing of the same model, a 5 star appliance, or a refill pack.
+
+Choose the lower-footprint option, or shortlist products to compare later, and your dashboard shows what came of it. Every number there opens to show where it comes from: plans you saved, handovers you reported, handovers verified with a receipt, and the footprint difference of your choices by the maker's own reports. Products you only looked at are never turned into kilograms.
 
 Replacing a device? EcoCart helps you plan what happens to the old one: exchange, sell or recycle it, using routes taken from each company's own page, in Bengaluru, Chennai, Delhi NCR, Hyderabad, Kolkata, Mumbai and Pune. Mark the plan done when it is handed over and your plant grows.
 

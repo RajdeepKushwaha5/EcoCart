@@ -5,24 +5,26 @@ electronics, it shows sourced facts: how long the maker promises security update
 everyday terms, and the BEE energy star rating the listing states. Then it helps the buyer plan what happens to the device
 they are replacing, using exchange, resale and recycling routes taken from each company's own page.
 
-Every device page gets the old-device plan. Devices in the catalog (about 170) also get their sourced facts: a curated set with
-lifecycle carbon, plus every Xiaomi, Redmi, POCO, OnePlus and realme model from the makers' official support lists. Every other
-product, from T-shirts to rice to books, gets a category estimate of its footprint, clearly labelled as an estimate, plus any
-energy or certification labels the listing states. The estimate uses Open CEDA's average emissions per rupee for that kind of
+Recognised device pages get the old-device plan. Devices in the catalog (about 170) also get their sourced facts: a curated set with
+lifecycle carbon, plus every Xiaomi, Redmi, POCO, OnePlus and realme model from the makers' official support lists. Other physical
+products, from T-shirts to rice to books, get a category estimate when EcoCart can read a price and match a category. The card
+clearly labels it as an estimate and adds any energy or certification labels the listing states. The estimate uses Open CEDA's average emissions per rupee for that kind of
 product in India; it is never presented as a measured figure.
+
+Coverage and the checks needed before claiming reliable support across both stores are in [docs/live-coverage.md](docs/live-coverage.md).
 
 ## What it does
 
 | Where | What you see |
 |---|---|
 | Device page (Amazon.in, Flipkart) | The device passport: update support, lifecycle carbon with comparisons, energy stars for TVs and appliances, a longer-supported alternative when the evidence allows, and the old-device plan. Devices outside the catalog still get the plan. |
-| Every card | A "Before you buy" scorecard of separate facts (no verdict), and "Better options": longer-supported or lower-footprint catalog devices at a similar price, a renewed listing of the same model, 5 star appliances and yearly electricity use, refill packs, and labelled general tips. |
+| Every card | Three steps: **What we know** (sourced facts or a labelled estimate), **What this means** (a scorecard of separate facts, no verdict, and everyday comparisons), and **What you can do**: add it to your shortlist, choose a same-maker lower-footprint device at a similar price ("I'll choose this instead"), a renewed listing of the same model, 5 star appliances, refill packs, and labelled general tips. |
 | Any other product page | A footprint estimate for its category at the page price, with the method and dataset one tap away, and the labels the listing states (BEE stars, GOTS, FSC and others). Digital items, gift cards and renewed items get nothing. |
 | Search results | A small badge on devices with sourced facts, such as "Updates till at least Mar 2033". Accessories never get one. |
 | Order confirmation | A reminder to plan for the old device, if you looked at one in the last 48 hours. |
-| Toolbar popup | Your plant, which grows one stage for each completed plan, and your open plans. |
-| Dashboard | All plans, your plant, and charts comparing the devices you checked, grouped by type. |
-| Website | A public page with install steps and live totals, hosted on AWS Amplify. Plain HTML, CSS and canvas animations, no frameworks. |
+| Toolbar popup | Your plant, which grows one stage for each completed plan, and your open plans. Updates the moment a plan changes. |
+| Dashboard | What changed because you used EcoCart, updated live. **Overview**: plans waiting, handovers reported by you, handovers verified with a receipt, the footprint difference of your choices (maker-reported, same maker only), the electricity difference of appliance choices, and products checked; tap any number to see what it counts, its source and its evidence level. **My actions**: each plan from Planned to Reported done to Verified, with route details and the next step first. **My comparisons**: your shortlist, compared only within the same kind of evidence, and your choices with their stage (considering, chosen, bought). **My progress**: an activity chart by day, filtered by month and type. The rules are in [docs/impact.md](docs/impact.md). |
+| Website | A public page hosted on AWS Amplify: four use-case journeys with real screenshots, **Try EcoCart** (saved sample listings answered live by the API, no install needed), and live totals that refresh every 20 seconds. Plain HTML, CSS and canvas animations, no frameworks. |
 
 ## How it works
 
@@ -60,12 +62,12 @@ See [docs/method.md](docs/method.md) for the evidence rules.
 | GET | `/products/{modelId}?price=` | Sourced facts, headline, carbon with comparisons, alternative, summary |
 | GET | `/catalog` | Aliases and badge text for every catalog device |
 | GET | `/factors` | Sourced conversion factors (public) |
-| GET | `/stats` | Public totals: plans saved, plans marked done, devices covered |
+| GET | `/stats` | Public totals: plans saved, plans marked done, plans verified, devices covered |
 | GET | `/options?city=&brand=&category=` | Verified old-device options |
 | POST | `/sessions` | Returns an anonymous token |
-| POST | `/actions` | Bearer token. `{modelIdBought}` or `{listingName, category}`, plus `{oldDevice: {brand, ageYears}, city, optionId}` |
+| POST | `/actions` | Bearer token, at most 50 plans per session. `{modelIdBought}` or `{listingName, category}`, plus `{oldDevice: {brand, ageYears}, city, optionId}` |
 | GET | `/actions` | Bearer token. This session's plans |
-| PATCH | `/actions/{actionId}` | Bearer token. `{status: "planned" or "done"}` |
+| PATCH | `/actions/{actionId}` | Bearer token. `{status: "planned" or "done"}`. A verified plan cannot go back to planned. |
 | DELETE | `/actions/{actionId}` | Bearer token |
 
 ## Run locally (no AWS)
@@ -128,6 +130,12 @@ Requirements: Python 3.12+, AWS CLI with credentials, [AWS SAM CLI](https://docs
 - **Category gaps:** breadcrumbs that no rule matched are counted (the breadcrumb only). Each week, run
   `python scripts/list_gaps.py`, add terms for the top ones to `data/sectors.json`, then run `build_estimates.py` and
   deploy. Add `--clear` once they are covered.
+- **Verified handovers:** when the team has seen a collection receipt or the collector's written confirmation for a plan,
+  record it with `python scripts/verify_handover.py --action-id <plan ID> --evidence "<what was seen>"`. The plan ID is
+  shown on each plan in the dashboard. See [docs/impact.md](docs/impact.md).
+- **Try EcoCart samples:** `site/samples.json` holds listings saved from the shops with their date. Refresh the prices
+  now and then; the answers always come live from the API. The API accepts browser calls only from the website
+  (`SiteOrigin` in `backend/template.yaml`).
 - **Store release:** raise the version in `extension/manifest.json`, run `python scripts/package_extension.py`, and upload
   `dist/ecocart-<version>.zip`. The listing text, screenshots and form answers are in [docs/store/listing.md](docs/store/listing.md).
 
@@ -168,8 +176,16 @@ The agents have their own environment because the Strands SDK and the SAM CLI ne
 python -m venv .venv
 .venv/Scripts/pip install -r requirements-dev.txt   # on macOS or Linux: .venv/bin/pip
 .venv/Scripts/python -m pytest backend/tests
-node --test extension/tests/match.test.js extension/tests/labels.test.js extension/tests/category.test.js
+node --test extension/tests/*.test.js
 agents/.venv/Scripts/python -m pytest agents/tests
+```
+
+The end-to-end test drives the real extension in Chrome or Edge on live Amazon.in and Flipkart pages: the card in three
+steps on both shops, a recorded lower-footprint choice, the shortlist, an old-device plan saved, marked done from the
+popup while the dashboard updates live, and deleted again.
+
+```
+cd tests/e2e && npm install && node journey.js
 ```
 
 ## Data format
@@ -238,7 +254,9 @@ Typefaces: Instrument Sans, Instrument Serif and JetBrains Mono, under the SIL O
 
 The idea of showing environmental information while shopping was inspired by the public [EcoCart project from 2023](https://github.com/Sebastian-Chai/EcoCart/). No code or assets from that project are used here.
 
-AI tools used: Claude Code (Anthropic) helped write code and documentation.
+AI tools used: Claude Code (Anthropic) and OpenAI Codex helped write and review code and documentation.
+
+The hackathon submission draft and final checks are in [docs/submission.md](docs/submission.md).
 
 ## License
 
