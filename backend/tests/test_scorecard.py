@@ -66,3 +66,19 @@ def test_footprints_compare_only_on_the_same_footing():
     assert not comparable({"basis": "256GB model"}, {"basis": "128GB model"})
     assert not comparable({"basis": "3 years of use"}, {"basis": "Google estimate, see report"})
     assert not comparable({"basis": None}, {"basis": "256GB model"})
+
+
+def test_charts_compare_the_same_maker_and_count_support_years():
+    catalog = [
+        {"modelId": f"p{i}", "brand": "Apple", "displayName": f"Phone {i}", "category": "phone",
+         "lifecycleCo2eKg": {"value": 50 + i, "source": "https://example.com", "checked": "2026-10-01"},
+         "updatePolicy": {"supportEndDate": f"{2029 + i % 2}-09", "source": "https://example.com", "checked": "2026-10-01"}}
+        for i in range(4)
+    ] + [{"modelId": "other", "brand": "Samsung", "displayName": "Other", "category": "phone",
+          "lifecycleCo2eKg": {"value": 10, "source": "https://example.com", "checked": "2026-10-01"}}]
+    card = scorecard(catalog[2], catalog)
+    footprint = card["footprint"]
+    assert [device["modelId"] for device in footprint["devices"]] == ["p0", "p1", "p2", "p3"]
+    assert [device["current"] for device in footprint["devices"]] == [False, False, True, False]
+    assert footprint["rank"] == 3
+    assert card["support"]["years"] == [{"year": 2029, "count": 2, "current": True}, {"year": 2030, "count": 2, "current": False}]

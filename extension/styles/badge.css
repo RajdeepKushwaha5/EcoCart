@@ -8,19 +8,18 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font: 11px/1 "EcoCart Mono", "JetBrains Mono", ui-monospace, monospace;
+  font: 600 11px/1 "EcoCart Mono", "JetBrains Mono", ui-monospace, monospace;
   letter-spacing: 0.02em;
-  color: oklch(0.94 0.005 90);
-  background: oklch(0.06 0.008 260);
-  border: 1px solid oklch(0.94 0.005 90 / 0.15);
+  color: #235e2c;
+  background: #e5f1df;
+  border: 1px solid rgba(47, 122, 59, 0.3);
   border-radius: 4px;
   padding: 6px 10px 6px 8px;
 }
 
 .mark {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #eca8d6;
-  box-shadow: 0 0 8px #eca8d6;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: #2f7a3b;
 }

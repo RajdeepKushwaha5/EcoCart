@@ -50,6 +50,8 @@ const AMAZON_CENTRE_PRICE = AMAZON_PRICE_BLOCK.split(", ").map((selector) => `#c
 const AMAZON_RESULT = '[data-component-type="s-search-result"][data-asin]';
 // "About this item": most pages use #feature-bullets, clothing pages use the product facts block.
 const AMAZON_BULLETS = "#feature-bullets li, #productFactsDesktopExpander li";
+// The product description. Some layouts leave it out of the page and keep a copy in the quick-view panel instead.
+const AMAZON_DESCRIPTION = "#productDescription, #pqv-description";
 // Long descriptions are cut, so a page with pages of text stays quick to read.
 const DESCRIPTION_LIMIT = 4000;
 // Amazon's sustainability badge. The containers are on every Amazon.in page but are usually empty.
@@ -107,7 +109,7 @@ const AMAZON = {
       crumbs: breadcrumb.length ? breadcrumb : categoryFallback(details, rank),
       crumbsFromDetails: breadcrumb.length === 0,
       bullets: [...new Set([...document.querySelectorAll(AMAZON_BULLETS)].map((item) => clean(item.textContent)).filter(Boolean))],
-      description: clean(document.querySelector("#productDescription")?.textContent).slice(0, DESCRIPTION_LIMIT),
+      description: clean(document.querySelector(AMAZON_DESCRIPTION)?.textContent).slice(0, DESCRIPTION_LIMIT),
       shopBadge: badge ? badge.slice(0, 200) : null,
       showsExchange: /with exchange/i.test(buyBox),
       // No featured offer: Amazon lists sellers only behind "See All Buying Options".

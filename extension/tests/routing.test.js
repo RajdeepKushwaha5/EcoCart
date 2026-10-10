@@ -80,3 +80,13 @@ test("ignores tracking parameters that do not change the product", () => {
   for (let i = 0; i < 3; i += 1) app.tick();
   assert.equal(app.rendered.length, 1);
 });
+
+test("redraws once when the description arrives after the card is shown", () => {
+  const app = routeHarness({ title: "Organic shirt", price: 711, crumbs: ["T-Shirts"], details: {}, bullets: [], description: "" });
+  assert.equal(app.rendered.length, 1);
+  app.setPage({ title: "Organic shirt", price: 711, crumbs: ["T-Shirts"], details: {}, bullets: [], description: "100% GOTS certified organic cotton" });
+  app.tick();
+  assert.equal(app.rendered.length, 2);
+  for (let i = 0; i < 20; i += 1) app.tick();
+  assert.equal(app.rendered.length, 2);
+});

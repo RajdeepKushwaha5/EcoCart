@@ -159,18 +159,10 @@ function renderSpecs(product) {
   );
 }
 
-function renderEquivalents(carbon, word) {
-  if (!carbon || carbon.equivalents.length === 0) return null;
-  return el("div", { className: "equivalents" },
-    el("p", { className: "eyebrow" }, "That estimate is about the same as"),
-    el("ul", {}, carbon.equivalents.map((item) => el("li", {},
-      el("span", { className: "eq-amount" }, formatNumber(item.amount)),
-      el("span", { className: "eq-unit" }, item.unit),
-      sourceLink(item.source, "Factor"),
-    ))),
-    el("p", { className: "note" },
-      `Covers making, shipping, using and recycling this ${word}. It is not a saving you get by choosing it.`),
-  );
+// What the reported footprint covers, so the comparisons above are not read as a saving.
+function footprintScope(card, word) {
+  if (!card.carbon) return null;
+  return el("p", { className: "note" }, `The footprint covers making, shipping, using and recycling this ${word}. It is not a saving you get by choosing it.`);
 }
 
 // The plain-language opening line, readable in a couple of seconds.
@@ -200,7 +192,7 @@ async function renderCard(body, card, page) {
   logActivity("checked", item);
   show(body,
     cardStep("01", "What we know", renderLede(card), renderLabels(page), renderDetails(card)),
-    cardStep("02", "What this means", scorecard, renderEquivalents(card.carbon, DEVICE_WORDS[category])),
+    cardStep("02", "What this means", deviceMeaning(card, category), scorecard, footprintScope(card, DEVICE_WORDS[category])),
     cardStep("03", "What you can do",
       shortlistControl(item),
       deviceOptions(card, page, category, item),
@@ -383,13 +375,6 @@ function estimateMethod(estimate, page) {
   );
 }
 
-function estimateMeaning(estimate) {
-  const equivalent = estimate.equivalents?.[0];
-  if (!equivalent) return null;
-  return el("p", { className: "estimate-eq" },
-    `That is roughly the same as ${formatNumber(equivalent.amount)} ${equivalent.unit}. `, sourceLink(equivalent.source, "Factor"));
-}
-
 function renderEstimate(estimate, page) {
   return el("div", { className: "estimate" },
     el("p", { className: "estimate-flag" }, "Category estimate, not measured for this product"),
@@ -439,7 +424,7 @@ async function showEstimate(page) {
   if (estimate) {
     show(body,
       cardStep("01", "What we know", renderEstimate(estimate, page), renderLabels(page)),
-      cardStep("02", "What this means", estimateMeaning(estimate), estimateScorecard(estimate, page)),
+      cardStep("02", "What this means", estimateCharts(estimate), estimateScorecard(estimate, page)),
       cardStep("03", "What you can do", shortlistControl(item), estimateOptions(estimate, page)));
     return;
   }

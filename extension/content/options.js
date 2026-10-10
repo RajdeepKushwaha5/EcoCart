@@ -151,6 +151,124 @@ function choiceControls(chosen, instead, difference) {
     status);
 }
 
+// ---------- Stats and charts ----------
+
+const MONTH_NAMES = ["January", "February", "March", "April", "May", "June",
+  "July", "August", "September", "October", "November", "December"];
+
+// "September 2031" -> years from today, or null.
+function yearsUntil(monthLabel) {
+  const match = /^(\w+) (\d{4})$/.exec(monthLabel || "");
+  const month = match ? MONTH_NAMES.indexOf(match[1]) : -1;
+  if (month < 0) return null;
+  const years = (new Date(Number(match[2]), month, 1) - Date.now()) / (365.25 * 24 * 3600 * 1000);
+  return years > 0 ? years : null;
+}
+
+function ordinal(number) {
+  const suffix = { 1: "st", 2: "nd", 3: "rd" }[number % 100 > 10 && number % 100 < 14 ? 0 : number % 10] || "th";
+  return `${number}${suffix}`;
+}
+
+// tiles: [{ value, unit, label, source }]
+function statTiles(tiles) {
+  const shown = tiles.filter(Boolean);
+  if (shown.length === 0) return null;
+  return el("div", { className: "stats" }, shown.map((tile) => el("div", { className: "stat" },
+    el("p", { className: "stat-figure" }, el("span", { className: "stat-number" }, tile.value), tile.unit ? el("span", { className: "stat-unit" }, tile.unit) : null),
+    el("p", { className: "stat-label" }, tile.label),
+    tile.source ? sourceLink(tile.source, "Factor") : null,
+  )));
+}
+
+// rows: [{ label, value, display, mark: "current" | "suggested" | null, tag }]
+function barChart(title, rows, note) {
+  const max = Math.max(...rows.map((row) => row.value));
+  return el("figure", { className: "chart" },
+    el("figcaption", { className: "chart-title" }, title),
+    el("div", { className: "bars", role: "list" }, rows.map((row, index) => el("div", {
+      className: `bar-row${row.mark ? ` ${row.mark}` : ""}`, role: "listitem",
+      "aria-label": `${row.label}: ${row.display}${row.tag ? `, ${row.tag}` : ""}`,
+    },
+    el("span", { className: "bar-name" }, row.label, row.tag ? el("span", { className: "bar-tag" }, row.tag) : null),
+    el("span", { className: "bar-track" }, el("span", { className: "bar-fill", style: `width: ${Math.max(3, (row.value / max) * 100)}%; animation-delay: ${index * 40}ms` })),
+    el("span", { className: "bar-value" }, row.display)))),
+    note ? el("p", { className: "chart-note" }, note) : null);
+}
+
+function yearChart(title, years, note) {
+  const max = Math.max(...years.map((item) => item.count));
+  return el("figure", { className: "chart" },
+    el("figcaption", { className: "chart-title" }, title),
+    el("div", { className: "columns", role: "list" }, years.map((item, index) => el("div", {
+      className: `column${item.current ? " current" : ""}`, role: "listitem",
+      "aria-label": `${item.year}: ${item.count}${item.current ? ", this one" : ""}`,
+    },
+    el("span", { className: "column-count" }, item.count),
+    el("span", { className: "column-bar", style: `height: ${Math.max(6, (item.count / max) * 100)}%; animation-delay: ${index * 50}ms` }),
+    el("span", { className: "column-year" }, String(item.year).slice(2))))),
+    note ? el("p", { className: "chart-note" }, note) : null);
+}
+
+function shortModel(name, brand) {
+  return name.startsWith(`${brand} `) ? name.slice(brand.length + 1) : name;
+}
+
+// What a device's facts mean: headline stats, then where it sits among comparable devices.
+function deviceMeaning(card, category) {
+  const word = DEVICE_WORDS[category];
+  const support = card?.scorecard?.support;
+  const footprint = card?.scorecard?.footprint;
+  const equivalent = card?.carbon?.equivalents?.[0];
+  const yearsLeft = yearsUntil(support?.value);
+  const tiles = statTiles([
+    yearsLeft ? { value: yearsLeft.toFixed(1), unit: "yrs", label: `of security updates left, until at least ${support.value}` } : null,
+    card?.carbon ? { value: formatNumber(card.carbon.kg), unit: "kg CO2e", label: `lifecycle footprint ${card.product.brand} reports` } : null,
+    footprint?.rank ? { value: ordinal(footprint.rank), unit: `of ${footprint.count}`, label: `lowest footprint among ${footprint.brand} ${word}s` } : null,
+    equivalent ? { value: `≈ ${formatNumber(equivalent.amount)}`, unit: equivalent.unit.split(" ")[0], label: equivalent.unit.split(" ").slice(1).join(" "), source: equivalent.source } : null,
+  ]);
+
+  const charts = [];
+  if (footprint?.devices?.length >= 3) {
+    const suggested = card.lowerFootprint?.modelId;
+    charts.push(barChart(`${footprint.brand} ${word}s: lifecycle footprint the maker reports`,
+      footprint.devices.map((device) => ({
+        label: shortModel(device.name, footprint.brand),
+        value: device.kg,
+        display: `${formatNumber(device.kg)} kg`,
+        mark: device.current ? "current" : device.modelId === suggested ? "suggested" : null,
+        tag: device.current ? "this one" : device.modelId === suggested ? "suggested" : null,
+      })),
+      `Only ${footprint.brand}'s own reports are compared, because makers measure differently. Each figure is for the configuration its report names.`));
+  }
+  if (support?.years?.length >= 2) {
+    charts.push(yearChart(`How long ${word}s in EcoCart's list get security updates`, support.years,
+      `${support.count} ${word}s by the year their promised updates end. Highlighted: this one, until at least ${support.value}.`));
+  }
+  return [tiles, ...charts];
+}
+
+// What a category estimate means: everyday terms, and the category beside everyday ones per rupee spent.
+function estimateCharts(estimate) {
+  const rank = estimate.perRupee;
+  const equivalent = estimate.equivalents?.[0];
+  const tiles = statTiles([
+    { value: formatNumber(estimate.kgPerThousandInr), unit: "kg CO2e", label: "per ₹1,000 spent, the category average" },
+    rank.rank ? { value: ordinal(rank.rank), unit: `of ${rank.count}`, label: "product types, lowest per rupee first" } : null,
+    equivalent ? { value: `≈ ${formatNumber(equivalent.amount)}`, unit: equivalent.unit.split(" ")[0], label: equivalent.unit.split(" ").slice(1).join(" "), source: equivalent.source } : null,
+  ]);
+  const chart = rank.examples?.length >= 3
+    ? barChart("Per ₹1,000 spent, beside everyday categories", rank.examples.map((item) => ({
+      label: item.label,
+      value: item.kgPerThousandInr,
+      display: `${formatNumber(item.kgPerThousandInr)} kg`,
+      mark: item.current ? "current" : null,
+      tag: item.current ? "this one" : null,
+    })), "Open CEDA averages for India. They describe each category, not any one product.")
+    : null;
+  return [tiles, chart];
+}
+
 // ---------- Scorecard ----------
 
 // row: { label, value, position (0 to 1, or null), ends: [left, right], note, unknown }
@@ -246,14 +364,8 @@ async function deviceScorecard(card, page, category, planKey) {
 }
 
 function estimateScorecard(estimate, page) {
-  const rank = estimate.perRupee;
-  return renderScorecard([
-    { label: "Per rupee spent", value: `About ${estimate.kgPerThousandInr} kg CO2e per ₹1,000`, position: rank.position,
-      ends: [`${rank.lowest} kg`, `${rank.highest} kg`],
-      note: `This category's place among the ${rank.count} product types EcoCart covers. It describes the category, not this product.` },
-    energyRow(page),
-    labelsRow(page),
-  ]);
+  const rows = [energyRow(page), labelsRow(page)].filter(Boolean);
+  return rows.length ? renderScorecard(rows) : null;
 }
 
 // ---------- Better options ----------

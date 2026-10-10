@@ -102,3 +102,13 @@ def test_flipkart_style_crumbs():
     # Outside that department, shampoo is still hair care.
     assert sector_from_crumbs(["Beauty", "Hair Care", "Shampoos"], "Dove Shampoo")[0] == "325620"
     assert sector_from_crumbs(["Home & Kitchen", "Home & Decor", "Home Fragrance", "Incense Sticks"], "Agarbatti")[0] == "339990"
+
+
+def test_per_rupee_chart_shows_the_category_beside_everyday_ones():
+    rank = estimate.per_rupee_rank("315000")
+    labels = [item["label"] for item in rank["examples"]]
+    values = [item["kgPerThousandInr"] for item in rank["examples"]]
+    assert values == sorted(values)
+    assert [item["current"] for item in rank["examples"]].count(True) == 1
+    assert "Clothing" in labels and len(labels) == len(set(labels))
+    assert 1 <= rank["rank"] <= rank["count"]

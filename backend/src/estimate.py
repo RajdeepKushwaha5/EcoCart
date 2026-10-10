@@ -175,15 +175,33 @@ def choose_sector(crumbs, title):
     return None, None, "none", None
 
 
+# Everyday categories shown beside the product's own in the card's per-rupee chart.
+REFERENCE_SECTORS = ["315000", "1111B0", "311920", "511130", "335210"]
+# The shopper-facing name of each sector: the label of the first rule that uses it.
+SECTOR_LABELS = {}
+for _rule in DATA["rules"]:
+    if _rule.get("sector"):
+        SECTOR_LABELS.setdefault(_rule["sector"], _rule["label"])
+
+
 def per_rupee_rank(sector):
     """Where this category sits, per rupee spent, among every category EcoCart can estimate."""
     values = sorted(item["kgPerInr"] for item in SECTORS.values())
     mine = SECTORS[sector]["kgPerInr"]
+    ordered = sorted(SECTORS, key=lambda code: SECTORS[code]["kgPerInr"])
+    codes = [ordered[0], ordered[-1], sector] + [code for code in REFERENCE_SECTORS if code in SECTORS]
+    examples = [
+        {"label": SECTOR_LABELS.get(code, SECTORS[code]["name"]),
+         "kgPerThousandInr": round_significant(SECTORS[code]["kgPerInr"] * 1000), "current": code == sector}
+        for code in sorted(dict.fromkeys(codes), key=lambda code: SECTORS[code]["kgPerInr"])
+    ]
     return {
         "position": round(sum(value < mine for value in values) / (len(values) - 1), 2),
         "lowest": round_significant(values[0] * 1000),
         "highest": round_significant(values[-1] * 1000),
         "count": len(values),
+        "rank": sum(value < mine for value in values) + 1,
+        "examples": examples,
     }
 
 

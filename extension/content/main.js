@@ -6,6 +6,8 @@
 const GIVE_UP_ATTEMPTS = 10;
 // Full re-reads after the card is shown while the price or category is still missing.
 const INCOMPLETE_CHECKS = 30;
+// Full re-reads after a complete page, because shops load the description and details a moment later.
+const SETTLING_CHECKS = 8;
 
 let currentPageKey = null;
 let currentProductSignature = null;
@@ -14,7 +16,7 @@ let productAttempts = 0;
 let incompleteChecks = 0;
 
 function pageSignature(page) {
-  return page ? JSON.stringify([page.title, page.price, page.crumbs, page.details]) : null;
+  return page ? JSON.stringify([page.title, page.price, page.crumbs, page.details, page.bullets, page.description]) : null;
 }
 
 // One key per product and variant. Both shops put the variant in the listing ID, so tracking parameters are ignored.
@@ -41,7 +43,7 @@ function refreshProductPage() {
     currentProductSignature = signature;
     runProductPage(READY_ATTEMPTS, page);
   }
-  if (!isIncomplete(page)) incompleteChecks = 0;
+  if (!isIncomplete(page)) incompleteChecks = Math.min(incompleteChecks, SETTLING_CHECKS);
 }
 
 function leaveProductPage() {
@@ -57,7 +59,7 @@ function settleProductPage(key, page) {
   currentPageKey = key;
   currentProductSignature = pageSignature(page);
   currentQuickState = SITE.quickProductState();
-  incompleteChecks = page && isIncomplete(page) ? INCOMPLETE_CHECKS : 0;
+  incompleteChecks = page && isIncomplete(page) ? INCOMPLETE_CHECKS : page ? SETTLING_CHECKS : 0;
   productAttempts = 0;
 }
 

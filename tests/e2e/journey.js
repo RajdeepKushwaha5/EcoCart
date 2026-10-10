@@ -40,10 +40,32 @@ function inCard(page, source) {
 
 async function openCard(page, url) {
   await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 });
-  await page.waitForFunction(() => {
-    const root = document.getElementById("ecocart-card")?.shadowRoot;
-    return root && root.querySelector(".body") && !root.querySelector(".loading");
-  }, { timeout: 30000 });
+  // After many automated visits Amazon may ask the visitor to press "Continue shopping" first, as a person would.
+  const interstitial = await page.evaluate(() => {
+    const button = [...document.querySelectorAll("button, input[type=submit], a")].find((node) => /continue shopping/i.test(node.textContent || node.value || ""));
+    if (!button || document.getElementById("productTitle")) return false;
+    button.click();
+    return true;
+  });
+  if (interstitial) {
+    // The button leads to the home page, so open the product again.
+    await page.waitForNavigation({ waitUntil: "domcontentloaded", timeout: 60000 }).catch(() => {});
+    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 60000 });
+  }
+  try {
+    await page.waitForFunction(() => {
+      const root = document.getElementById("ecocart-card")?.shadowRoot;
+      return root && root.querySelector(".body") && !root.querySelector(".loading");
+    }, { timeout: 30000 });
+  } catch {
+    // Say what the page showed, so a shop's robot check is not mistaken for an EcoCart bug.
+    const state = await page.evaluate(() => ({
+      title: document.title.slice(0, 60),
+      card: Boolean(document.getElementById("ecocart-card")),
+      text: (document.getElementById("ecocart-card")?.shadowRoot?.textContent || document.body.innerText).replace(/\s+/g, " ").slice(0, 120),
+    }));
+    throw new Error(`No finished card on ${url}: ${JSON.stringify(state)}`);
+  }
   await wait(2500);
   return inCard(page, `return [...root.querySelectorAll(".step-title")].map((n) => n.textContent).join(" / ")`);
 }
