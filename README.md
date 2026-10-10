@@ -149,8 +149,9 @@ OnePlus page builds its table in the browser, so save the page text and pass `--
 ## Agent teams (Strands Agents SDK)
 
 Two small teams of agents, built with the open-source [Strands Agents SDK](https://strandsagents.com), keep the data growing.
-They run on Amazon Bedrock, or on any OpenAI-compatible model on your machine (such as LM Studio) while Bedrock access is
-pending. The agents only propose: plain code checks every claim, and a person approves before anything goes live.
+They run on Amazon Bedrock, or on any OpenAI-compatible model on your machine while Bedrock access is pending. Locally they default to
+[Ollama](https://ollama.com) (`ollama serve`, then `ollama pull qwen2.5:7b`), which uses an NVIDIA GPU when there is one.
+Set `ECOCART_LOCAL_URL` for another server, and `ECOCART_LOCAL_KEY_FILE` for a hosted one that needs a key. The agents only propose: plain code checks every claim, and a person approves before anything goes live.
 
 | Team | Agents | What it does |
 |---|---|---|
@@ -162,7 +163,7 @@ cd agents
 python -m venv .venv && .venv/Scripts/pip install -r requirements.txt     # separate from the SAM CLI's environment
 .venv/Scripts/python -m ecocart_agents research --brand Apple --name "Watch Series 12" --category watch
 .venv/Scripts/python -m ecocart_agents map-gaps --from-gaps
-.venv/Scripts/python -m ecocart_agents --model local:qwen/qwen3.5-9b map-gaps --breadcrumb "Toys & Games > Kites"
+.venv/Scripts/python -m ecocart_agents --model local:qwen2.5:7b map-gaps --breadcrumb "Toys & Games > Kites"
 cd ..
 python scripts/approve_draft.py drafts/apple-watch-series-12.json
 python scripts/approve_rules.py drafts/rules-YYYY-MM-DD.json
