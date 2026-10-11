@@ -51,7 +51,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return false;
   }
   if (message.type === "openDashboard") {
-    chrome.tabs.create({ url: chrome.runtime.getURL("ui/dashboard.html") });
+    const tab = ["overview", "actions", "comparisons", "progress"].includes(message.tab) ? `?tab=${message.tab}` : "";
+    chrome.tabs.create({ url: chrome.runtime.getURL(`ui/dashboard.html${tab}`) });
     return false;
   }
   if (message.type === "api") {

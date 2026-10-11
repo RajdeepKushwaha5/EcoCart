@@ -1,6 +1,10 @@
 // The personal dashboard: what the shopper checked, chose and did, and what each of those can honestly be counted as.
 // impact.js and plant.js are loaded first as plain scripts, so their functions are globals here.
 import { api, button, celebrate, formatDay, loadActions, node, pad, planStage, planSummary, PLANS_CHANGED_KEY, renderPlant } from "./shared.js";
+import { CITIES } from "../config.js";
+
+const SITE_URL = "https://main.d3ogmfe7tt7uwb.amplifyapp.com/";
+const START_SEEN_KEY = "startSeen";
 
 const VIEWED_KEY = "viewedPhones";
 const LOCAL_KEYS = new Set([SHORTLIST_KEY, CHOICES_KEY, ACTIVITY_KEY, VIEWED_KEY, REMINDERS_KEY]);
@@ -385,31 +389,41 @@ function allTimeChart(points) {
     ...axis,
     ...dots);
   const legend = append(node("div", "legend"),
-    append(node("span", "legend-item"), node("span", "swatch chose"), "Chosen"),
-    append(node("span", "legend-item"), node("span", "swatch bought-line"), "Of which bought (you said)"));
+    append(node("span", "legend-item"), node("span", "swatch chose"), "All your choices"),
+    append(node("span", "legend-item"), node("span", "swatch bought-line"), "Of which reported bought"));
   return append(node("div", "alltime-chart-wrap"), chart, tooltip, legend);
 }
 
 function renderAllTime() {
   const { points, totals } = impactTimeline(state.choices);
   const box = $("alltime");
-  const value = formatNumber(totals.deviceKg, 1);
+  const value = formatNumber(totals.boughtKg, 1);
   const number = node("span", "alltime-number", value);
   if (state.lastValues.has("alltime") && state.lastValues.get("alltime") !== value) number.classList.add("changed");
   state.lastValues.set("alltime", value);
 
+  const possibleKg = totals.deviceKg - totals.boughtKg;
+  const figure = (className, value, label, sub) => append(node("div", `alltime-split ${className}`),
+    node("p", "alltime-label", label),
+    append(node("p", "alltime-figure"), value, node("span", "alltime-unit", "kg CO₂e")),
+    node("p", "muted", sub));
   const head = append(node("div", "alltime-head"),
     node("p", "eyebrow", "All time, from the choices you recorded"),
-    append(node("p", "alltime-figure"), number, node("span", "alltime-unit", "kg CO₂e lower footprint")),
+    append(node("div", "alltime-pair"),
+      figure("bought", number, "Reported purchases", "Lower footprint of products you said you bought."),
+      figure("possible", node("span", "alltime-number small", formatNumber(possibleKg, 1)), "Possible difference",
+        "Chosen, not reported as bought yet. It counts once you say you bought it.")),
     node("p", "muted", totals.deviceKg
-      ? `${totals.choices} choice${totals.choices === 1 ? "" : "s"}. ${formatNumber(totals.boughtKg, 1)} kg of it from products you said you bought.`
+      ? `${totals.choices} choice${totals.choices === 1 ? "" : "s"} in all.`
       : "Choose a lower-footprint option on a device card, and it adds up here."));
   const yearlyKg = state.gridFactor ? totals.kwhYear * state.gridFactor.kgCo2ePerUnit : null;
   const devicePoints = points.filter((point) => point.choice.kind === "device");
 
   box.replaceChildren(...[
     head,
-    totals.deviceKg ? append(node("div", "alltime-terms"), node("p", "", "That is about the same as any one of these:"), everydayList(totals.deviceKg)) : null,
+    totals.deviceKg ? append(node("div", "alltime-terms"),
+      node("p", "", totals.boughtKg ? "Your reported purchases are about the same as any one of these:" : "If you buy what you chose, that is about the same as any one of these:"),
+      everydayList(totals.boughtKg || totals.deviceKg)) : null,
     devicePoints.length ? allTimeChart(points) : emptyState("No choices yet",
       "When a device card offers a lower-footprint option from the same maker, tap \"I'll choose this instead\". Each choice adds a step to this chart."),
     totals.kwhYear ? node("p", "alltime-power",
@@ -418,6 +432,103 @@ function renderAllTime() {
     node("p", "note", "Each step is the difference between the footprint the maker reports for what you chose and for what you compared it with. "
       + "It is not a measured saving, and products you only looked at never count."),
   ].filter(Boolean));
+}
+
+// ---------- Start here ----------
+
+const START_PATHS = [
+  ["buying", "Buying something", "Open any product on Amazon.in or Flipkart. The EcoCart card appears under the price: what to know, what is worth checking, and what you can do."],
+  ["comparing", "Comparing products", "On a product card, tap Add to my shortlist. Add another of the same kind, then compare them in My comparisons. Only products with the same kind of evidence are compared."],
+  ["disposing", "Handing on an old device", "Find an exchange, resale or recycling route in your city, then mark it done when it is handed over."],
+];
+
+function renderStart(show) {
+  const box = $("start");
+  box.hidden = !show;
+  if (!show) return;
+  const detail = node("div", "start-detail");
+  const pick = (key) => {
+    const [, title, text] = START_PATHS.find(([id]) => id === key);
+    const actions = {
+      buying: append(node("div", "controls"), link(`${SITE_URL}#try`, "Try the card on the website first")),
+      comparing: append(node("div", "controls"), button("Open My comparisons", () => selectTab("comparisons"), "primary")),
+      disposing: append(node("div", "controls"), button("Plan for an old device", () => { selectTab("actions"); openDirectPlan(); }, "primary")),
+    }[key];
+    detail.replaceChildren(node("p", "start-title", title), node("p", "", text), actions);
+  };
+  const close = button("Hide this", async () => {
+    $("start").dataset.open = "false";
+    await chrome.storage.local.set({ [START_SEEN_KEY]: true });
+    renderStart(false);
+  }, "ghost small");
+  box.replaceChildren(
+    append(node("div", "start-head"), node("p", "eyebrow accent", "Start here"), close),
+    node("p", "start-question", "What are you doing today?"),
+    append(node("div", "start-paths"), START_PATHS.map(([key, title]) => button(title, () => pick(key), "ghost"))),
+    detail);
+}
+
+// A plan for an old device without buying a new one through EcoCart.
+function openDirectPlan() {
+  const box = $("direct-plan");
+  const field = (label, control) => append(node("label", "field"), node("span", "eyebrow", label), control);
+  const choice = (name, options, selected) => {
+    const select = node("select");
+    select.name = name;
+    for (const [value, text] of options) {
+      const option = node("option", "", text);
+      option.value = value;
+      option.selected = value === selected;
+      select.append(option);
+    }
+    return select;
+  };
+  const kinds = Object.keys(OLD_DEVICE_BRANDS).map((key) => [key, DEVICE_WORDS[key][0].toUpperCase() + DEVICE_WORDS[key].slice(1)]);
+  const kind = choice("category", kinds, "phone");
+  const brand = choice("brand", OLD_DEVICE_BRANDS.phone.map((name) => [name, name]));
+  kind.addEventListener("change", () => brand.replaceChildren(...choice("brand", OLD_DEVICE_BRANDS[kind.value].map((name) => [name, name])).children));
+  const age = choice("ageYears", Array.from({ length: 11 }, (_, i) => [String(i), i === 10 ? "10+ years" : `${i} years`]), "3");
+  const city = choice("city", CITIES.map((item) => [item.id, item.name]));
+  const routes = node("div", "direct-routes");
+  const status = node("p", "status");
+  const requestId = crypto.randomUUID();
+
+  const showRoutes = async () => {
+    routes.replaceChildren(node("p", "muted", "Finding routes..."));
+    try {
+      const query = new URLSearchParams({ city: city.value, brand: brand.value, category: kind.value });
+      const { options } = await api("GET", `/options?${query}`, undefined, false);
+      if (options.length === 0) {
+        routes.replaceChildren(node("p", "muted", "No checked routes for this device in your city yet."));
+        return;
+      }
+      routes.replaceChildren(...options.map((option) => append(node("article", "route-pick"),
+        node("p", "plan-title", option.name),
+        node("p", "", option.handover),
+        append(node("p", "meta"), link(option.source), ` checked ${formatDay(option.checked)}`),
+        button("Plan this", async () => {
+          try {
+            await api("POST", "/actions", {
+              listingName: NO_NEW_DEVICE, category: kind.value, city: city.value, optionId: option.optionId, requestId,
+              oldDevice: { brand: brand.value, ageYears: Number(age.value) },
+            });
+            await chrome.storage.local.set({ [PLANS_CHANGED_KEY]: Date.now() });
+            box.replaceChildren();
+            await loadPlans();
+            renderAll();
+          } catch {
+            status.textContent = "Couldn't save the plan. Please try again.";
+          }
+        }, "primary small"))));
+    } catch {
+      routes.replaceChildren(node("p", "muted", "Couldn't load routes. Check your connection."));
+    }
+  };
+  box.replaceChildren(append(node("div", "direct-form"),
+    node("p", "start-title", "Plan for an old device"),
+    append(node("div", "direct-fields"), field("Device", kind), field("Brand", brand), field("Age", age), field("City", city)),
+    append(node("div", "controls"), button("Show routes", showRoutes, "primary"), button("Cancel", () => box.replaceChildren(), "ghost")),
+    routes, status));
 }
 
 // ---------- Next step ----------
@@ -453,7 +564,8 @@ function renderNext() {
   }
   box.replaceChildren(node("p", "eyebrow accent", "Your next step"),
     node("p", "next-title", "Open a product on Amazon.in or Flipkart"),
-    node("p", "muted", "The EcoCart card shows what is known about it and what you can do."));
+    node("p", "muted", "The EcoCart card shows what is known about it and what you can do."),
+    append(node("div", "controls"), button("Plan for an old device instead", () => { selectTab("actions"); openDirectPlan(); }, "ghost small")));
 }
 
 // ---------- My actions ----------
@@ -850,6 +962,10 @@ function selectTab(name) {
 
 function renderAll() {
   renderMonthOptions();
+  chrome.storage.local.get(START_SEEN_KEY).then((stored) => {
+    const firstVisit = !stored[START_SEEN_KEY] && state.actions.length === 0 && state.choices.length === 0;
+    renderStart(firstVisit || $("start").dataset.open === "true");
+  });
   renderPlant($("plant"), state.actions.filter((action) => action.status === "done").length);
   renderNext();
   renderAllTime();
@@ -886,6 +1002,11 @@ $("type-filter").addEventListener("change", (event) => {
   renderAll();
 });
 $("drawer-close").addEventListener("click", closeDrawer);
+$("show-start").addEventListener("click", () => {
+  $("start").dataset.open = "true";
+  renderStart(true);
+  $("start").scrollIntoView({ behavior: "smooth", block: "start" });
+});
 $("drawer").addEventListener("click", (event) => {
   if (event.target.id === "drawer") closeDrawer();
 });

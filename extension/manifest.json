@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "EcoCart",
-  "version": "0.9.3",
+  "version": "0.9.4",
   "description": "See sourced device facts, footprint estimates and eco labels on Amazon.in and Flipkart, then plan where your old device goes.",
   "homepage_url": "https://main.d3ogmfe7tt7uwb.amplifyapp.com/",
   "icons": {

@@ -50,3 +50,11 @@ Earlier today, with the previous build (0.8.3), none of four cards was redrawn i
 - New: "Something looks wrong?" on every card, a "Before you hand it over" checklist with the maker's own guide, reminders with a calendar file, "Ask for verification" on reported handovers, backup and restore, duplicate-safe plan saving, and appliance comparisons only at about the same size.
 - Backend: 96 tests passed, and the live API passed all 360 smoke checks. Extension: 34 Node tests passed. Agent teams: 19 tests passed.
 - End to end with real mouse clicks (`tests/e2e/journey.js`): 18 of 18 checks passed. The test plan was deleted, and the public totals were back at 0 afterwards.
+
+## Update, 11 October 2026 (extension 0.9.4)
+
+- The card now opens with a decision block (what to know, worth checking, what you can do), each fact with its checked date. The iPhone 18 Pro card went from about 2,900 to about 1,100 pixels tall; charts and sources are behind "See the evidence".
+- Appliances: EcoCart now reads Amazon's newer details tables and "Kilowatt Hours Per Year". Tested live: with the Whirlpool 235 L (192 kWh a year) on the shortlist, the Haier 237 L card (230 kWh) says the Whirlpool uses 38 kWh a year less. A 330 L fridge was correctly not compared.
+- The dashboard separates reported purchases from the possible difference of choices not reported as bought, puts the next step at the top, guides a first visit, and plans for an old device without a new purchase (tested: "Old Samsung phone, 3 years. Not replacing it.", then deleted).
+- Website: the shopper questions follow the opening section, and a demonstration lets visitors choose between two real phones (live API) or two fridges (listings saved today), watch a sample dashboard update and undo it. Nothing in the demonstration is saved. No script errors; no horizontal scroll at 390 px.
+- End to end with real clicks: 20 of 20 checks passed; public totals back at 0 afterwards.

@@ -30,6 +30,7 @@ Record a real screen capture. Keep the uploaded YouTube video under three minute
 - [ ] Get a written answer from the organizers on the documented pre-event prototype. Keep the answer with the project records.
 - [ ] Check each teammate's registration, check-in, and AWS Builder Center profile.
 - [ ] Run the extension on current Amazon.in and Flipkart pages in a normal Chrome profile. Record tested URLs, visible prices, card states, and failures in `docs/live-coverage.md` or a dated test log.
+- [ ] Run the five-person test in `docs/user-test.md` and record the results in `docs/user-test-results.md`.
 - [ ] Test a complete old-device flow in the extension and with people outside the team. Record observed results without claiming a completed handover unless it happened.
 - [ ] Capture the real AWS path in the video. Say whether Bedrock is enabled.
 - [ ] Make the GitHub repository public and open it signed out. As checked on 10 October, the configured URL returned 404 when signed out.

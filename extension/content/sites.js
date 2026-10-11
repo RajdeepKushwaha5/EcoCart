@@ -29,6 +29,8 @@ const AMAZON_DETAIL_ROWS = [
   "#productDetails_techSpec_section_1 tr",
   "#productDetails_detailBullets_sections1 tr",
   "#technicalSpecifications_section_1 tr",
+  // Newer layout, used for appliances: capacity, BEE stars and annual energy use sit in these tables.
+  "#prodDetails table.a-keyvalue tr",
 ].join(", ");
 // Most specific first. "priceToPay" is the selling price; plain ".a-price" can be the struck-out M.R.P.
 // Amazon often leaves ".a-offscreen" empty, so the visible whole-rupee part is the fallback.

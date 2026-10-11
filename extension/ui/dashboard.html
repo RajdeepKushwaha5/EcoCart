@@ -12,6 +12,7 @@
     <header class="bar">
       <span class="logo"><span class="mark" aria-hidden="true"></span>EcoCart</span>
       <span class="tag">Dashboard</span>
+      <button id="show-start" class="text-btn" type="button">How to use EcoCart</button>
       <span id="live" class="live" role="status"><span class="live-dot" aria-hidden="true"></span>Live</span>
     </header>
 
@@ -26,11 +27,12 @@
     <div class="layout">
       <aside class="side">
         <div id="plant" class="plant"></div>
-        <div id="next" class="next" aria-live="polite"></div>
         <p class="side-note">Kept in this browser, except your old-device plans, which are stored under an anonymous session so you can mark them done from any page.</p>
       </aside>
 
       <main>
+        <div id="next" class="next" aria-live="polite"></div>
+        <div id="start" class="start" hidden></div>
         <div class="toolbar">
           <div class="tabs" role="tablist" aria-label="Dashboard sections">
             <button class="tab" role="tab" id="tab-overview" aria-controls="panel-overview" aria-selected="true" type="button">Overview</button>
@@ -67,6 +69,7 @@
             <h2>Old-device plans</h2>
             <p class="muted">Planned, then reported done by you, then verified with a receipt or partner confirmation.</p>
           </div>
+          <div id="direct-plan" class="direct-plan"></div>
           <div id="timeline" class="timeline"></div>
         </section>
 

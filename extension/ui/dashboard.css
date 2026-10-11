@@ -264,6 +264,84 @@ select {
   display: none;
 }
 
+/* ---------- Start here and the direct plan ---------- */
+
+.start,
+.direct-form {
+  display: grid;
+  gap: 14px;
+  padding: 24px;
+  border: 1px solid color-mix(in srgb, var(--pink) 40%, transparent);
+  background: color-mix(in srgb, var(--pink) 4%, transparent);
+}
+
+.start[hidden] {
+  display: none;
+}
+
+.start-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.start-question {
+  font: 400 34px/1.1 var(--serif);
+}
+
+.start-paths {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.start-detail {
+  display: grid;
+  gap: 10px;
+  max-width: 640px;
+}
+
+.start-title {
+  font: 400 24px/1.15 var(--serif);
+}
+
+.direct-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+
+.direct-routes {
+  display: grid;
+  gap: 8px;
+}
+
+.route-pick {
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px;
+  border: 1px solid var(--line);
+}
+
+.route-pick .btn {
+  justify-self: start;
+}
+
+.bar .text-btn {
+  margin-left: auto;
+  font: 12px var(--mono);
+  color: var(--muted);
+  background: none;
+  border: 0;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+.bar .text-btn + .live {
+  margin-left: 16px;
+}
+
 /* ---------- All time ---------- */
 
 .alltime {
@@ -277,6 +355,33 @@ select {
 .alltime-head {
   display: grid;
   gap: 8px;
+}
+
+.alltime-pair {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 8px;
+}
+
+.alltime-split {
+  display: grid;
+  gap: 4px;
+  align-content: start;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+}
+
+.alltime-split.bought {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+}
+
+.alltime-label {
+  font: 600 14px/1.3 var(--sans);
+}
+
+.alltime-number.small {
+  font-size: clamp(40px, 5vw, 56px);
+  color: var(--soft);
 }
 
 .alltime-figure {
@@ -1009,6 +1114,10 @@ input[type="date"],
 }
 
 @media (max-width: 860px) {
+  .alltime-pair {
+    grid-template-columns: 1fr;
+  }
+
   .bar,
   .dashboard-hero {
     padding-left: 16px;

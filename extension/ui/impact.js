@@ -185,6 +185,23 @@ function planTotals(actions) {
   };
 }
 
+// ---------- Old devices ----------
+
+// Brands offered in the old-device form, by kind of device.
+const OLD_DEVICE_BRANDS = {
+  phone: ["Apple", "Google", "Motorola", "Nokia", "Nothing", "OnePlus", "Oppo", "Realme", "Samsung", "Vivo", "Xiaomi", "Other"],
+  laptop: ["Apple", "Acer", "Asus", "Dell", "HP", "Lenovo", "MSI", "Samsung", "Other"],
+  tablet: ["Apple", "Lenovo", "OnePlus", "Realme", "Samsung", "Xiaomi", "Other"],
+  watch: ["Apple", "Amazfit", "boAt", "Fire-Boltt", "Noise", "OnePlus", "Samsung", "Other"],
+  earbuds: ["Apple", "boAt", "JBL", "Noise", "OnePlus", "Samsung", "Sony", "Other"],
+  tv: ["LG", "Samsung", "Sony", "Xiaomi", "OnePlus", "TCL", "Panasonic", "Vu", "Other"],
+  appliance: ["LG", "Samsung", "Whirlpool", "Godrej", "Haier", "Voltas", "Daikin", "IFB", "Bosch", "Panasonic", "Other"],
+  electronics: ["Apple", "Canon", "HP", "JBL", "Nikon", "Samsung", "Sony", "Other"],
+};
+
+// A plan for an old device the shopper is not replacing. The API needs a name for the new device, so this one says so.
+const NO_NEW_DEVICE = "No new device";
+
 // ---------- Getting an old phone ready to hand over ----------
 
 // The maker's own instructions. Anything not listed gets Google's guide for Android phones.

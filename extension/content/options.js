@@ -54,9 +54,9 @@ async function rememberPlan(key) {
 }
 
 // Opens the dashboard in a new tab. Pages on the shop cannot link to extension pages directly.
-function dashboardLink(label) {
+function dashboardLink(label, tab = null) {
   return el("button", { className: "text-btn", type: "button",
-    onClick: () => chrome.runtime.sendMessage({ type: "openDashboard" }) }, `${label} ${ARROW}`);
+    onClick: () => chrome.runtime.sendMessage({ type: "openDashboard", tab }) }, `${label} ${ARROW}`);
 }
 
 // ---------- Shortlist ----------
@@ -143,13 +143,46 @@ function choiceControls(chosen, instead, difference) {
     await saveChoice(choice);
     status.replaceChildren(stage === "chosen"
       ? `Recorded: you chose the ${chosen.name}. By ${chosen.brand}'s own reports, that is ${difference} less. `
-      : "Both are on your shortlist. ", dashboardLink("Open dashboard"));
+      : "Both are on your shortlist, side by side. ",
+    stage === "chosen" ? dashboardLink("See your total") : dashboardLink("Compare them", "comparisons"));
   };
   return el("div", { className: "choice" },
     el("div", { className: "row" },
       button("I'll choose this instead", record("chosen"), "primary"),
-      button("Compare later", record("considered"), "ghost")),
+      button("Compare these phones", record("considered"), "ghost")),
     status);
+}
+
+// ---------- Appliances ----------
+
+// What an appliance's label says, and how it compares with a shortlisted one of the same type and size.
+async function applianceFacts(page, item) {
+  const stars = energyStars(page);
+  const kwh = item.kwhYear;
+  const grid = kwh ? (await loadFactors()).find((factor) => factor.factorId === "india-grid-kwh") : null;
+  const lines = [];
+  if (stars || kwh) {
+    const parts = [stars ? `${stars} of 5 BEE stars` : null, kwh ? `${formatNumber(kwh)} kWh a year` : null].filter(Boolean);
+    lines.push(el("div", { className: "decide-fact" },
+      el("p", { className: "decide-text" }, `The label says ${parts.join(", ")}`,
+        grid && kwh ? `, about ${formatNumber(Math.round(kwh * grid.kgCo2ePerUnit))} kg CO₂e a year on India's grid.` : "."),
+      el("p", { className: "meta" }, "As stated on this listing", grid ? [DOT, sourceLink(grid.source, "Grid factor")] : null)));
+  }
+  if (!kwh) return { lines, compare: null };
+  const others = (await loadShortlist()).filter((other) => comparable(item, other) || comparable(other, item));
+  if (others.length === 0) {
+    return { lines, compare: el("p", { className: "decide-text" },
+      `Add it to your shortlist, then open another ${item.type || "appliance"} of about the same size: EcoCart compares their yearly electricity use.`) };
+  }
+  const rows = others.map((other) => {
+    const difference = other.kwhYear - kwh;
+    const verdict = difference > 0
+      ? `uses ${formatNumber(difference)} kWh a year more than this one`
+      : difference < 0 ? `uses ${formatNumber(-difference)} kWh a year less than this one` : "uses the same as this one";
+    return el("p", { className: "decide-text" }, el("strong", {}, shortName(other.name)), `, on your shortlist, ${verdict}.`);
+  });
+  return { lines, compare: el("div", { className: "decide-option" }, rows,
+    el("p", { className: "tradeoff" }, "Both labels use BEE's standard test, so real use depends on how you use it. Check capacity, features and price too.")) };
 }
 
 // ---------- Stats and charts ----------
@@ -421,12 +454,7 @@ function catalogAlternativeRows(card, item) {
   }
   const lower = card?.lowerFootprint;
   if (lower) {
-    const lowerItem = {
-      key: `model:${lower.modelId}`, kind: "device", category: card.product.category, brand: card.product.brand,
-      modelId: lower.modelId, name: lower.displayName, price: lower.price.value, shop: SITE.name, url: SITE.searchUrl(lower.displayName),
-      carbonKg: lower.kg, carbonBasis: lower.basis || null, carbonSource: lower.carbonSource,
-    };
-    const difference = `${formatNumber(Math.round((card.carbon.kg - lower.kg) * 10) / 10)} kg CO₂e`;
+    const { lowerItem, difference } = lowerFootprintChoice(card, lower);
     rows.push(optionRow("Same maker, similar price, lower footprint", lower.displayName,
       el("p", {}, lower.reason),
       el("p", { className: "meta" }, `${formatRupees(lower.price.value)} as of ${formatDate(lower.price.checked)}${DOT}`,
@@ -436,6 +464,17 @@ function catalogAlternativeRows(card, item) {
     ));
   }
   return rows;
+}
+
+// The suggested lower-footprint device as a shortlist item, and how much lower its reported footprint is.
+function lowerFootprintChoice(card, lower) {
+  const lowerItem = {
+    key: `model:${lower.modelId}`, kind: "device", category: card.product.category, brand: card.product.brand,
+    modelId: lower.modelId, name: lower.displayName, price: lower.price.value, shop: SITE.name, url: SITE.searchUrl(lower.displayName),
+    carbonKg: lower.kg, carbonBasis: lower.basis || null, carbonSource: lower.carbonSource,
+  };
+  const difference = `${formatNumber(Math.round((card.carbon.kg - lower.kg) * 10) / 10)} kg CO₂e`;
+  return { lowerItem, difference };
 }
 
 // A renewed listing of the same model on the shop, found by reading the shop's own search results.
@@ -474,7 +513,7 @@ async function refurbishedRow(name, catalogEntry, word) {
 function annualKwh(details) {
   for (const [label, value] of Object.entries(details)) {
     if (!KWH_LABEL.test(label)) continue;
-    const match = /([\d.,]+)\s*(?:kwh|units)/i.exec(value);
+    const match = /([\d.,]+)\s*(?:kwh|units|kilowatt[\s-]*hours?)/i.exec(value);
     const yearly = /year|annual|annum/i.test(`${label} ${value}`);
     if (match && yearly) return Number.parseFloat(match[1].replace(/,/g, ""));
   }
@@ -549,7 +588,7 @@ function renderBetterOptions(immediateRows, pendingRows, kind) {
   return section;
 }
 
-function deviceOptions(card, page, category, item = null) {
+function deviceOptions(card, page, category, item = null, { catalogRows = true } = {}) {
   const word = DEVICE_WORDS[category];
   const name = card ? card.product.displayName.replace(/^(Apple|Samsung|Google|OnePlus) /, "") : shortName(page.title);
   const typeName = page.crumbs[page.crumbs.length - 1] || word;
@@ -558,7 +597,7 @@ function deviceOptions(card, page, category, item = null) {
     : Promise.resolve(null);
   const pending = [catalogEntry.then((entry) => refurbishedRow(name, entry, word))];
   if (category === "tv" || category === "appliance") pending.push(energyOptionRow(page, typeName));
-  return renderBetterOptions(catalogAlternativeRows(card, item), pending, category === "appliance" ? "appliance" : "device");
+  return renderBetterOptions(catalogRows ? catalogAlternativeRows(card, item) : [], pending, category === "appliance" ? "appliance" : "device");
 }
 
 function estimateOptions(estimate, page) {

@@ -1,16 +1,5 @@
 // Product page: the device passport card and the old-device plan. SITE (sites.js) reads the shop page.
 
-const OLD_DEVICE_BRANDS = {
-  phone: ["Apple", "Google", "Motorola", "Nokia", "Nothing", "OnePlus", "Oppo", "Realme", "Samsung", "Vivo", "Xiaomi", "Other"],
-  laptop: ["Apple", "Acer", "Asus", "Dell", "HP", "Lenovo", "MSI", "Samsung", "Other"],
-  tablet: ["Apple", "Lenovo", "OnePlus", "Realme", "Samsung", "Xiaomi", "Other"],
-  watch: ["Apple", "Amazfit", "boAt", "Fire-Boltt", "Noise", "OnePlus", "Samsung", "Other"],
-  earbuds: ["Apple", "boAt", "JBL", "Noise", "OnePlus", "Samsung", "Sony", "Other"],
-  tv: ["LG", "Samsung", "Sony", "Xiaomi", "OnePlus", "TCL", "Panasonic", "Vu", "Other"],
-  appliance: ["LG", "Samsung", "Whirlpool", "Godrej", "Haier", "Voltas", "Daikin", "IFB", "Bosch", "Panasonic", "Other"],
-  electronics: ["Apple", "Canon", "HP", "JBL", "Nikon", "Samsung", "Sony", "Other"],
-};
-
 const CONFIRMED_KEY = "confirmedMatches";
 const CARD_ID = "ecocart-card";
 
@@ -91,6 +80,81 @@ function reportControl() {
   return wrap;
 }
 
+// ---------- Decision first ----------
+
+// The top of every card answers three questions in a few lines: what to know, what is worth checking, what to do.
+// Everything else (charts, sources, method) sits behind "See the evidence".
+function decisionRow(label, ...content) {
+  const items = content.flat().filter(Boolean);
+  if (items.length === 0) return null;
+  return el("div", { className: "decide-row" }, el("p", { className: "decide-label" }, label), el("div", { className: "decide-body" }, items));
+}
+
+function decisionBlock(...rows) {
+  return el("div", { className: "decide" }, rows.filter(Boolean));
+}
+
+function evidence(...steps) {
+  return el("details", { className: "evidence" },
+    el("summary", {}, "See the evidence", el("span", { className: "evidence-hint" }, "charts, sources and how it is worked out")),
+    el("div", { className: "evidence-body" }, steps.filter(Boolean)));
+}
+
+function factLine(text, ...meta) {
+  const details = meta.flat(Infinity).filter(Boolean);
+  return el("div", { className: "decide-fact" }, el("p", { className: "decide-text" }, text),
+    details.length ? el("p", { className: "meta" }, details) : null);
+}
+
+function checkedMeta(fact, label = "Source") {
+  if (!fact?.source) return null;
+  return [sourceLink(fact.source, label), fact.checked ? `${DOT}checked ${formatDate(fact.checked)}` : null];
+}
+
+function everydayLine(equivalent) {
+  if (!equivalent) return null;
+  return `About the same as ${formatNumber(equivalent.amount)} ${equivalent.unit}.`;
+}
+
+function deviceDecision(card, page, category, item) {
+  const word = DEVICE_WORDS[category];
+  const product = card.product;
+  const support = card.scorecard?.support;
+  const policy = product.updatePolicy;
+  const know = [
+    support
+      ? factLine(`Security updates until at least ${support.value}.`, checkedMeta(policy, `${product.brand}'s policy`))
+      : policy?.value ? factLine(`${product.brand}: "${policy.value}".`, checkedMeta(policy, "Policy")) : null,
+    card.carbon
+      ? factLine(`${formatNumber(card.carbon.kg)} kg CO₂e over its life, as ${product.brand} reports. ${everydayLine(card.carbon.equivalents?.[0]) || ""}`,
+        checkedMeta(card.carbon, "Report"))
+      : factLine(`${product.brand} has not published this ${word}'s footprint.`),
+  ];
+  const check = [];
+  const lower = card.lowerFootprint;
+  if (lower) {
+    const { lowerItem, difference } = lowerFootprintChoice(card, lower);
+    check.push(el("div", { className: "decide-option" },
+      el("p", { className: "decide-text" }, el("strong", {}, lower.displayName), `: ${difference} less, by ${product.brand}'s own reports, at a similar price.`),
+      el("p", { className: "meta" }, `${formatRupees(lower.price.value)}, checked ${formatDate(lower.price.checked)}${DOT}`,
+        sourceLink(lower.price.source, "Price"), DOT, sourceLink(lower.carbonSource, "Report")),
+      el("p", { className: "tradeoff" }, `A lower footprint alone does not make it the right ${word}. EcoCart does not compare cameras, battery, size or storage options, so check those suit you.`),
+      choiceControls(lowerItem, item, difference)));
+  }
+  const alt = card.alternative;
+  if (alt) {
+    check.push(el("div", { className: "decide-option" },
+      el("p", { className: "decide-text" }, el("strong", {}, alt.displayName), `: ${alt.reason}`),
+      el("p", { className: "meta" }, `${formatRupees(alt.price.value)}, checked ${formatDate(alt.price.checked)}${DOT}`,
+        sourceLink(alt.price.source, "Price"), DOT, sourceLink(alt.supportSource, "Policy"))));
+  }
+  return decisionBlock(
+    decisionRow("What to know", know),
+    decisionRow("Worth checking", check),
+    decisionRow("What you can do", shortlistControl(item)),
+  );
+}
+
 // The card reads in three steps: the evidence, what it means, and what the shopper can do about it.
 function cardStep(number, title, ...children) {
   const content = children.flat().filter(Boolean);
@@ -126,18 +190,18 @@ async function renderUnsupported(body, page, category) {
   const scorecard = await deviceScorecard(null, page, category, planKey);
   const item = shortlistItem(page, null, category);
   logActivity("checked", item);
+  const appliance = category === "appliance" || category === "tv" ? await applianceFacts(page, item) : { lines: [], compare: null };
   show(body,
-    cardStep("01", "What we know",
-      el("div", { className: "message" },
-        el("p", { className: "message-title" }, `No official figures for this ${word} yet.`),
-        el("p", { className: "muted" }, `We only show what the maker has published. You can still check your options and plan for your old ${word}.`),
-      ),
-      renderLabels(page)),
-    cardStep("02", "What this means", scorecard),
-    cardStep("03", "What you can do",
-      shortlistControl(item),
-      deviceOptions(null, page, category, item),
-      renderOldDevice({ modelId: null, listingName: page.title, category, planKey }, { showsExchange: page.showsExchange })),
+    decisionBlock(
+      decisionRow("What to know", appliance.lines,
+        factLine(`No lifecycle figures from the maker for this ${word} yet, so none are shown.`)),
+      decisionRow("Worth checking", appliance.compare),
+      decisionRow("What you can do", shortlistControl(item))),
+    renderOldDevice({ modelId: null, listingName: page.title, category, planKey }, { showsExchange: page.showsExchange }),
+    evidence(
+      cardStep("01", "What we know", renderLabels(page)),
+      cardStep("02", "What this means", scorecard),
+      cardStep("03", "More options", deviceOptions(null, page, category, item))),
   );
 }
 
@@ -222,12 +286,12 @@ async function renderCard(body, card, page) {
   const item = shortlistItem(page, card, category);
   logActivity("checked", item);
   show(body,
-    cardStep("01", "What we know", renderLede(card), renderLabels(page), renderDetails(card)),
-    cardStep("02", "What this means", deviceMeaning(card, category), scorecard, footprintScope(card, DEVICE_WORDS[category])),
-    cardStep("03", "What you can do",
-      shortlistControl(item),
-      deviceOptions(card, page, category, item),
-      renderOldDevice({ modelId: card.product.modelId, category, planKey }, { showsExchange: page.showsExchange })),
+    deviceDecision(card, page, category, item),
+    renderOldDevice({ modelId: card.product.modelId, category, planKey }, { showsExchange: page.showsExchange }),
+    evidence(
+      cardStep("01", "What we know", renderLede(card), renderLabels(page), renderDetails(card)),
+      cardStep("02", "What this means", deviceMeaning(card, category), scorecard, footprintScope(card, DEVICE_WORDS[category])),
+      cardStep("03", "More options", deviceOptions(card, page, category, item, { catalogRows: false }))),
   );
 }
 
@@ -464,22 +528,33 @@ async function showEstimate(page) {
   const estimate = result.estimate;
   const item = shortlistItem(page, null, null, estimate);
   logActivity("checked", item);
+  const labels = listingCertifications(page).map(([name]) => name);
+  const labelLine = labels.length ? factLine(`The listing claims ${labels.join(", ")}. EcoCart has not checked these.`) : null;
   if (estimate) {
     show(body,
-      cardStep("01", "What we know", renderEstimate(estimate, page), renderLabels(page)),
-      cardStep("02", "What this means", estimateCharts(estimate), estimateScorecard(estimate, page)),
-      cardStep("03", "What you can do", shortlistControl(item), estimateOptions(estimate, page)));
+      decisionBlock(
+        decisionRow("What to know",
+          el("p", { className: "decide-figure" }, `About ${formatNumber(estimate.kg)} kg CO₂e`),
+          factLine(`The average for ${estimate.category.toLowerCase()} at this price in India, not a measurement of this product. ${everydayLine(estimate.equivalents?.[0]) || ""}`,
+            sourceLink(estimate.dataset.source, "Open CEDA")),
+          labelLine),
+        decisionRow("What you can do", shortlistControl(item))),
+      evidence(
+        cardStep("01", "What we know", renderEstimate(estimate, page), renderLabels(page)),
+        cardStep("02", "What this means", estimateCharts(estimate), estimateScorecard(estimate, page)),
+        cardStep("03", "More options", estimateOptions(estimate, page))));
     return;
   }
   const facts = [energyRow(page), labelsRow(page)].filter(Boolean);
   show(body,
-    cardStep("01", "What we know",
-      renderNoEstimate(result.reason === "no-price" && page.noFeaturedOffer ? "no-offer" : result.reason),
-      renderLabels(page)),
-    cardStep("02", "What this means", facts.length ? renderScorecard(facts) : null),
-    cardStep("03", "What you can do",
-      shortlistControl(item),
-      renderBetterOptions([], [energyOptionRow(page, page.crumbs[page.crumbs.length - 1] || "product")], "general")),
+    decisionBlock(
+      decisionRow("What to know", renderNoEstimate(result.reason === "no-price" && page.noFeaturedOffer ? "no-offer" : result.reason), labelLine),
+      decisionRow("What you can do", shortlistControl(item))),
+    evidence(
+      cardStep("01", "What we know", renderLabels(page)),
+      cardStep("02", "What this means", facts.length ? renderScorecard(facts) : null),
+      cardStep("03", "More options",
+        renderBetterOptions([], [energyOptionRow(page, page.crumbs[page.crumbs.length - 1] || "product")], "general"))),
   );
 }
 

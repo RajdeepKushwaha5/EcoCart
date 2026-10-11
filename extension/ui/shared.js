@@ -47,7 +47,8 @@ const DEVICE_WORDS = {
 export function planSummary(action) {
   const old = action.oldDevice || action.oldPhone;
   const word = DEVICE_WORDS[action.category] || "phone";
-  return `Old ${old.brand} ${word}, ${old.ageYears} years. Replacing with ${action.modelName}.`;
+  const replacing = action.modelName === NO_NEW_DEVICE ? "Not replacing it." : `Replacing with ${action.modelName}.`;
+  return `Old ${old.brand} ${word}, ${old.ageYears} years. ${replacing}`;
 }
 
 export async function loadActions() {

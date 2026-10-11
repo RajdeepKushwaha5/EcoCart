@@ -104,9 +104,11 @@ async function main() {
   try {
     const page = await browser.newPage();
     page.on("pageerror", (error) => errors.push(error.message));
-    const steps = "What we know / What this means / What you can do";
+    const steps = "What we know / What this means / More options";
 
     check("phone card on Amazon in three steps", (await openCard(page, PAGES.iphone)) === steps);
+    check("the decision comes first, the evidence behind one tap", await inCard(page,
+      `return root.querySelector(".body > *")?.classList.contains("decide") && !root.querySelector("details.evidence").open`));
     const offered = await inCard(page, `return [...root.querySelectorAll("button")].some((b) => b.textContent.includes("choose this instead"))`);
     check("same-maker lower-footprint option offered", offered);
     await realClick(page, cardControl(`[...root.querySelectorAll("button")].find((b) => b.textContent.includes("choose this instead"))`));
@@ -146,10 +148,13 @@ async function main() {
     check("dashboard counts the waiting plan", before["Plans waiting for action"] === "01", JSON.stringify(before));
     check("dashboard counts the choice", Number(before["Footprint difference of your choices"]) > 0);
     const allTime = await dashboard.evaluate(() => ({
-      total: Number(document.querySelector(".alltime-number")?.textContent),
+      reported: Number(document.querySelector(".alltime-split.bought .alltime-number")?.textContent),
+      possible: Number(document.querySelector(".alltime-split.possible .alltime-number")?.textContent),
       steps: document.querySelectorAll(".alltime-chart .dot").length,
     }));
-    check("all-time total and its chart", allTime.total > 0 && allTime.steps === 1, JSON.stringify(allTime));
+    // Chosen but not reported bought: it is a possible difference, never shown as a reported purchase.
+    check("all-time: chosen counts as possible, not as bought", allTime.reported === 0 && allTime.possible > 0 && allTime.steps === 1,
+      JSON.stringify(allTime));
 
     await realClick(dashboard, pageControl(`document.getElementById("tab-actions")`));
     await dashboard.evaluate(() => {

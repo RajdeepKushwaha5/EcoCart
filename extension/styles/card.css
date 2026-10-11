@@ -232,6 +232,134 @@ a:hover {
   letter-spacing: -0.02em;
 }
 
+/* ---------- Decision first ---------- */
+
+.decide {
+  display: grid;
+  gap: 0;
+  background: var(--card);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.decide-row {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: 14px;
+  padding: 16px 18px;
+}
+
+.decide-row + .decide-row {
+  border-top: 1px solid var(--line-soft);
+}
+
+.decide-label {
+  font: 700 13px/1.35 var(--sans);
+  color: var(--green-deep);
+}
+
+.decide-body {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.decide-fact {
+  display: grid;
+  gap: 2px;
+}
+
+.decide-text {
+  font-size: 15.5px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.decide-figure {
+  font: 700 30px/1.1 var(--sans);
+  letter-spacing: -0.03em;
+  color: var(--green-deep);
+}
+
+.decide-option {
+  display: grid;
+  gap: 6px;
+  padding: 12px 14px;
+  background: var(--green-soft);
+  border-radius: var(--radius);
+}
+
+.decide-option + .decide-option {
+  background: var(--sky-soft);
+}
+
+.tradeoff {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--soft);
+  padding-left: 10px;
+  border-left: 3px solid #e2b23b;
+}
+
+/* ---------- See the evidence ---------- */
+
+.evidence {
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+
+.evidence > summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  padding: 14px 18px;
+  cursor: pointer;
+  list-style: none;
+  font: 700 15px/1.3 var(--sans);
+  color: var(--green-deep);
+}
+
+.evidence > summary::-webkit-details-marker {
+  display: none;
+}
+
+.evidence > summary::before {
+  content: "+";
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  color: #ffffff;
+  background: var(--green);
+  font-family: var(--mono);
+}
+
+.evidence[open] > summary::before {
+  content: "2";
+}
+
+.evidence-hint {
+  font: 400 13px/1.3 var(--sans);
+  color: var(--muted);
+}
+
+.evidence-body {
+  display: grid;
+  gap: 20px;
+  padding: 4px 18px 20px;
+}
+
+@media (max-width: 520px) {
+  .decide-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}
+
 /* ---------- Three steps: what we know, what this means, what you can do ---------- */
 
 .step {
