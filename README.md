@@ -2,6 +2,10 @@
 
 EcoCart helps people shopping on Amazon.in and Flipkart understand product evidence, compare suitable alternatives and decide what happens to an old device. Its browser extension puts the next useful action beside the listing, with a personal dashboard to follow decisions and handovers.
 
+[![EcoCart demo: search badges, a phone card with a lower-footprint choice, an old-phone plan, an appliance's running cost, a category estimate and the dashboard](docs/demo/ecocart-demo.webp)](docs/demo/ecocart-demo.mp4)
+
+*An 86-second demo recorded with the real extension on live Amazon.in and Flipkart pages. [Watch the full-quality video](docs/demo/ecocart-demo.mp4).*
+
 [Try EcoCart](https://main.d3ogmfe7tt7uwb.amplifyapp.com/) · [Download the extension](https://main.d3ogmfe7tt7uwb.amplifyapp.com/ecocart-extension.zip) · [Evidence method](docs/method.md) · [Latest verification](docs/verification-2026-10-11.md)
 
 ## 1. The problem

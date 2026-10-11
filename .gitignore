@@ -18,3 +18,5 @@ Thumbs.db
 .qa-browser-2/
 .qa-selenium/
 .qa-flipkart-dom.html
+# Raw frames from tests/e2e/record_demo.js.
+demo-frames/
