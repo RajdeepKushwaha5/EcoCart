@@ -198,8 +198,18 @@ function renderError(body, retry) {
 }
 
 // Devices outside the catalog still get the part that helps most: a plan for the old one.
+// The category estimate for a device whose maker publishes no figures, or null. Never treated as the device's own figure.
+async function deviceEstimate(page) {
+  try {
+    return (await api("POST", "/estimate", { title: page.title, crumbs: page.crumbs, price: page.price })).estimate;
+  } catch {
+    return null;
+  }
+}
+
 async function renderUnsupported(body, page, category) {
   const word = DEVICE_WORDS[category];
+  const estimate = await deviceEstimate(page);
   const planKey = `listing:${SITE.listingId()}`;
   const scorecard = await deviceScorecard(null, page, category, planKey);
   const item = shortlistItem(page, null, category);
@@ -208,13 +218,18 @@ async function renderUnsupported(body, page, category) {
   show(body,
     decisionBlock(
       decisionRow("What to know", appliance.lines,
-        factLine(`No lifecycle figures from the maker for this ${word} yet, so none are shown.`)),
+        estimate ? [
+          el("p", { className: "decide-figure" }, `About ${formatNumber(estimate.kg)} kg CO₂e`),
+          factLine(`The average for ${estimate.category.toLowerCase()} at this price in India. The maker publishes no figures for this ${word}, so this is a category estimate, not a measurement.`,
+            sourceLink(estimate.dataset.source, "Open CEDA")),
+          treeLine(estimate.equivalents),
+        ] : factLine(`No lifecycle figures from the maker for this ${word} yet, so none are shown.`)),
       decisionRow("Worth checking", appliance.compare),
       decisionRow("What you can do", shortlistControl(item))),
     renderOldDevice({ modelId: null, listingName: page.title, category, planKey }, { showsExchange: page.showsExchange }),
     evidence(
-      cardStep("01", "What we know", renderLabels(page)),
-      cardStep("02", "What this means", scorecard),
+      cardStep("01", "What we know", estimate ? renderEstimate(estimate, page) : null, renderLabels(page)),
+      cardStep("02", "What this means", estimate ? estimateCharts(estimate) : null, scorecard),
       cardStep("03", "More options", deviceOptions(null, page, category, item))),
   );
 }

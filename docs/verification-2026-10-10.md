@@ -58,3 +58,9 @@ Earlier today, with the previous build (0.8.3), none of four cards was redrawn i
 - The dashboard separates reported purchases from the possible difference of choices not reported as bought, puts the next step at the top, guides a first visit, and plans for an old device without a new purchase (tested: "Old Samsung phone, 3 years. Not replacing it.", then deleted).
 - Website: the shopper questions follow the opening section, and a demonstration lets visitors choose between two real phones (live API) or two fridges (listings saved today), watch a sample dashboard update and undo it. Nothing in the demonstration is saved. No script errors; no horizontal scroll at 390 px.
 - End to end with real clicks: 20 of 20 checks passed; public totals back at 0 afterwards.
+
+## Coverage, 11 October 2026 (extension 0.9.6)
+
+- 100 live products, the first result for 50 everyday searches on each shop: every one got a card. Before this release 83 showed a labelled category estimate, 2 showed the maker's own device facts and 15 were devices with no number at all.
+- Fixes: devices whose maker publishes nothing now also get the labelled category estimate for their kind of product; new Open CEDA sectors for refrigerators, laundry, other large appliances, air conditioners, computers and phones, plus TVs and smartwatches; large appliances no longer fall into "Other household goods". A per-cycle energy figure is no longer read as yearly. Re-testing the 16 device pages from that run: all 16 now show a labelled estimate.
+- Amazon.in's Best Sellers tree (3,185 category paths, three levels): 2,981 were matched by a rule before these changes, though some only through the broad "Home & Kitchen" rule. The 187 specific paths still unmatched are being drafted into rules by the category team on a local model, for a person to approve.

@@ -9,7 +9,7 @@
   "baseYear": 2023,
   "priceYear": 2025,
   "inrPerUsd": 86.25757844,
-  "built": "2026-10-08"
+  "built": "2026-10-11"
  },
  "sectors": {
   "1111B0": {
@@ -243,12 +243,33 @@
    "priceIndex": 115.8,
    "kgPerInr": 0.00495764
   },
+  "333415": {
+   "name": "Air conditioning, refrigeration, and warm air heating equipment manufacturing",
+   "kgPerUsdProducer2023": 1.972139,
+   "purchaserRatio": 0.651108,
+   "priceIndex": 90.21,
+   "kgPerInr": 0.01650207
+  },
+  "334111": {
+   "name": "Electronic computer manufacturing",
+   "kgPerUsdProducer2023": 1.183505,
+   "purchaserRatio": 0.781582,
+   "priceIndex": 103.22,
+   "kgPerInr": 0.01038923
+  },
   "334118": {
    "name": "Computer terminals and other computer peripheral equipment manufacturing",
    "kgPerUsdProducer2023": 1.641254,
    "purchaserRatio": 0.779212,
    "priceIndex": 114.84,
    "kgPerInr": 0.01291043
+  },
+  "334220": {
+   "name": "Broadcast and wireless communications equipment",
+   "kgPerUsdProducer2023": 1.454653,
+   "purchaserRatio": 0.698961,
+   "priceIndex": 141.0,
+   "kgPerInr": 0.00835981
   },
   "334300": {
    "name": "Audio and video equipment manufacturing",
@@ -291,6 +312,27 @@
    "purchaserRatio": 0.735415,
    "priceIndex": 110.21,
    "kgPerInr": 0.0144703
+  },
+  "335222": {
+   "name": "Household refrigerator and home freezer manufacturing",
+   "kgPerUsdProducer2023": 1.604054,
+   "purchaserRatio": 0.735415,
+   "priceIndex": 110.21,
+   "kgPerInr": 0.0124089
+  },
+  "335224": {
+   "name": "Household laundry equipment manufacturing",
+   "kgPerUsdProducer2023": 2.274655,
+   "purchaserRatio": 0.735415,
+   "priceIndex": 110.21,
+   "kgPerInr": 0.01759664
+  },
+  "335228": {
+   "name": "Other major household appliance manufacturing",
+   "kgPerUsdProducer2023": 2.046216,
+   "purchaserRatio": 0.735415,
+   "priceIndex": 110.21,
+   "kgPerInr": 0.01582944
   },
   "335911": {
    "name": "Storage battery manufacturing",
@@ -1560,7 +1602,10 @@
     "ink cartridges",
     "monitors",
     "routers",
-    "networking devices"
+    "networking devices",
+    "mouse",
+    "computer peripherals",
+    "keyboards, mouse & accessories"
    ]
   },
   {
@@ -1580,7 +1625,19 @@
     "home audio",
     "projectors",
     "streaming devices",
-    "radios"
+    "radios",
+    "televisions",
+    "smart televisions",
+    "led tvs",
+    "tvs",
+    "home theater, tv & video",
+    "home theatre, tv & video",
+    "home entertainment",
+    "earphones",
+    "wireless earphones",
+    "true wireless",
+    "headset",
+    "headsets"
    ]
   },
   {
@@ -1721,6 +1778,107 @@
     "test, measure & inspect",
     "safety & security",
     "packaging materials"
+   ]
+  },
+  {
+   "sector": "335222",
+   "label": "Refrigerators and freezers",
+   "crumbs": [
+    "refrigerators",
+    "standard refrigerators",
+    "double door refrigerators",
+    "single door refrigerators",
+    "side by side refrigerators",
+    "french door refrigerators",
+    "triple door refrigerators",
+    "refrigerators & freezers",
+    "freezers",
+    "deep freezers",
+    "mini refrigerators"
+   ]
+  },
+  {
+   "sector": "335224",
+   "label": "Washing machines and dryers",
+   "crumbs": [
+    "washing machines",
+    "washing machines & dryers",
+    "front load washing machines",
+    "top load washing machines",
+    "semi automatic washing machines",
+    "fully automatic washing machines",
+    "washer dryers",
+    "clothes dryers",
+    "tumble dryers"
+   ]
+  },
+  {
+   "sector": "335228",
+   "label": "Large home appliances",
+   "crumbs": [
+    "large appliances",
+    "water purifiers",
+    "dishwashers",
+    "water heaters",
+    "geysers",
+    "kitchen chimneys",
+    "chimneys",
+    "home appliances"
+   ]
+  },
+  {
+   "sector": "333415",
+   "label": "Air conditioners",
+   "crumbs": [
+    "air conditioners",
+    "split air conditioners",
+    "window air conditioners",
+    "split acs",
+    "window acs",
+    "portable air conditioners"
+   ]
+  },
+  {
+   "sector": "334111",
+   "label": "Computers, laptops and tablets",
+   "crumbs": [
+    "laptops",
+    "traditional laptops",
+    "gaming laptops",
+    "2 in 1 laptops",
+    "thin & light laptops",
+    "desktops",
+    "desktop pcs",
+    "all-in-one desktops",
+    "all in one pcs",
+    "tablets",
+    "android tablets",
+    "ipads"
+   ]
+  },
+  {
+   "sector": "334220",
+   "label": "Mobile phones",
+   "crumbs": [
+    "smartphones",
+    "mobile phones",
+    "mobiles",
+    "smartphones & basic mobiles",
+    "basic mobiles",
+    "feature phones"
+   ]
+  },
+  {
+   "sector": "33451A",
+   "label": "Smartwatches and fitness bands",
+   "crumbs": [
+    "smart watches",
+    "smartwatches",
+    "fitness trackers",
+    "fitness bands",
+    "smart bands",
+    "wearable smart devices",
+    "wearable technology"
    ]
   }
  ]

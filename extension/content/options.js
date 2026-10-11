@@ -511,12 +511,16 @@ async function refurbishedRow(name, catalogEntry, word) {
   );
 }
 
+// Below this a "yearly" figure is really per cycle or per hour, which listings sometimes put in the yearly field.
+const MIN_YEARLY_KWH = 5;
+
 function annualKwh(details) {
   for (const [label, value] of Object.entries(details)) {
-    if (!KWH_LABEL.test(label)) continue;
+    if (!KWH_LABEL.test(label) || /cycle|\/\s*kg|per kg|per hour/i.test(value)) continue;
     const match = /([\d.,]+)\s*(?:kwh|units|kilowatt[\s-]*hours?)/i.exec(value);
     const yearly = /year|annual|annum/i.test(`${label} ${value}`);
-    if (match && yearly) return Number.parseFloat(match[1].replace(/,/g, ""));
+    const kwh = match ? Number.parseFloat(match[1].replace(/,/g, "")) : null;
+    if (yearly && kwh >= MIN_YEARLY_KWH) return kwh;
   }
   return null;
 }
