@@ -4,7 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>EcoCart</title>
-    <meta name="description" content="EcoCart is a free browser extension for Amazon.in and Flipkart. Sourced facts for devices, a clearly labelled category estimate where EcoCart can match the product, and a plan for your old device." />
+    <meta name="description" content="EcoCart is a free browser extension for greener shopping on Amazon.in and Flipkart: the carbon footprint makers report for their devices, a labelled estimate for everything else, a lower-footprint option when the evidence allows it, and a plan that keeps your old device out of the drawer." />
     <link rel="icon" href="icons/icon-32.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -17,6 +17,7 @@
       <nav class="nav-inner" aria-label="Main">
         <a class="nav-logo" href="#top">EcoCart</a>
         <div class="nav-links">
+          <a href="#impact">Impact</a>
           <a href="#features">Product</a>
           <a href="#use-cases">Use cases</a>
           <a href="#demo">Demo</a>
@@ -31,6 +32,7 @@
         </button>
       </nav>
       <div class="mobile-menu" id="mobile-menu" hidden>
+        <a href="#impact">Impact</a>
         <a href="#features">Product</a>
         <a href="#use-cases">Use cases</a>
         <a href="#demo">Demo</a>
@@ -52,14 +54,15 @@
         <div class="grid-lines" aria-hidden="true"></div>
 
         <div class="wrap hero-copy">
-          <p class="eyebrow fade-up">A browser extension for Amazon.in and Flipkart</p>
+          <p class="eyebrow fade-up">Greener shopping on Amazon.in and Flipkart</p>
           <h1 id="hero-title" class="fade-up delay-1">
             <span class="line">Shop with the facts,</span>
             <span class="line">choices that <span class="blur-word" id="blur-word" aria-live="off">last</span></span>
           </h1>
           <p class="hero-lead fade-up delay-2">
-            Sourced update support and lifecycle carbon for devices, a clearly labelled category estimate where EcoCart can
-            match the product, and a plan for the old device you are replacing.
+            See what a product costs the planet before you pay: the carbon makers report for their devices, a labelled
+            estimate for everything else, a lower-footprint option when the evidence allows it, and a plan that keeps your
+            old device out of the drawer.
           </p>
           <div class="hero-cta fade-up delay-3">
             <a class="pill-btn light big" href="#install">Get the extension <span aria-hidden="true">&rarr;</span></a>
@@ -74,6 +77,37 @@
         </div>
       </section>
 
+      <!-- ---------- Impact ---------- -->
+      <section id="impact" class="section" aria-labelledby="impact-title">
+        <div class="wrap">
+          <div class="section-head">
+            <div>
+              <p class="eyebrow reveal">How it helps</p>
+              <h2 id="impact-title" class="display reveal">One choice,<br /><span class="dim">real carbon saved.</span></h2>
+            </div>
+            <p class="section-lead reveal">
+              EcoCart turns makers' reports and energy labels into a difference you can see before you pay. Three real examples
+              from Amazon.in, with the figures EcoCart shows on the page.
+            </p>
+          </div>
+          <div class="fact-row">
+            <article class="fact reveal">
+              <p class="fact-value">8<small> kg CO₂e less</small></p>
+              <p>Choosing the iPhone Air over the iPhone 18 Pro, by Apple's own reports for the 256GB models, and ₹15,000 cheaper too. About the same as 57 km in a petrol car.</p>
+            </article>
+            <article class="fact reveal">
+              <p class="fact-value">27<small> kg CO₂e a year</small></p>
+              <p>Choosing the Whirlpool 235 L fridge over the Haier 237 L: their labels say 38 kWh a year less, on India's grid. At ₹8 a unit that is ₹304 off the bill, every year it runs.</p>
+            </article>
+            <article class="fact reveal">
+              <p class="fact-value">2031</p>
+              <p>Apple promises security updates for the iPhone 18 Pro until at least September 2031. A phone that stays safe to use can be used for longer, and most of its footprint comes from making it.</p>
+            </article>
+          </div>
+          <p class="metrics-note reveal">Figures checked on 11 October 2026 from Apple's environmental reports, the listings' BEE labels, the Central Electricity Authority's grid factor and India GHG Program's car factor. They describe these products, not every choice. <a href="#demo">Try both comparisons in the demo</a>.</p>
+        </div>
+      </section>
+
       <!-- ---------- Shopping situations ---------- -->
       <section id="use-cases" class="section cases" aria-labelledby="cases-title">
         <div class="wrap">
@@ -82,7 +116,7 @@
               <p class="eyebrow reveal">When EcoCart helps</p>
               <h2 id="cases-title" class="display reveal">Your question.<br /><span class="dim">A clear next step.</span></h2>
             </div>
-            <p class="section-lead reveal">EcoCart is for the moment you are deciding. Pick the question you have.</p>
+            <p class="section-lead reveal">EcoCart is for the moment you are deciding, while the greener choice is still yours to make. Pick the question you have.</p>
           </div>
 
           <div class="case-tabs reveal" role="tablist" aria-label="Shopping situations">
@@ -94,7 +128,7 @@
 
           <div class="case reveal" id="case-phone" role="tabpanel" aria-labelledby="case-tab-phone">
             <div class="case-copy">
-              <h3 class="case-title">Compare what the makers promise and report.</h3>
+              <h3 class="case-title">Choose the phone that lasts longer and costs the planet less.</h3>
               <ol class="case-steps">
                 <li><strong>Know.</strong> How long it gets security updates, and the lifecycle footprint its maker reports, each with the date it was checked.</li>
                 <li><strong>Check.</strong> If the same maker sells a phone with a lower reported footprint at a similar price, it is shown, with what EcoCart does not compare: cameras, battery, size.</li>
@@ -107,7 +141,7 @@
 
           <div class="case reveal" id="case-old" role="tabpanel" aria-labelledby="case-tab-old" hidden>
             <div class="case-copy">
-              <h3 class="case-title">Find a route for it, then track the handover.</h3>
+              <h3 class="case-title">Give your old phone a second life, not a drawer.</h3>
               <ol class="case-steps">
                 <li><strong>Plan.</strong> Answer three questions: does it work, its condition, and what you want for it. EcoCart orders the exchange, resale and recycling routes in your city, and shows what each company's own page says about the cost, what you get and broken devices. From a product page, or from the dashboard if you are not buying anything.</li>
                 <li><strong>Prepare.</strong> Back it up, sign out and reset it, with the maker's own instructions. Set a reminder in your calendar.</li>
@@ -120,7 +154,7 @@
 
           <div class="case reveal" id="case-appliance" role="tabpanel" aria-labelledby="case-tab-appliance" hidden>
             <div class="case-copy">
-              <h3 class="case-title">Compare yearly electricity, like for like.</h3>
+              <h3 class="case-title">Pick the appliance that uses less electricity, every year.</h3>
               <ol class="case-steps">
                 <li><strong>Know.</strong> The BEE stars and yearly kWh the listing states, and what that means in CO₂e a year on India's grid.</li>
                 <li><strong>Check.</strong> Shortlist one, open another: EcoCart compares them only if they are the same type and about the same size. Type the rate from your electricity bill to see what each costs to run a year, and how long a higher price takes to repay.</li>
@@ -133,7 +167,7 @@
 
           <div class="case reveal" id="case-info" role="tabpanel" aria-labelledby="case-tab-info" hidden>
             <div class="case-copy">
-              <h3 class="case-title">Read the estimate and the label claims.</h3>
+              <h3 class="case-title">See the footprint behind everyday buys.</h3>
               <ol class="case-steps">
                 <li><strong>Know.</strong> A category estimate from Open CEDA's India data when the category can be matched, always labelled as an estimate. Otherwise the card says why there is none. In search results, every result with a price gets the same estimate as a badge.</li>
                 <li><strong>Check.</strong> Labels the listing claims, such as GOTS or Fairtrade, marked as the seller's claims.</li>
@@ -157,7 +191,7 @@
               <p class="eyebrow reveal">Try the whole journey</p>
               <h2 id="demo-title" class="display reveal">Choose, see it count,<br /><span class="dim">undo it.</span></h2>
             </div>
-            <p class="section-lead reveal">A demonstration with real products. Phone figures come live from EcoCart's API; the fridge listings were saved from Amazon.in. Nothing you do here is saved or counted.</p>
+            <p class="section-lead reveal">See how one choice changes the carbon footprint, with real products. Phone figures come live from EcoCart's API; the fridge listings were saved from Amazon.in. Nothing you do here is saved or counted.</p>
           </div>
           <div class="demo-tabs reveal" role="tablist" aria-label="Demonstrations">
             <button class="demo-tab" type="button" role="tab" data-mode="phone" aria-selected="true">Two phones</button>
@@ -176,7 +210,7 @@
               <h2 id="features-title" class="display reveal">Facts you<br /><span class="dim">can check.</span></h2>
             </div>
             <p class="section-lead reveal">
-              On product pages and in search results, sourced device facts sit beside clearly labelled category estimates.
+              Everything you need for the greener choice, right where you shop. On product pages and in search results, sourced device facts sit beside clearly labelled category estimates.
               Each figure shows its source and method, and missing information is never filled with a guess.
             </p>
           </div>
@@ -187,7 +221,7 @@
               <div class="bento-copy">
                 <span class="num-label">01</span>
                 <h3>Device passport</h3>
-                <p>For phones, laptops, tablets, watches and earbuds: how long the maker promises security updates, and the lifecycle carbon the maker reports, in everyday terms.</p>
+                <p>For phones, laptops, tablets, watches and earbuds: how long the maker promises security updates, and the lifecycle carbon the maker reports, in everyday terms. Longer support keeps a device useful for longer, which spreads its footprint over more years.</p>
                 <p class="big-stat" id="devices-stat">49</p>
                 <span class="mono-label">devices with official sources</span>
               </div>
@@ -209,42 +243,42 @@
             <article class="bento-card reveal">
               <span class="num-label">02</span>
               <h3>Category estimate</h3>
-              <p>Other products, from T-shirts to rice, get the average footprint for their category at that price in India, from Open CEDA, when EcoCart can read the price and match the category. Always labelled as an estimate. When it cannot, the card says why and shows no number.</p>
+              <p>Other products, from T-shirts to rice, get the average footprint for their category at that price in India, from Open CEDA, when EcoCart can read the price and match the category. Always labelled as an estimate. When it cannot, the card says why and shows no number. Even a packet of tea shows what it costs the planet.</p>
               <p class="mid-stat">65</p>
               <span class="mono-label">product types covered</span>
             </article>
             <article class="bento-card reveal">
               <span class="num-label">03</span>
               <h3>Before you buy</h3>
-              <p>A short scorecard of separate facts and better options where there is evidence: longer support, a lower footprint from the same maker, a renewed listing, a 5 star appliance.</p>
+              <p>A short scorecard of separate facts and the greener option where there is evidence: longer support, a lower footprint from the same maker, a renewed listing instead of a new one, a 5 star appliance.</p>
               <p class="mid-stat">0</p>
               <span class="mono-label">verdicts made up</span>
             </article>
             <article class="bento-card reveal">
               <span class="num-label">04</span>
               <h3>Old-device plan</h3>
-              <p>Answer three questions about the device you are replacing, and the exchange, resale and recycling routes are ordered for you, each with what its own page says about cost, payment and broken devices. Mark it done and your plant grows.</p>
+              <p>Keep it in use, or recycle it properly. Answer three questions about the device you are replacing, and the exchange, resale and recycling routes are ordered for you, each with what its own page says about cost, payment and broken devices. Mark it done and your plant grows.</p>
               <p class="mid-stat">7</p>
               <span class="mono-label">cities with routes</span>
             </article>
             <article class="bento-card reveal">
               <span class="num-label">05</span>
               <h3>Search results</h3>
-              <p>Every result with a price gets a badge: the support date for devices with sourced facts, and a labelled category estimate for everything else. Titles that name an eco label say so, as the seller's claim.</p>
+              <p>Every result with a price gets a badge: the support date for devices with sourced facts, and a labelled category estimate for everything else. Titles that name an eco label say so, as the seller's claim. Compare footprints before you even open a product.</p>
               <p class="mid-stat">1</p>
               <span class="mono-label">request per page, nothing stored</span>
             </article>
             <article class="bento-card reveal">
               <span class="num-label">06</span>
               <h3>Your dashboard</h3>
-              <p>Plans with reminders and a preparation checklist, the choices you record, and the purchases you log, by month. Makers' reports and category estimates are different methods, so they are shown as two totals.</p>
+              <p>Your own impact in one place: plans with reminders and a preparation checklist, the greener choices you record, and the purchases you log, by month. Makers' reports and category estimates are different methods, so they are shown as two totals.</p>
               <p class="mid-stat">2</p>
               <span class="mono-label">totals, never added together</span>
             </article>
             <article class="bento-card reveal">
               <span class="num-label">07</span>
               <h3>Running cost</h3>
-              <p>Type the rate from your electricity bill. An appliance card shows what it costs to run a year from its label, the difference against a shortlisted one of the same size, and how long a higher price takes to repay.</p>
+              <p>Type the rate from your electricity bill. An appliance card shows what it costs to run a year from its label, the difference against a shortlisted one of the same size, and how long a higher price takes to repay. Less electricity means a lower bill and less CO₂ from the grid, every year.</p>
               <p class="mid-stat">0</p>
               <span class="mono-label">electricity rates assumed</span>
             </article>
@@ -274,13 +308,13 @@
               <span class="step-head"><span class="step-num">02</span><span class="step-line"><i></i></span></span>
               <span class="step-title">Check</span>
               <span class="step-sub">the facts</span>
-              <span class="step-text">Update support, reported carbon, energy rating and labels, each with its source. Better options appear only when the evidence allows a fair comparison.</span>
+              <span class="step-text">Update support, reported carbon, energy rating and labels, each with its source. A greener option appears when the evidence allows a fair comparison.</span>
             </button>
             <button class="step" type="button" role="tab" aria-selected="false">
               <span class="step-head"><span class="step-num">03</span><span class="step-line"><i></i></span></span>
               <span class="step-title">Hand over</span>
               <span class="step-sub">the old one</span>
-              <span class="step-text">Pick an exchange, resale or recycling route for the device you are replacing. Mark it done after the handover and your plant grows a stage.</span>
+              <span class="step-text">Pick an exchange, resale or recycling route for the device you are replacing, so it is used again or recycled properly instead of sitting in a drawer. Mark it done and your plant grows a stage.</span>
             </button>
           </div>
         </div>
@@ -312,7 +346,7 @@
             <span class="live-chip"><span class="live-dot"></span>LIVE</span>
             <span class="clock" id="clock"></span>
           </div>
-          <h2 id="metrics-title" class="display reveal">Real-time<br /><span class="dim">EcoCart totals.</span></h2>
+          <h2 id="metrics-title" class="display reveal">Real-time impact,<br /><span class="dim">counted honestly.</span></h2>
 
           <div class="metric-cards">
             <article class="metric big reveal">
@@ -418,7 +452,7 @@
               <h2 id="sources-title" class="display reveal">Unknown means<br /><span class="stroke">unknown.</span></h2>
             </div>
             <p class="section-lead reveal">
-              No number is made up by AI or filled in with a guess. Estimates are labelled as estimates, and if a maker has not
+              Greener choices need honest numbers. No number is made up by AI or filled in with a guess. Estimates are labelled as estimates, and if a maker has not
               published something, the card says so.
             </p>
           </div>
@@ -452,7 +486,7 @@
           <div class="cta-box reveal" id="cta-box">
             <div class="cta-spot" aria-hidden="true"></div>
             <div class="cta-copy">
-              <h2 id="install-title" class="cta-title">Ready to shop<br />with the facts?</h2>
+              <h2 id="install-title" class="cta-title">Ready to shop<br />greener?</h2>
               <p class="section-lead">Free, with no account. It is not in the Chrome Web Store yet, so it installs in developer mode in about a minute.</p>
               <div class="hero-cta">
                 <a class="pill-btn light big" href="ecocart-extension.zip" download>Download the extension <span aria-hidden="true">&darr;</span></a>
@@ -501,7 +535,7 @@
         <div class="footer-top">
           <p class="footer-word">EcoCart</p>
           <div class="footer-cta">
-            <p class="footer-tag">Shop with the facts.<br /><span>Hand the old one on.</span></p>
+            <p class="footer-tag">Shop greener, with the facts.<br /><span>Hand the old one on.</span></p>
             <a class="pill-btn light" href="ecocart-extension.zip" download>Download the extension <span aria-hidden="true">&darr;</span></a>
             <p class="footer-meta">Free, no account. For Chrome and Edge.</p>
           </div>
