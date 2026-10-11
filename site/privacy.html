@@ -54,8 +54,7 @@
       <p class="muted">Last updated 11 October 2026. This covers the EcoCart browser extension and this website.</p>
 
       <p>
-        EcoCart has no accounts. It never asks for your name, email, phone number or address, and it does not use ads,
-        analytics or trackers. Nothing is sold or shared for marketing.
+        EcoCart has no accounts. It never asks for your email, phone number or address, and it does not use ads, analytics or trackers. If you type a first name for the dashboard greeting, it stays in your browser. Nothing is sold or shared for marketing.
       </p>
 
       <h2>What the extension sends to the EcoCart server</h2>
@@ -79,7 +78,7 @@
           </tr>
           <tr>
             <th>When you save a plan for an old device</th>
-            <td>The device you are buying (its name), the brand and age of the old device, your city, the option you picked, and later whether you marked it done. Plans are linked to a random token, not to you.</td>
+            <td>The device you are buying (its name), the brand and age of the old device, your answers about it if you give them (whether it works, its condition, and what you want for it), your city, the option you picked, and later whether you marked it done. Plans are linked to a random token, not to you.</td>
           </tr>
           <tr>
             <th>When you ask for a handover to be verified</th>
@@ -101,15 +100,13 @@
 
       <h2>AI</h2>
       <p>
-        If a product's category cannot be matched by our fixed rules, its title and category path may be sent to a model on
-        Amazon Bedrock, inside the same AWS account, to pick a category from a fixed list. Amazon Bedrock does not use this
-        data to train models. The model never produces any of the numbers shown to you.
+        Model classification is switched off. A product whose category is not matched by our fixed rules gets no estimate, and the card says why. If it is switched on later, a product page's title and category path (never anything about you) could be sent to a model on Amazon Bedrock, inside the same AWS account, to pick a category from a fixed list, and this page will say so first. Search results are never sent to a model. Amazon Bedrock does not use this data to train models, and no model ever produces the numbers shown to you.
       </p>
 
       <h2>Your choices</h2>
       <ul>
         <li>Delete any plan from the EcoCart dashboard. It is removed from the server straight away.</li>
-        <li>Remove shortlisted products and undo choices in the dashboard, and clear the activity history with one button.</li>
+        <li>Remove shortlisted products, undo choices and remove logged purchases in the dashboard, and clear the activity history with one button.</li>
         <li>Removing the extension deletes everything it kept in your browser. Plans left on the server can no longer be linked to anyone.</li>
         <li>Each product card has a Hide button if you would rather not see it.</li>
       </ul>
@@ -122,7 +119,7 @@
       </ul>
 
       <h2>Questions</h2>
-      <p>Use the support link on EcoCart's Chrome Web Store page. We will update this page if anything here changes.</p>
+      <p>EcoCart is not in the Chrome Web Store yet. To report a problem with a card, use "Something looks wrong?" on that card. We will update this page if anything here changes.</p>
     </main>
   </body>
 </html>

@@ -110,13 +110,13 @@ async function deviceAnswer(sample) {
     lower
       ? el("div", "try-option", el("p", "try-option-kind", "Same maker, similar price, lower footprint"), el("p", "try-option-title", lower.displayName),
         el("p", "", lower.reason), el("p", "try-meta", `${rupees(lower.price.value)} as of ${formatDay(lower.price.checked)}. `, link(lower.carbonSource, "Report")),
-        el("p", "try-hint", "In the extension: \"I'll choose this instead\" records the choice in your dashboard."))
+        el("p", "try-hint", "In the extension: \"I'll choose this instead\" records the choice in your dashboard, and \"I bought this\" adds it to your purchases."))
       : null,
     card.alternative
       ? el("div", "try-option", el("p", "try-option-kind", "Similar price, longer support"), el("p", "try-option-title", card.alternative.displayName), el("p", "", card.alternative.reason))
       : null,
     el("div", "try-option", el("p", "try-option-kind", "Your old phone"), el("p", "try-option-title", "Plan where it goes"),
-      el("p", "", "Exchange, resale and recycling routes from each company's own page, in seven Indian cities. Mark it done when it is handed over.")),
+      el("p", "", "Answer three questions (does it work, its condition, what you want) and EcoCart orders the exchange, resale and recycling routes in seven Indian cities, with what each company's own page says about cost, payment and broken devices. Mark it done when it is handed over.")),
     tips(sample.kind),
   ];
   return [step("01", "What we know", know), step("02", "What this means", means), step("03", "What you can do", can)];
@@ -148,7 +148,7 @@ async function estimateAnswer(sample) {
     el("p", "try-meta", "This describes the category, not this product. A specific product can be well above or below it."),
   ];
   return [step("01", "What we know", know), step("02", "What this means", means),
-    step("03", "What you can do", tips(sample.kind), el("p", "try-hint", "In the extension: add it to your shortlist, and look for refills or 5 star appliances where they apply."))];
+    step("03", "What you can do", tips(sample.kind), el("p", "try-hint", "In the extension: add it to your shortlist, tap \"I bought this\" to log it in your purchases, and look for refills or 5 star appliances where they apply."))];
 }
 
 function tips(kind) {

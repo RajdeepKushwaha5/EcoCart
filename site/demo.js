@@ -14,7 +14,8 @@ const FRIDGES = {
     url: "https://www.amazon.in/dp/B0GP76MN24" },
 };
 
-const demo = { mode: "phone", phone: null, factors: [], chosen: false };
+const demo = { mode: "phone", phone: null, factors: [], chosen: false, rate: null };
+const MAX_RATE = 50;
 
 function make(tag, className, ...children) {
   const node = document.createElement(tag);
@@ -96,6 +97,35 @@ function phoneCompare() {
   };
 }
 
+// The running cost at the rate the visitor types from their bill, as in the extension. No rate is assumed.
+function rateBlock(a, b) {
+  const output = make("p", "demo-why");
+  const input = document.createElement("input");
+  Object.assign(input, { type: "number", min: "0.1", max: String(MAX_RATE), step: "0.1", placeholder: "From your bill", className: "demo-rate-input" });
+  input.inputMode = "decimal";
+  input.setAttribute("aria-label", "Your electricity rate in rupees per unit");
+  if (demo.rate) input.value = String(demo.rate);
+  const show = () => {
+    const rate = Number(input.value);
+    if (!(rate > 0 && rate <= MAX_RATE)) {
+      output.textContent = "Type your rate per unit (kWh) from your electricity bill to see the running cost. EcoCart does not assume one.";
+      return;
+    }
+    demo.rate = rate;
+    const costA = Math.round(a.kwh * rate);
+    const costB = Math.round(b.kwh * rate);
+    const upfront = a.price - b.price;
+    const payback = costB > costA && upfront > 0 ? Math.round((upfront / (costB - costA)) * 10) / 10 : null;
+    output.textContent = `At ${inr(rate)} a unit, the Whirlpool costs about ${inr(costA)} a year to run and the Haier about ${inr(costB)}: ${inr(costB - costA)} a year less.`
+      + (payback ? ` Its ${inr(upfront)} higher price is repaid in about ${num(payback, 1)} years of use.` : "");
+  };
+  input.addEventListener("input", show);
+  show();
+  return make("div", "demo-rate",
+    make("label", "demo-rate-field", make("span", "demo-step-label", "Your electricity rate, ₹ per unit"), input),
+    output);
+}
+
 function fridgeCompare() {
   const { a, b, checked } = FRIDGES;
   const grid = demo.factors.find((factor) => factor.factorId === "india-grid-kwh");
@@ -111,6 +141,7 @@ function fridgeCompare() {
     why: `The Whirlpool's label says ${difference} kWh a year less${yearlyKg ? `, about ${yearlyKg} kg CO₂e a year on India's grid` : ""}. Same type, sizes within 1%, both measured under BEE's standard test.`,
     tradeoff: `It costs ${inr(a.price - b.price)} more. Real use depends on how you use it, and the saving repeats every year it runs. Listings saved on ${day(checked)}.`,
     sources: [anchor(a.url, "Whirlpool listing"), " ", anchor(b.url, "Haier listing"), grid ? [" ", anchor(grid.source, "Grid factor")] : null],
+    extra: rateBlock(a, b),
     choose: "Choose the Whirlpool",
   };
 }
@@ -128,7 +159,7 @@ function sampleDashboard(compare) {
         make("p", "demo-dash-title", isPhone ? "Possible difference" : "Electricity difference"),
         make("p", "demo-figure", number, make("span", "", ` ${compare.unit}`)),
         make("p", "demo-dash-note", demo.chosen
-          ? (isPhone ? "Chosen. Once you say you bought it on the order page, it moves to reported purchases." : "Counted separately from phones: it repeats every year the fridge runs.")
+          ? (isPhone ? "Chosen. When you buy it, tap \"I bought this\" on the card or confirm it on the order page, and it moves to your purchases." : "Counted separately from phones: it repeats every year the fridge runs.")
           : "Nothing chosen yet.")),
       chart),
     demo.chosen ? pill("Undo the choice", () => { demo.chosen = false; render(); }, "outline") : null);
@@ -147,6 +178,7 @@ function render() {
       make("p", "demo-step-label", "2. Why, and what to weigh"),
       make("p", "demo-why", compare.why),
       make("p", "demo-tradeoff", compare.tradeoff),
+      compare.extra || null,
       make("p", "demo-sources", compare.sources),
       make("p", "demo-step-label", "3. Your choice"),
       demo.chosen
