@@ -1,270 +1,290 @@
 # EcoCart
 
-A Chrome extension for Amazon.in and Flipkart. On phones, laptops, tablets, watches, earbuds, TVs, home appliances and other
-electronics, it shows sourced facts: how long the maker promises security updates, the maker's reported lifecycle carbon in
-everyday terms, and the BEE energy star rating the listing states. Then it helps the buyer plan what happens to the device
-they are replacing, using exchange, resale and recycling routes taken from each company's own page.
+EcoCart helps people shopping on Amazon.in and Flipkart understand product evidence, compare suitable alternatives and decide what happens to an old device. Its browser extension puts the next useful action beside the listing, with a personal dashboard to follow decisions and handovers.
 
-Recognised device pages get the old-device plan. Devices in the catalog (about 170) also get their sourced facts: a curated set with
-lifecycle carbon, plus every Xiaomi, Redmi, POCO, OnePlus and realme model from the makers' official support lists. Other physical
-products, from T-shirts to rice to books, get a category estimate when EcoCart can read a price and match a category. The card
-clearly labels it as an estimate and adds any energy or certification labels the listing states. The estimate uses Open CEDA's average emissions per rupee for that kind of
-product in India; it is never presented as a measured figure.
+[Try EcoCart](https://main.d3ogmfe7tt7uwb.amplifyapp.com/) · [Download the extension](https://main.d3ogmfe7tt7uwb.amplifyapp.com/ecocart-extension.zip) · [Evidence method](docs/method.md) · [Latest verification](docs/verification-2026-10-11.md)
 
-Coverage and the checks needed before claiming reliable support across both stores are in [docs/live-coverage.md](docs/live-coverage.md).
+## 1. The problem
 
-## What it does
+A shopper can compare price and specifications easily. Environmental information is harder to find, reports use different methods, and the old device often becomes an afterthought.
 
-| Where | What you see |
-|---|---|
-| Device page (Amazon.in, Flipkart) | The device passport: update support, lifecycle carbon with comparisons, energy stars for TVs and appliances, a longer-supported alternative when the evidence allows, and the old-device plan. Devices outside the catalog still get the plan. |
-| Every card | First a short decision block: **What to know** (each fact with the date it was checked and one everyday comparison), **Worth checking** (a same-maker lower-footprint device at a similar price, with what EcoCart does not compare, or an appliance of the same type and size from your shortlist) and **What you can do**. Everything else is behind **See the evidence**, in three steps: **What we know** (sourced facts or a labelled estimate), **What this means** (stat tiles, charts of the same maker's devices by reported footprint, of how long phones get updates, and of the category per rupee beside everyday ones, plus a scorecard of separate facts, no verdict), and **What you can do**: add it to your shortlist, choose a same-maker lower-footprint device at a similar price ("I'll choose this instead"), a renewed listing of the same model, 5 star appliances, refill packs, and labelled general tips. |
-| Any other product page | A footprint estimate for its category at the page price, with the method and dataset one tap away, and the labels the listing states (BEE stars, GOTS, FSC and others). Digital items, gift cards and renewed items get nothing. |
-| Search results | An EcoCart badge on results: devices with sourced facts show "Updates till at least Mar 2033", and other results with a price show the labelled category estimate, such as "EcoCart estimate ≈ 2.4 kg CO₂e". Titles that name an eco label say so as the seller's claim. Accessories never get a device badge. |
-| Order confirmation | A reminder to plan for the old device, if you looked at one in the last 48 hours. |
-| Purchases | "I bought this" on every card, and "Did you buy any of these?" on order confirmation pages (which are never read). The dashboard shows the footprint of what you bought: a total, a month-by-month chart and a list with each product's figure labelled as the maker's report or a category estimate. |
-| Old devices | Three questions (does it work, condition, what you want) order the checked exchange, resale and recycling routes and say why. Each route shows how it works, the cost, what you get, whether broken devices are taken and where, from its own page, or "Not stated on its page". Every route is labelled a contact link, not a booking. |
-| Appliance running cost | Type your rate from your electricity bill: the card shows the yearly cost from the label's kWh, and against a comparable shortlisted appliance the yearly difference, the price difference and the payback time. No rate is assumed. |
-| Toolbar popup | Your plant, which grows one stage for each completed plan, and your open plans. Updates the moment a plan changes. |
-| Dashboard | What changed because you used EcoCart, updated live. **Overview** opens with your all-time total: the footprint difference of every lower-footprint choice you recorded, as a running chart over time (with what you said you bought as its own line) and in everyday terms. Then plans waiting, handovers reported by you, handovers verified with a receipt, the footprint difference of your choices (maker-reported, same maker only), the electricity difference of appliance choices, and products checked; tap any number to see what it counts, its source and its evidence level. **My actions**: each plan from Planned to Reported done to Verified, with route details and the next step first. **My comparisons**: your shortlist, compared only within the same kind of evidence, and your choices with their stage (considering, chosen, bought). **My progress**: an activity chart by day, filtered by month and type. The rules are in [docs/impact.md](docs/impact.md). |
-| Website | A public page hosted on AWS Amplify: four shopper questions right under the opening (which phone, the old phone, which appliance, what the information means), a demo of the whole journey (choose between two real phones or fridges, watch a sample dashboard update, undo it; nothing is saved), **Try EcoCart** (saved sample listings answered live by the API, no install needed), and live totals that refresh every 20 seconds. Plain HTML, CSS and canvas animations, no frameworks. |
+EcoCart brings published facts into the shopping page and helps people take a practical next step: compare supported phones, check an appliance's running cost, or find an exchange, resale or recycling route.
 
-## How it works
+## 2. See it working
 
-```
-Amazon.in or Flipkart page
-   | content scripts: one reader per shop (sites.js), product card, search badges, order-page reminder
-Chrome extension (Manifest V3)
-   | background service worker calls the API
-Amazon API Gateway (HTTP API, throttled)
-   |
-AWS Lambda (Python 3.12), deployed with AWS SAM
-   |-- DynamoDB: Products, Options, Factors, Actions, Sessions, Stats
-   |-- estimates.json: India factors built from Open CEDA 2025, and the breadcrumb rules
-   '-- Amazon Bedrock (optional): short summary written only from the sourced facts,
-       and a category pick from a fixed list when no breadcrumb rule matches
+Open the [live website](https://main.d3ogmfe7tt7uwb.amplifyapp.com/) to try sample listings against the deployed API without installing anything. The website's interactive walkthrough uses sample dashboard data; your extension dashboard uses your own records.
 
-Website (site/) on AWS Amplify Hosting, reading GET /stats
-```
+![EcoCart product card on a shopping page](docs/store/1-phone.png)
 
-- Product pages: matching uses model numbers and aliases from the catalog. If a title matches more than one device, the user picks the right one.
-- Search pages: the extension downloads the catalog once and matches devices in the browser. For the other results, each title and price is sent in one batch per page (`POST /estimates`) for its category estimate; nothing is stored and no gap is counted. Accessory titles (cases, covers, chargers) never get a device badge.
-- Other product pages: the breadcrumb picks a category from `data/sectors.json`, and the price times that category's factor gives the estimate. See [docs/method.md](docs/method.md).
-- Order page: nothing on the page is read. The reminder uses the device you last looked at, which is stored only in your browser.
-- Actions are tied to an anonymous session. The extension keeps a random token; the server stores only its SHA-256 hash.
-- The API is called on product pages (title, breadcrumb, listing details and price), on search pages (catalog, and one batch of result titles and prices for estimates), and when you save or view plans.
+<details>
+<summary>Dashboard and Flipkart screenshots</summary>
 
-See [docs/method.md](docs/method.md) for the evidence rules.
+![EcoCart dashboard](docs/store/5-dashboard.png)
 
-## API
+![EcoCart on Flipkart](docs/store/3-flipkart.png)
 
-| Method | Path | Notes |
-|---|---|---|
-| POST | `/match` | `{title, details, category}` returns `{modelId, matchType, candidates}` |
-| POST | `/estimate` | `{title, crumbs, price}` returns a labelled category estimate, or `{estimate: null, reason}` |
-| GET | `/products/{modelId}?price=` | Sourced facts, headline, carbon with comparisons, alternative, summary |
-| GET | `/catalog` | Aliases and badge text for every catalog device |
-| GET | `/factors` | Sourced conversion factors (public) |
-| GET | `/stats` | Public totals: plans saved, plans marked done, plans verified, devices covered |
-| GET | `/options?city=&brand=&category=` | Verified old-device options |
-| POST | `/sessions` | Returns an anonymous token |
-| POST | `/actions` | Bearer token, at most 50 plans per session. A repeated `requestId` returns the plan already saved, so a retry never saves twice. `{modelIdBought}` or `{listingName, category}`, plus `{oldDevice: {brand, ageYears}, city, optionId}` |
-| GET | `/actions` | Bearer token. This session's plans |
-| PATCH | `/actions/{actionId}` | Bearer token. `{status: "planned" or "done"}`. A verified plan cannot go back to planned. |
-| DELETE | `/actions/{actionId}` | Bearer token |
-| POST | `/actions/{actionId}/verification` | Bearer token. `{note}`: the collector and a receipt or order number, for the team to check |
-| POST | `/reports` | `{kind, shop, listingId}` when a shopper says a card looks wrong. Only those three are kept, as a count |
+Screenshots show earlier builds. Evidence wording can change as sources and comparison rules are updated.
 
-## Run locally (no AWS)
+</details>
 
-```
-python scripts/local_server.py
+## 3. Features and use cases
+
+| What you want to do | How EcoCart helps |
+| --- | --- |
+| Understand a phone before replacing yours | Published update support, manufacturer reports and source links |
+| Check another device | A longer-supported or lower-footprint alternative when the evidence and price rules allow it |
+| Compare appliances | Annual electricity use for the same appliance type and similar capacity, with running cost at your electricity rate |
+| Decide what happens to an old device | Exchange, resale and recycling routes, ordered by your device's condition and your goal |
+| Follow through | Saved plans, preparation guidance, calendar reminders and reported or verified handover states |
+| Track purchases and decisions | Linked purchase confirmations, separate footprint methods and comparison history |
+| Understand other products | Labelled category estimates and certification claims stated on the listing |
+| Browse search results | Device evidence badges and labelled category estimates beside results |
+
+Routes cover Bengaluru, Chennai, Delhi NCR, Hyderabad, Kolkata, Mumbai and Pune. A route is a contact link, not a booking or a guarantee of service at your address.
+
+## 4. The shopper journey
+
+```mermaid
+flowchart LR
+    A[Open a shopping page] --> B[Read the EcoCart card]
+    B --> C[Check facts and sources]
+    C --> D[Compare suitable products]
+    C --> E[Plan for an old device]
+    D --> F[Confirm a purchase]
+    E --> G[Set a reminder and contact the route]
+    G --> H[Report the handover]
+    F --> I[Follow progress in the dashboard]
+    H --> I
 ```
 
-This runs the same Lambda handler on `http://localhost:3000`, reading `data/` directly. Sessions and plans are kept in memory. `extension/config.js` points at it by default. It is for development only; the submitted project runs on AWS.
+The card starts with **What to know**, **Worth checking** and **What you can do**. Detailed charts, sources and methods sit behind **See the evidence**.
 
-## Setup
+## 5. Architecture
 
-Requirements: Python 3.12+, AWS CLI with credentials, [AWS SAM CLI](https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/install-sam-cli.html), Chrome.
-
-1. **Fill the data.** Add devices to `data/products.json`, old-device options to `data/options.json` and conversion factors to `data/factors.json`. Every value needs an `https://` source and a `checked` date. Then run:
-   ```
-   python scripts/validate_data.py
-   ```
-2. **Build the category factors.** This downloads Open CEDA 2025 from the public AWS Open Data bucket into `research/` once,
-   converts the India factors to rupees and checks `data/sectors.json`:
-   ```
-   python scripts/build_estimates.py
-   ```
-3. **Deploy the backend.**
-   ```
-   cd backend
-   sam build
-   sam deploy
-   ```
-   To turn on the Bedrock summary, first enable model access in the Bedrock console, then deploy with
-   `sam deploy --parameter-overrides BedrockModelId=<model or inference profile ID>`.
-4. **Refresh prices and seed the tables.** Prices older than 7 days are ignored. After the first deploy, the daily job keeps them fresh.
-   ```
-   python scripts/refresh_prices.py
-   ```
-   Then seed:
-   ```
-   python scripts/seed.py --stack-name ecocart-india --region ap-south-1
-   ```
-5. **Publish the website.**
-   ```
-   python scripts/deploy_site.py
-   ```
-   This creates the Amplify app on the first run and prints the site address.
-6. **Check the live API.**
-   ```
-   python scripts/smoke_test.py <ApiUrl>
-   ```
-7. **Load the extension.** Put the `ApiUrl` output from step 3 into `extension/config.js`. Open `chrome://extensions`, turn on Developer mode, click "Load unpacked" and choose the `extension` folder. Also put the API host in `host_permissions` in `extension/manifest.json`; it lists the exact host, not a wildcard.
-
-## Keeping it running
-
-- **Makers' support lists** refresh every Sunday at 03:00 IST: a scheduled Lambda (`support_job.py`) re-reads the
-  Xiaomi (with Redmi and POCO) and realme lists, adds new models, updates changed dates and removes models whose
-  support has ended. If a source is down, its brands' entries are kept; the `ecocart-india-support-lists-failed`
-  alarm emails the alerts topic only if no list could be read. OnePlus entries come from a saved copy of its page.
-- **Prices** refresh every day at 09:00 IST: a scheduled Lambda (`price_job.py`) reads the official store pages and
-  updates the Products table. If a price cannot be read, the job fails and the `ecocart-india-price-refresh-failed`
-  alarm emails the alerts topic. `seed.py` never replaces a newer price from the table with an older one from the file.
-- **Category gaps:** breadcrumbs that no rule matched are counted (the breadcrumb only). Each week, run
-  `python scripts/list_gaps.py`, add terms for the top ones to `data/sectors.json`, then run `build_estimates.py` and
-  deploy. Add `--clear` once they are covered.
-- **Reports from shoppers:** `python scripts/list_gaps.py --reports` lists cards marked as wrong, by kind, shop and listing.
-- **Verified handovers:** `python scripts/verify_handover.py --pending` lists shoppers' requests. When the team has seen a collection receipt or the collector's written confirmation for a plan,
-  record it with `python scripts/verify_handover.py --action-id <plan ID> --evidence "<what was seen>"`. The plan ID is
-  shown on each plan in the dashboard. See [docs/impact.md](docs/impact.md).
-- **Try EcoCart samples:** `site/samples.json` holds listings saved from the shops with their date. Refresh the prices
-  now and then; the answers always come live from the API. The API accepts browser calls only from the website
-  (`SiteOrigin` in `backend/template.yaml`).
-- **Store release:** raise the version in `extension/manifest.json`, run `python scripts/package_extension.py`, and upload
-  `dist/ecocart-<version>.zip`. The listing text, screenshots and form answers are in [docs/store/listing.md](docs/store/listing.md).
-
-## Makers' official support lists
-
-`python scripts/import_support_periods.py` reads the per-model security update lists that makers publish (Xiaomi, Redmi and
-POCO; realme; OnePlus) into `data/support_periods.json`, keeping only models still in support. `seed.py` turns each row into a
-catalog entry with that one sourced fact; models in `data/products.json` are curated by hand and always take precedence. The
-OnePlus page builds its table in the browser, so save the page text and pass `--oneplus-text <file>`.
-
-## Agent teams (Strands Agents SDK)
-
-Two small teams of agents, built with the open-source [Strands Agents SDK](https://strandsagents.com), keep the data growing.
-They run on Amazon Bedrock, or on any OpenAI-compatible model on your machine while Bedrock access is pending. Locally they default to
-[Ollama](https://ollama.com) (`ollama serve`, then `ollama pull qwen2.5:7b`), which uses an NVIDIA GPU when there is one.
-Set `ECOCART_LOCAL_URL` for another server, and `ECOCART_LOCAL_KEY_FILE` for a hosted one that needs a key. The agents only propose: plain code checks every claim, and a person approves before anything goes live.
-
-| Team | Agents | What it does |
-|---|---|---|
-| Catalog research | Catalog Lead, Source Scout, Fact Extractor, Evidence Checker | Finds the maker's own documents for a device, quotes the passage behind each fact, keeps only facts whose quote is found word for word in the source, and writes a draft catalog entry. The Scout may only open the makers' domains listed in `agents/ecocart_agents/official_sources.json`. |
-| Category mapping | Category Mapper, Rule Reviewer | Takes breadcrumbs the live API could not match (from the gap log), proposes a category for each, and drafts a rule only when both agents pick the same category from the allowed list and the words are really in the breadcrumb. |
-
-```
-cd agents
-python -m venv .venv && .venv/Scripts/pip install -r requirements.txt     # separate from the SAM CLI's environment
-.venv/Scripts/python -m ecocart_agents research --brand Apple --name "Watch Series 12" --category watch
-.venv/Scripts/python -m ecocart_agents map-gaps --from-gaps
-.venv/Scripts/python -m ecocart_agents --model local:qwen2.5:7b map-gaps --breadcrumb "Toys & Games > Kites"
-cd ..
-python scripts/approve_draft.py drafts/apple-watch-series-12.json
-python scripts/approve_rules.py drafts/rules-YYYY-MM-DD.json
+```mermaid
+flowchart TB
+    subgraph Browser[Your browser]
+        Shops[Amazon.in and Flipkart]
+        Reader[Site readers and evidence card]
+        Worker[Extension service worker]
+        Local[Local purchase and decision history]
+        Dashboard[Personal dashboard]
+        Shops --> Reader --> Worker
+        Reader --> Local
+        Local --> Dashboard
+    end
+    Worker --> API[API Gateway HTTP API]
+    Dashboard --> Worker
+    API --> Lambda[Python Lambda API]
+    Lambda --> DB[(DynamoDB)]
+    Lambda --> Factors[Bundled category factors and rules]
+    Lambda -. optional .-> Bedrock[Bedrock summaries and category fallback]
+    Scheduler[EventBridge Scheduler] --> Jobs[Price and support refresh functions]
+    Jobs --> DB
+    Lambda --> Logs[CloudWatch logs and alarms]
+    Jobs --> Logs
+    Logs --> SNS[SNS notifications]
+    Website[Public website on Amplify] --> API
 ```
 
-The agents have their own environment because the Strands SDK and the SAM CLI need different versions of one library.
+DynamoDB stores products, routes, conversion factors, anonymous sessions, plans and aggregate counters. Purchases, shortlist, choices and reminders stay in the browser. AWS SAM defines the backend infrastructure.
 
-## Tests
+The current deployment uses deterministic classification rules and template explanations. Bedrock is optional and is not needed for the main workflow.
 
+## 6. Evidence and impact rules
+
+```mermaid
+flowchart TD
+    Listing[Listing information] --> Match{Catalog match?}
+    Match -->|Yes| Report{Applicable manufacturer report?}
+    Report -->|Yes| Published[Show the reported footprint and its basis]
+    Report -->|No or unverified| Reference[Keep reference evidence separate from purchase totals]
+    Match -->|No| Category{Readable price and supported category?}
+    Category -->|Yes| Estimate[Show a labelled category estimate]
+    Category -->|No| Unknown[Explain what is unknown]
+    Published --> Compare[Compare only compatible evidence]
+    Estimate --> Awareness[Explain scale without claiming product savings]
 ```
-python -m venv .venv
-.venv/Scripts/pip install -r requirements-dev.txt   # on macOS or Linux: .venv/bin/pip
-.venv/Scripts/python -m pytest backend/tests
+
+- A manufacturer footprint and a spend-based category estimate have different boundaries. The dashboard keeps them separate.
+- Storage-specific reports must match the listing's storage. Reports for an unverified region remain reference evidence and do not enter that listing's footprint total.
+- Device choices use one manufacturer and compatible report bases. Dashboard footprint charts use the same report basis.
+- Appliance comparisons need stated yearly kWh, the same appliance type and capacities within 10%.
+- Alternative device prices must be checked within seven days and fall within 20% of the listing price.
+- Category estimates use **listing price × the category's India emissions factor**. They describe a category, not the exact product, and are not used to calculate product-choice savings.
+- Reported purchases and handovers are self-reported. Verification requires a receipt or collector confirmation reviewed by the team.
+- Car, electricity and tree equivalents explain scale. They do not represent offsets or trees planted by EcoCart.
+
+See [the evidence method](docs/method.md) and [dashboard counting rules](docs/impact.md).
+
+## 7. Evaluation and coverage
+
+The live catalog contains about **170 devices**. The curated file contains **50 models**, including **42 manufacturer carbon reports**. There are **63 city-route records across seven cities**, with some providers appearing in several cities. Counts can change after a data refresh.
+
+Automated checks cover matching, excluded accessories, source requirements, comparison rules, category classification, local history and session isolation. Live browser tests exercise a complete shopper journey on both stores.
+
+These checks do not establish universal product coverage or measured environmental benefit. Outside-user testing and confirmed handover evidence are separate from software tests. The [coverage plan](docs/live-coverage.md) and [user-test protocol](docs/user-test.md) describe how to assess them.
+
+## 8. Testing
+
+Release 0.9.10 passed **109 backend tests, 52 extension tests and 19 research-tooling tests**, plus **360 live API checks**. The browser journey passed on Amazon.in and Flipkart, including purchase undo, monthly filtering, pagination and invalid-backup rejection. A separate live test confirmed that five concurrent saves produce one plan.
+
+From the repository root, with Python dependencies installed:
+
+```powershell
+python -m pytest backend/tests -q
 node --test extension/tests/*.test.js
-agents/.venv/Scripts/python -m pytest agents/tests
+python scripts/validate_data.py
 ```
 
-The end-to-end test drives the real extension in Chrome or Edge on live Amazon.in and Flipkart pages: the card in three
-steps on both shops, a recorded lower-footprint choice, the shortlist, an old-device plan saved, marked done from the
-popup while the dashboard updates live, and deleted again.
+Research tooling has a separate environment:
 
-```
-cd tests/e2e && npm install && node journey.js
-```
-
-## Data format
-
-`data/products.json`, one object per device:
-
-```json
-{
-  "modelId": "samsung-galaxy-a55",
-  "brand": "Samsung",
-  "displayName": "Samsung Galaxy A55 5G",
-  "aliases": ["Galaxy A55"],
-  "modelNumbers": ["exact model number from the listing"],
-  "excludes": ["words that mean a different model, such as Pro or Plus"],
-  "priceInr": { "value": 0, "source": "https://...", "checked": "YYYY-MM-DD" },
-  "updatePolicy": { "value": "exact wording", "supportEndDate": "YYYY-MM", "source": "https://...", "checked": "YYYY-MM-DD" },
-  "repairability": { "value": "...", "scale": "...", "source": "https://...", "checked": "YYYY-MM-DD" },
-  "lifecycleCo2eKg": { "value": 0, "source": "https://...", "checked": "YYYY-MM-DD" },
-  "takeBack": { "value": true, "source": "https://...", "checked": "YYYY-MM-DD" }
-}
+```powershell
+python -m venv agents/.venv
+agents/.venv/Scripts/python -m pip install -r agents/requirements.txt
+agents/.venv/Scripts/python -m pytest agents/tests -q
 ```
 
-Use `null` for any fact you could not verify.
+For live checks, use a test session against your deployed API:
 
-`data/options.json`, one object per option (`categories` is optional; an empty or missing list means any device):
-
-```json
-{
-  "city": "delhi-ncr",
-  "optionId": "short-unique-id",
-  "name": "Organisation name",
-  "type": "exchange | recycle | reuse",
-  "brands": [],
-  "accepts": "What they take",
-  "handover": "How a person hands the device over",
-  "address": "Public drop-off address, if any",
-  "url": "https://...",
-  "handoffConfirmed": false,
-  "source": "https://...",
-  "checked": "YYYY-MM-DD"
-}
+```powershell
+python scripts/smoke_test.py https://YOUR_API_HOST
+python tests/e2e/api_concurrency.py https://YOUR_API_HOST
+cd tests/e2e
+npm install
+node journey.js
 ```
 
-An empty `brands` list means the option accepts any brand.
+The browser test needs Chrome or Edge. Set `BROWSER` to its executable if automatic discovery fails. Both live runners create temporary plans and delete them on successful completion; inspect and remove leftover test records after an interrupted run.
 
-`data/factors.json`, one object per everyday comparison:
+Validate infrastructure with `sam validate --lint` from `backend/`. See the [verification log](docs/verification-2026-10-11.md) for recorded results and release checks.
 
-```json
-{
-  "factorId": "petrol-car-km",
-  "unit": "km in a petrol car",
-  "kgCo2ePerUnit": 0,
-  "source": "https://...",
-  "checked": "YYYY-MM-DD"
-}
+## 9. Monitoring and maintenance
+
+| Signal or task | Where to inspect it |
+| --- | --- |
+| API errors and request failures | Lambda logs and the API error alarm in CloudWatch |
+| Daily price refresh | Scheduled Lambda logs and price refresh alarm |
+| Weekly support-list refresh | Scheduled Lambda logs and support-list alarm |
+| Unmatched categories | `python scripts/list_gaps.py` |
+| Shopper reports | `python scripts/list_gaps.py --reports` |
+| Pending handover verification | `python scripts/verify_handover.py --pending` |
+| Public engagement totals | `GET /stats` and the website |
+
+Prices refresh daily at 09:00 IST. Xiaomi and realme support lists refresh weekly on Sunday at 03:00 IST; OnePlus entries use a saved source copy. An SNS topic must be configured to receive alarm notifications.
+
+Public counters are engagement indicators, not kilograms saved. Plan writes use conditional checks to avoid duplicate requests and conflicting edits. Counter updates are best effort and should be reconciled if a write fails.
+
+## 10. Quickstart
+
+Requirements: Python 3.12+, Node.js 20+, Chrome or Edge. The local API does not require an AWS account.
+
+```powershell
+git clone https://github.com/RajdeepKushwaha5/EcoCart.git
+cd EcoCart
+python -m venv .venv
+.venv/Scripts/python -m pip install boto3 pytest
+.venv/Scripts/python scripts/validate_data.py
+.venv/Scripts/python scripts/local_server.py
 ```
 
-A comparison is only shown when its factor has a value and a source. The card divides the device's reported lifecycle CO2e by the factor and rounds to two significant figures.
+The API listens at `http://localhost:3000`. For local extension development, set `API_BASE_URL` in `extension/config.js` to that address and add `http://localhost:3000/*` to `host_permissions` in `extension/manifest.json`.
 
-## Credits
+Open `chrome://extensions` or `edge://extensions`, enable Developer mode, choose **Load unpacked**, then select `extension/`. Visit an Amazon.in or Flipkart product page. Local sessions and plans disappear when the server stops. Restore the deployed API address and permission before packaging a release.
 
-Category estimates use [Open CEDA 2025](https://openceda.org/), CEDA by Watershed, licensed CC BY-SA 4.0. The derived
-factors in `backend/src/estimates.json` are shared under the same licence.
+To use the hosted build, [download and unzip the extension](https://main.d3ogmfe7tt7uwb.amplifyapp.com/ecocart-extension.zip), then load the extracted `ecocart-extension` folder in the same way.
 
-Typefaces: Instrument Sans, Instrument Serif and JetBrains Mono, under the SIL Open Font License (see `extension/fonts/OFL.txt`).
+## 11. Configuration and privacy
 
-The idea of showing environmental information while shopping was inspired by the public [EcoCart project from 2023](https://github.com/Sebastian-Chai/EcoCart/). No code or assets from that project are used here.
+| Setting | Location | Purpose |
+| --- | --- | --- |
+| `API_BASE_URL` | `extension/config.js` | API address |
+| `host_permissions` | `extension/manifest.json` | Allowed shop and API hosts |
+| `BedrockModelId` | SAM parameter | Optional model or inference profile |
+| `SiteOrigin` | SAM parameter | Public website allowed by API CORS |
+| `AlertTopicArn` | SAM parameter | Alarm notification topic |
+| AWS profile and region | AWS CLI and `backend/samconfig.toml` | Deployment credentials and target |
 
-AI tools used: Claude Code (Anthropic) and OpenAI Codex helped write and review code and documentation.
+No account is required. A random bearer token links the browser to saved plans; the server stores its hash. Shopping-page titles, listing details, categories and prices are sent when needed for the card. Search estimates send result titles and prices in batches. Order-page contents are never read.
 
-The hackathon submission draft and final checks are in [docs/submission.md](docs/submission.md).
+Backups include the session token, so keep them private. Restore validates supported formats before replacing stored records. Read the [privacy policy](site/privacy.html) for details.
 
-## License
+## 12. Deploy on AWS
 
-MIT
+Install AWS CLI and AWS SAM CLI, then configure an AWS profile with deployment permissions. From the repository root:
+
+```powershell
+cd backend
+sam build
+sam deploy --guided
+cd ..
+python scripts/seed.py --stack-name ecocart-india --region ap-south-1
+```
+
+SAM prints `ApiUrl`. Update the extension configuration and exact API host permission. Set your AWS profile for the scripts, then publish the site and package the extension:
+
+```powershell
+$env:AWS_PROFILE = "ecocart"
+python scripts/deploy_site.py --stack-name ecocart-india --region ap-south-1
+python scripts/package_extension.py
+python scripts/smoke_test.py https://YOUR_API_HOST
+```
+
+The site deployment includes the current extension download. The store package is written to `dist/ecocart-<version>.zip`. After an extension update, users of an unpacked build must reload it and refresh open shop tabs.
+
+Use the generated category factors already in the repository. To rebuild them from Open CEDA, install `openpyxl` and run `python scripts/build_estimates.py`; this downloads the source workbook. Review changes before deploying new factors.
+
+## 13. API reference
+
+| Method | Path | Purpose |
+| --- | --- | --- |
+| POST | `/match` | Match a listing to catalog aliases or model numbers |
+| POST | `/estimate` | A category estimate or a reason why none is available |
+| POST | `/estimates` | Up to 60 title/price estimates using rules only |
+| GET | `/products/{modelId}?price=` | Manufacturer evidence, comparisons and explanation |
+| GET | `/catalog` | Catalog identities and search badge text |
+| GET | `/factors` | Sourced everyday conversion factors |
+| GET | `/options?city=&brand=&category=` | Routes filtered by device and city |
+| GET | `/stats` | Aggregate plans and catalog coverage |
+| POST | `/sessions` | Create an anonymous session |
+| POST / GET | `/actions` | Save or list this session's plans |
+| PATCH / DELETE | `/actions/{actionId}` | Change or delete an owned plan |
+| POST | `/actions/{actionId}/verification` | Request review of handover evidence |
+| POST | `/reports` | Report a problem by kind, shop and public listing ID |
+
+Plan endpoints require `Authorization: Bearer <token>`. Save requests support `requestId` for retries. Conflicting plan edits return HTTP 409; refresh before retrying. See `backend/src/app.py` for payload validation and routes.
+
+## 14. Repository map
+
+```text
+extension/          Browser extension, popup, dashboard and unit tests
+backend/src/        Lambda handlers, evidence rules and bundled factors
+backend/tests/      API and domain regression tests
+backend/template.yaml
+                    SAM infrastructure
+site/               Public website, interactive demo and privacy policy
+data/               Curated products, routes, factors and category rules
+scripts/            Validation, deployment, refresh and verification tools
+agents/             Research tooling that produces drafts for human review
+tests/e2e/          Real browser shopper-journey tests
+docs/               Method, impact rules, coverage and submission records
+```
+
+Research drafts do not become published facts automatically. Approval scripts validate and merge reviewed data; source links and checked dates remain required.
+
+## 15. Limitations and next steps
+
+- Retailer layouts change. Passing a sample of live pages does not prove support for every product or variant.
+- A price-based category estimate cannot establish that a cheaper item is physically greener. Delivery and packaging are not separately measured.
+- Route details come from provider pages. EcoCart does not book collection or independently guarantee recycling outcomes.
+- Purchase tracking relies on confirmation, with one record per item per day. Quantity, partial returns and multiple same-day purchases need fuller handling.
+- Personal history is local to the browser, with backup rather than account sync. The most recent 500 purchases are retained.
+- No controlled study or measured avoided emissions claim is made. Next priorities are broader coverage tests, outside-user results and receipt-backed handovers.
+
+## 16. License and data sources
+
+Application code is under the [MIT License](LICENSE).
+
+Category factors derive from [Open CEDA 2025, CEDA by Watershed](https://registry.opendata.aws/open-ceda/), under CC BY-SA 4.0. The derived factors in `backend/src/estimates.json` retain that licence. Manufacturer reports and provider pages are linked alongside the facts that use them.
+
+Instrument Sans, Instrument Serif and JetBrains Mono use the SIL Open Font License; see [font licence](extension/fonts/OFL.txt). Project provenance and submission details are kept in [submission documentation](docs/submission.md).
