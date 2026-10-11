@@ -112,3 +112,13 @@ def test_per_rupee_chart_shows_the_category_beside_everyday_ones():
     assert [item["current"] for item in rank["examples"]].count(True) == 1
     assert "Clothing" in labels and len(labels) == len(set(labels))
     assert 1 <= rank["rank"] <= rank["count"]
+
+
+def test_title_names_the_product_before_its_features():
+    phones = [
+        "Galaxy M36 5G Mobile (Velvet Black, 8GB RAM, 128GB Storage) | Google Gemini| AI Enhanced 50MP OIS Triple Camera| Without Charger",
+        "Galaxy S25 Ultra 5G AI Smartphone (Titanium Whitesilver, 12GB RAM, 256GB Storage), 200MP Camera, 5000mAh Battery",
+        "Galaxy M07 Mobile (Black, 4GB RAM, 64GB Storage) | IP54| 50MP Camera | 25W Fast Charging | Without Charger",
+    ]
+    for title in phones:
+        assert estimate.estimate([], title, 20000)["estimate"]["category"] == "Mobile phones", title

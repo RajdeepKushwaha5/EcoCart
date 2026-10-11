@@ -1,5 +1,7 @@
-// Search results: a small badge on devices we have sourced data for, and on listings whose title names an eco label.
-// The catalog is fetched once and matched here, so result titles are never sent anywhere.
+// Search results: a small EcoCart badge on each result. Devices we have sourced data for show their support date,
+// and every other result with a price shows the labelled category estimate for its kind of product at that price.
+// Listings whose title names an eco label also say so, as the seller's claim. The catalog is matched here in the
+// browser; for the estimates, each result's title and price are sent in one request per page and not stored.
 
 const DONE_ATTR = "data-ecocart";
 
@@ -48,13 +50,39 @@ function claimBadge(title) {
   return badge(`Claims ${names.join(", ")}`, "The listing's title names this label. EcoCart has not checked it.", "claim");
 }
 
+const BATCH_SIZE = 60;
+
+function estimateBadge(result) {
+  return badge(`EcoCart estimate ≈ ${formatNumber(result.kg)} kg CO₂e`,
+    `EcoCart category estimate: the average for ${result.category.toLowerCase()} at this price in India, not a measurement of this product. Open it for details.`,
+    "estimate");
+}
+
+// One request per page for every result that is not a covered device.
+async function estimateBadges(pending) {
+  for (let start = 0; start < pending.length; start += BATCH_SIZE) {
+    const batch = pending.slice(start, start + BATCH_SIZE);
+    let results;
+    try {
+      ({ results } = await api("POST", "/estimates", { items: batch.map(({ title, price }) => ({ title, price })) }));
+    } catch {
+      return; // No badge rather than a wrong one.
+    }
+    batch.forEach(({ spot }, index) => {
+      if (results[index]) spot.after(estimateBadge(results[index]));
+    });
+  }
+}
+
 async function badgeResults() {
   const results = SITE.searchResults().filter(({ node }) => !node.hasAttribute(DONE_ATTR));
   if (results.length === 0) return;
+  // Marked before waiting, so a page change during the wait does not badge the same results twice.
+  for (const { node } of results) node.setAttribute(DONE_ATTR, "");
 
   const catalog = await loadCatalog();
+  const pending = [];
   for (const { node, title, anchor } of results) {
-    node.setAttribute(DONE_ATTR, "");
     if (!title || !anchor) continue;
     const product = matchByAlias(title, catalog);
     // "Case for Galaxy A56" names the device it fits, so it never gets the device's badge.
@@ -64,7 +92,10 @@ async function badgeResults() {
     }
     const claim = claimBadge(title);
     if (claim) anchor.after(claim);
+    const price = SITE.resultPrice(node);
+    if (price) pending.push({ title, price, spot: claim || anchor });
   }
+  if (pending.length) await estimateBadges(pending);
 }
 
 function startSearchBadges() {

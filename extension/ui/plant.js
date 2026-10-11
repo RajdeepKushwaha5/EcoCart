@@ -1,4 +1,5 @@
-// A plant that grows one stage for every greener action: an old device handed over, or a lower-footprint choice.
+// A plant that grows one stage for every greener action: an old-device plan marked done, or a lower-footprint choice
+// recorded (chosen or bought). Both are the shopper's own reports, and the plant says so.
 // Loaded as a plain script by the content scripts, the popup and the dashboard, so it defines globals.
 
 const PLANT_STAGES = ["Seed", "Sprout", "Seedling", "Young plant", "Budding", "In bloom"];
@@ -6,6 +7,7 @@ const PLANT_MAX_STAGE = PLANT_STAGES.length - 1;
 const PLANT_STEM_HEIGHTS = [0, 16, 32, 48, 60, 66];
 const PLANT_SOIL_Y = 104;
 const PLANT_X = 60;
+const PLANT_RULE = "Grows one stage for each old-device plan you mark done and each lower-footprint choice you record. These are your own reports; only a verified handover is checked.";
 
 function plantStage(actions) {
   const stage = Math.min(actions, PLANT_MAX_STAGE);

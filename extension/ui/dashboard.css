@@ -329,6 +329,61 @@ select {
   justify-self: start;
 }
 
+.direct-routes .callout {
+  font-size: 13px;
+  background: color-mix(in srgb, var(--amber) 10%, var(--card));
+  border: 1px dashed color-mix(in srgb, var(--amber) 40%, transparent);
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.route-pick.best {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+.best-match {
+  justify-self: start;
+  font: 700 11px/1 var(--sans);
+  color: #ffffff;
+  background: var(--accent);
+  border-radius: 999px;
+  padding: 5px 10px;
+}
+
+.route-pick .fit {
+  font-weight: 600;
+}
+
+.route-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 8px 14px;
+  padding: 10px 12px;
+  background: var(--raise);
+  border-radius: 8px;
+}
+
+.route-fact {
+  display: grid;
+  gap: 2px;
+  font-size: 13px;
+}
+
+.route-fact.unstated {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.route-pick .flag {
+  font: 12px/1.5 var(--mono);
+  color: var(--amber);
+}
+
+.route-pick .flag.ok {
+  color: var(--accent);
+}
+
 .bar .text-btn {
   margin-left: auto;
   font: 12px var(--mono);
@@ -400,7 +455,8 @@ select {
 }
 
 .purchase-number {
-  font: 700 clamp(48px, 6vw, 72px)/1 var(--sans);
+  font: 700 clamp(40px, 5vw, 60px)/1 var(--sans);
+  color: var(--accent);
   letter-spacing: -0.03em;
 }
 
@@ -419,8 +475,65 @@ select {
   fill: var(--muted);
 }
 
-.purchase-chart .area {
-  fill: color-mix(in srgb, var(--accent) 16%, transparent);
+.purchase-totals {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.purchase-total {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px 18px;
+  background: var(--card);
+}
+
+.purchase-label {
+  font: 600 14px/1.3 var(--sans);
+  color: var(--soft);
+}
+
+.purchase-number.estimate,
+.purchase-chart .line.estimate {
+  color: #3f8fd2;
+  stroke: #3f8fd2;
+}
+
+.purchase-chart .line.estimate {
+  stroke-dasharray: none;
+  stroke-dashoffset: 0;
+  animation: none;
+  stroke-dasharray: 6 5;
+}
+
+.chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 8px;
+  font: 13px var(--sans);
+  color: var(--soft);
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-swatch {
+  width: 18px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+.legend-item.estimate .legend-swatch {
+  background: repeating-linear-gradient(90deg, #3f8fd2 0 6px, transparent 6px 10px);
+}
+
+.chart-tooltip .tip-estimate {
+  color: #3f8fd2;
 }
 
 .purchase-chart .line {

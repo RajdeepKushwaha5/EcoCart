@@ -196,6 +196,7 @@ async function applianceFacts(page, item) {
   }
   if (!kwh) return { lines, compare: null };
   const others = (await loadShortlist()).filter((other) => comparable(item, other) || comparable(other, item));
+  lines.push(await tariffBlock(item, others));
   if (others.length === 0) {
     return { lines, compare: el("p", { className: "decide-text" },
       `Add it to your shortlist, then open another ${item.type || "appliance"} of about the same size: EcoCart compares their yearly electricity use.`) };
@@ -209,6 +210,45 @@ async function applianceFacts(page, item) {
   });
   return { lines, compare: el("div", { className: "decide-option" }, rows,
     el("p", { className: "tradeoff" }, "Both labels use BEE's standard test, so real use depends on how you use it. Check capacity, features and price too.")) };
+}
+
+// What it costs to run at the shopper's own rate, against comparable shortlisted ones. Nothing is shown until they
+// type a rate: EcoCart does not guess one.
+async function tariffBlock(item, others) {
+  const output = el("div", { className: "tariff-output", "aria-live": "polite" });
+  const input = el("input", { type: "number", min: "0.1", max: String(MAX_TARIFF), step: "0.1", inputmode: "decimal",
+    name: "tariff", placeholder: "From your bill", "aria-label": "Your electricity rate in rupees per unit" });
+  const render = (rate) => {
+    if (!rate) {
+      output.replaceChildren(el("p", { className: "meta" }, "Type your rate per unit (kWh) from your electricity bill to see the running cost."));
+      return;
+    }
+    const own = runningCost(item.kwhYear, null, rate);
+    const rows = others.map((other) => {
+      const cost = runningCost(item.kwhYear, other.kwhYear, rate, item.price, other.price);
+      const run = cost.savedPerYear > 0 ? `costs about ${formatRupees(cost.savedPerYear)} a year less to run`
+        : cost.savedPerYear < 0 ? `costs about ${formatRupees(-cost.savedPerYear)} a year more to run` : "costs the same to run";
+      const upfront = cost.upfront == null ? "" : cost.upfront > 0 ? `, and ${formatRupees(cost.upfront)} more to buy`
+        : cost.upfront < 0 ? `, and ${formatRupees(-cost.upfront)} less to buy` : ", and the same to buy";
+      const payback = cost.payback != null ? ` The extra price is repaid in about ${formatNumber(cost.payback)} years of use.` : "";
+      return el("p", { className: "decide-text" }, `Compared with ${shortName(other.name)} on your shortlist, this one ${run}${upfront}.${payback}`);
+    });
+    output.replaceChildren(
+      el("p", { className: "decide-text" }, el("strong", {}, `About ${formatRupees(own.yearly)} a year`), ` to run at ${formatRupees(rate)} a unit.`),
+      ...rows,
+      el("p", { className: "meta" }, `${formatNumber(item.kwhYear)} kWh a year from the label × your rate. Real use depends on how you use it; prices are today's listing prices.`));
+  };
+  const rate = await loadTariff();
+  if (rate) input.value = String(rate);
+  input.addEventListener("input", () => {
+    const value = validTariff(input.value);
+    render(value);
+    if (value) chrome.storage.local.set({ [TARIFF_KEY]: value }).catch(() => {});
+  });
+  render(rate);
+  return el("div", { className: "decide-fact tariff" },
+    el("label", { className: "tariff-field" }, el("span", { className: "eyebrow" }, "Your rate, ₹ per unit"), input),
+    output);
 }
 
 // ---------- Stats and charts ----------

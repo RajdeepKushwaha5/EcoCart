@@ -1384,6 +1384,41 @@ select:hover {
   color: var(--amber);
 }
 
+.best-match {
+  justify-self: start;
+  font: 700 11px/1 var(--sans);
+  color: #ffffff;
+  background: var(--green);
+  border-radius: 999px;
+  padding: 5px 10px;
+}
+
+.fit {
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.route-facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 6px 12px;
+  margin: 4px 0;
+  padding: 10px 12px;
+  background: var(--green-soft);
+  border-radius: var(--radius);
+}
+
+.route-fact {
+  display: grid;
+  gap: 2px;
+  color: var(--ink);
+}
+
+.route-fact.unstated {
+  color: var(--muted);
+  font-style: italic;
+}
+
 .flag.ok {
   color: var(--green);
 }
@@ -1691,4 +1726,36 @@ a:focus-visible,
   .btn {
     transition: none;
   }
+}
+
+.tariff {
+  display: grid;
+  gap: 8px;
+}
+
+.tariff-field {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.tariff-field input {
+  width: 120px;
+  font: 600 14px var(--sans);
+  color: var(--ink);
+  background: var(--card);
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  padding: 7px 10px;
+}
+
+.tariff-field input:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 1px;
+}
+
+.tariff-output {
+  display: grid;
+  gap: 6px;
 }

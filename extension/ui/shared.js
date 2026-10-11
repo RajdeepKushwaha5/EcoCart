@@ -64,7 +64,8 @@ function plantArt(stage, className = "plant-art") {
 
 export function renderPlant(container, completed) {
   const { stage, name, next } = plantStage(completed);
-  container.replaceChildren(plantArt(stage), node("p", "plant-name", name), node("p", "plant-next", next));
+  container.replaceChildren(plantArt(stage), node("p", "plant-name", name), node("p", "plant-next", next),
+    node("p", "plant-rule", PLANT_RULE));
 }
 
 // Full-screen moment shown after a plan is marked done.
@@ -80,7 +81,7 @@ export function celebrate(completed) {
     plantArt(stage, "plant-art growing"),
     node("p", "celebrate-title", "Your plant grew"),
     node("p", "celebrate-stage", name),
-    node("p", "muted", `Your old device is out of the drawer and on its way to a second life. ${next}.`),
+    node("p", "muted", `You marked the plan done, so your plant grew. ${next}. Have a receipt? Ask for verification on the dashboard.`),
     button("Nice", close, "primary"),
   );
   overlay.append(panel);

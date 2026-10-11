@@ -133,3 +133,13 @@ def test_verification_is_requested_only_for_a_reported_handover(table):
     with pytest.raises(ApiError) as error:
         actions.request_verification(table, "s2", created["actionId"], {"note": "x"})
     assert error.value.status == 404
+
+
+def test_old_device_check_is_optional_and_validated():
+    from actions import validate_old_device
+    from responses import ApiError
+    assert validate_old_device({"brand": "Nokia", "ageYears": 6}) == {"brand": "Nokia", "ageYears": 6}
+    checked = validate_old_device({"brand": "Nokia", "ageYears": 6, "works": "no", "condition": "damaged", "goal": "recycle"})
+    assert checked == {"brand": "Nokia", "ageYears": 6, "works": "no", "condition": "damaged", "goal": "recycle"}
+    with pytest.raises(ApiError):
+        validate_old_device({"brand": "Nokia", "ageYears": 6, "works": "maybe"})

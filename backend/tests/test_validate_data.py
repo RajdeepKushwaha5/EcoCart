@@ -36,8 +36,13 @@ def test_valid_option_passes():
     option = {
         "city": "delhi-ncr", "optionId": "o", "name": "N", "type": "recycle", "brands": [],
         "handover": "Drop-off", "handoffConfirmed": True, "source": SRC, "checked": "2026-10-01",
+        "method": "Drop-off", "cost": "Free", "youGet": None, "notWorking": None, "area": None,
     }
     assert check_options([option]) == []
+    # Every route detail is stated: text from the page, or null when the page does not say.
+    missing = {key: value for key, value in option.items() if key != "cost"}
+    assert any("'cost'" in e for e in check_options([missing]))
+    assert any("'area'" in e for e in check_options([{**option, "area": ""}]))
 
 
 def test_support_list_rows_need_a_source_and_a_real_end_date():

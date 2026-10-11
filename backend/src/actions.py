@@ -29,6 +29,13 @@ def _public(item):
     return {key: value for key, value in item.items() if key != "sessionId"}
 
 
+OLD_DEVICE_CHECK = {
+    "works": {"yes", "partly", "no"},
+    "condition": {"good", "worn", "damaged"},
+    "goal": {"money", "reuse", "recycle"},
+}
+
+
 def validate_old_device(value):
     if not isinstance(value, dict):
         raise ApiError(400, "'oldDevice' must be an object")
@@ -36,7 +43,16 @@ def validate_old_device(value):
     age = value.get("ageYears")
     if not isinstance(age, int) or isinstance(age, bool) or not 0 <= age <= MAX_AGE_YEARS:
         raise ApiError(400, f"'oldDevice.ageYears' must be a whole number from 0 to {MAX_AGE_YEARS}")
-    return {"brand": brand, "ageYears": age}
+    device = {"brand": brand, "ageYears": age}
+    # The old-device check, if the shopper answered it: kept with the plan, never required.
+    for key, allowed in OLD_DEVICE_CHECK.items():
+        answer = value.get(key)
+        if answer is None:
+            continue
+        if answer not in allowed:
+            raise ApiError(400, f"'oldDevice.{key}' must be one of {sorted(allowed)}")
+        device[key] = answer
+    return device
 
 
 def _new_device(body, catalog):

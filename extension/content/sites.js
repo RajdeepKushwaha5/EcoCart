@@ -142,8 +142,15 @@ const AMAZON = {
       // Some layouts put the brand in its own h2; the longest one is the product title.
       const heading = [...node.querySelectorAll("h2")]
         .sort((a, b) => b.textContent.length - a.textContent.length)[0];
-      return { node, title: clean(heading?.textContent), anchor: heading };
+      // Badges go after the whole title block: inside it, Amazon's line clamp hides them or lets them overlap the title.
+      const block = heading?.closest('[data-cy="title-recipe"]') || heading;
+      return { node, title: clean(heading?.textContent), anchor: block };
     });
+  },
+
+  resultPrice(node) {
+    return numberFrom(node.querySelector(".a-price:not(.a-text-price) .a-offscreen")?.textContent
+      || node.querySelector(".a-price:not(.a-text-price) .a-price-whole")?.textContent);
   },
 
   isThankYouPage() {
@@ -337,11 +344,20 @@ const FLIPKART = {
     return [...document.querySelectorAll(FLIPKART_RESULT)]
       .filter((node) => node.querySelector('a[href*="/p/itm"]'))
       .map((node) => {
-        const title = clean(node.querySelector("img[alt]")?.getAttribute("alt"));
+        // List tiles name the product in the image's alt text; fashion grid tiles leave it empty and use the link's title.
+        const title = clean(node.querySelector("img[alt]")?.getAttribute("alt"))
+          || clean(node.querySelector('a[href*="/p/itm"][title]')?.getAttribute("title"));
         const label = [...node.querySelectorAll("div, a")]
           .find((element) => element.childElementCount === 0 && clean(element.textContent) === title);
         return { node, title, anchor: label || node.querySelector('a[href*="/p/itm"]') };
       });
+  },
+
+  // Flipkart's class names change often, so the first stand-alone rupee amount in the tile is the price.
+  resultPrice(node) {
+    const price = [...node.querySelectorAll("div, span")]
+      .find((element) => element.childElementCount === 0 && /^₹[\d,]+$/.test(clean(element.textContent)));
+    return price ? numberFrom(price.textContent) : null;
   },
 
   isThankYouPage() {

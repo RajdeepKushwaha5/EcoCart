@@ -33,3 +33,17 @@
 .badge.claim .mark {
   background: #9a5e0a;
 }
+
+.badge.estimate {
+  font: 600 12px/1.2 "EcoCart Sans", "Instrument Sans", system-ui, sans-serif;
+  letter-spacing: 0;
+  white-space: nowrap;
+  color: #235e2c;
+  background: #ffffff;
+  border-color: rgba(47, 122, 59, 0.45);
+  border-radius: 999px;
+}
+
+.badge.estimate .mark {
+  border-radius: 50%;
+}

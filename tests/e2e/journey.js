@@ -1,6 +1,7 @@
 // The whole shopper journey with the real extension on live shop pages, pressing controls with real mouse clicks:
 // card on Amazon and Flipkart, a recorded lower-footprint choice, the shortlist, an old-device plan saved, a reminder,
-// marked done from the popup (the dashboard updates without a reload), a verification request, and deleted again.
+// marked done from the popup (the dashboard updates without a reload), a verification request, and deleted again,
+// then estimate badges on a search results page.
 //
 // Setup: cd tests/e2e && npm install
 // Run:   node journey.js            (set BROWSER to a Chrome or Edge executable if it is not found)
@@ -135,8 +136,18 @@ async function main() {
     await page.waitForFunction(() => document.getElementById("ecocart-card").shadowRoot.querySelector("select[name=city]"), { timeout: 10000 });
     await (await handleIn(page, cardControl(`root.querySelector("select[name=city]")`))).select("bengaluru");
     await (await handleIn(page, cardControl(`root.querySelector("select[name=ageYears]")`))).select("4");
+    await (await handleIn(page, cardControl(`root.querySelector("select[name=works]")`))).select("no");
+    await (await handleIn(page, cardControl(`root.querySelector("select[name=goal]")`))).select("recycle");
     await realClick(page, cardControl(`root.querySelector("form button[type=submit]")`));
     await page.waitForFunction(() => document.getElementById("ecocart-card").shadowRoot.querySelector("input[name=optionId]"), { timeout: 15000 });
+    const advice = await inCard(page, `return {
+      best: root.querySelector(".tile .best-match") ? root.querySelector(".tile:has(.best-match) strong").textContent : null,
+      facts: root.querySelectorAll(".route-facts").length,
+      unstated: root.querySelectorAll(".route-fact.unstated").length,
+      notBooking: /not a booking/.test(root.textContent),
+    }`);
+    check("old-device check ranks routes and shows what each page states", advice.best && advice.facts > 0 && advice.notBooking,
+      JSON.stringify(advice));
     await realClick(page, cardControl(`root.querySelector(".tile")`));
     await realClick(page, cardControl(`root.querySelector(".tiles").closest("form").querySelector("button[type=submit]")`));
     const saved = await page.waitForFunction(() => /Plan saved/.test(document.getElementById("ecocart-card").shadowRoot.textContent), { timeout: 15000 }).then(() => true, () => false);
@@ -164,9 +175,10 @@ async function main() {
       JSON.stringify(allTime));
     const purchased = await dashboard.evaluate(() => ({
       rows: document.querySelectorAll(".purchase-table tbody tr").length,
-      total: Number(document.querySelector(".purchase-number")?.textContent),
+      total: Number(document.querySelector(".purchase-number.reported")?.textContent),
+      estimate: Number(document.querySelector(".purchase-number.estimate")?.textContent),
     }));
-    check("purchases dashboard lists the purchase with its footprint", purchased.rows === 1 && purchased.total > 0, JSON.stringify(purchased));
+    check("purchases dashboard keeps makers' reports and estimates apart", purchased.rows === 1 && purchased.total > 0 && purchased.estimate === 0, JSON.stringify(purchased));
 
     await realClick(dashboard, pageControl(`document.getElementById("tab-actions")`));
     await dashboard.evaluate(() => {
@@ -198,6 +210,19 @@ async function main() {
     await realClick(dashboard, pageControl(`[...document.querySelectorAll(".plan button")].find((b) => b.textContent === "Delete")`));
     await wait(3000);
     check("test plan deleted", (await dashboard.evaluate(() => document.querySelectorAll(".plan").length)) === 0);
+
+    // Search results: one labelled estimate badge per result, from one batch request.
+    const shop = await browser.newPage();
+    await shop.goto("https://www.flipkart.com/search?q=green+tea", { waitUntil: "domcontentloaded", timeout: 60000 });
+    await shop.waitForFunction(() => document.querySelectorAll(".ecocart-badge-host").length >= 5, { timeout: 30000 }).catch(() => {});
+    const searchBadges = await shop.evaluate(() => {
+      const badges = [...document.querySelectorAll(".ecocart-badge-host")].map((host) => host.shadowRoot.querySelector(".badge"));
+      const tiles = [...document.querySelectorAll("[data-id]")].filter((tile) => tile.querySelectorAll(".ecocart-badge-host").length > 1);
+      return { count: badges.length, labelled: badges.every((b) => /not a measurement/.test(b.title)), doubled: tiles.length };
+    });
+    check("search results show labelled estimate badges, one per result",
+      searchBadges.count >= 5 && searchBadges.labelled && searchBadges.doubled === 0, JSON.stringify(searchBadges));
+
   } finally {
     check("no script errors", errors.length === 0, errors.slice(0, 3).join(" | "));
     await browser.close();

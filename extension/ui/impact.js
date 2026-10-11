@@ -205,20 +205,29 @@ function purchaseId(snapshot, at) {
 }
 
 // Totals for the purchases dashboard. Only purchases with a footprint add to the kilograms.
+// Makers' lifecycle reports and category estimates measure different things (a whole life, or making it from its
+// price), so they are kept as two totals and never added into one number.
 function purchaseTotals(purchases) {
   const byMonth = {};
-  let totalKg = 0;
   let reportedKg = 0;
   let estimateKg = 0;
+  let reported = 0;
+  let estimated = 0;
   for (const purchase of purchases) {
     if (purchase.kg == null) continue;
-    totalKg += purchase.kg;
-    if (purchase.basis === "reported") reportedKg += purchase.kg;
-    else estimateKg += purchase.kg;
+    const basis = purchase.basis === "reported" ? "reported" : "estimate";
+    if (basis === "reported") {
+      reportedKg += purchase.kg;
+      reported += 1;
+    } else {
+      estimateKg += purchase.kg;
+      estimated += 1;
+    }
     const month = purchase.at.slice(0, 7);
-    byMonth[month] = (byMonth[month] || 0) + purchase.kg;
+    byMonth[month] ||= { reported: 0, estimate: 0 };
+    byMonth[month][basis] += purchase.kg;
   }
-  return { totalKg, reportedKg, estimateKg, byMonth, count: purchases.length,
+  return { reportedKg, estimateKg, reported, estimated, byMonth, count: purchases.length,
     unknown: purchases.filter((purchase) => purchase.kg == null).length };
 }
 
@@ -428,8 +437,139 @@ async function logActivity(type, { name, kind, key } = {}) {
 }
 
 // Lets the Node tests load this file. The browser ignores it.
+// ---------- Electricity cost ----------
+
+// Running cost from the label's yearly kWh and the rate the shopper types from their own bill. EcoCart never
+// assumes a rate: tariffs differ by state, slab and month.
+const TARIFF_KEY = "tariffInrPerKwh";
+const MAX_TARIFF = 50;
+
+function validTariff(value) {
+  const rate = Number(value);
+  return Number.isFinite(rate) && rate > 0 && rate <= MAX_TARIFF ? rate : null;
+}
+
+// The yearly running cost of each, the difference, and how many years of that difference the upfront price gap
+// takes to repay. Payback is given only when the cheaper-to-run one costs more upfront.
+function runningCost(kwh, otherKwh, rate, price, otherPrice) {
+  const yearly = Math.round(kwh * rate);
+  if (otherKwh == null) return { yearly };
+  const otherYearly = Math.round(otherKwh * rate);
+  const savedPerYear = otherYearly - yearly; // positive: this one is cheaper to run
+  const upfront = price != null && otherPrice != null ? price - otherPrice : null; // positive: this one costs more
+  const payback = upfront != null && upfront > 0 && savedPerYear > 0 ? Math.round((upfront / savedPerYear) * 10) / 10 : null;
+  return { yearly, otherYearly, savedPerYear, upfront, payback };
+}
+
+async function loadTariff() {
+  try {
+    const { [TARIFF_KEY]: rate } = await chrome.storage.local.get(TARIFF_KEY);
+    return validTariff(rate);
+  } catch {
+    return null;
+  }
+}
+
+// ---------- Old-device check ----------
+
+// Three questions about the old device. The answers only order the checked routes and explain why; every route
+// stays visible, and nothing is said about a route that its own page does not say.
+const OLD_DEVICE_QUESTIONS = {
+  works: { label: "Does it work?", answers: [["yes", "Yes, fully"], ["partly", "Partly"], ["no", "No"]] },
+  condition: { label: "Condition", answers: [["good", "Good"], ["worn", "Worn: scratches or dents"], ["damaged", "Damaged: cracked or broken parts"]] },
+  goal: { label: "What do you want?", answers: [["money", "Money or credit for it"], ["reuse", "Someone keeps using it"], ["recycle", "Recycle it safely"]] },
+};
+
+const ROUTE_FACTS = [
+  ["method", "How"],
+  ["cost", "Cost to you"],
+  ["youGet", "You get"],
+  ["notWorking", "If it doesn't work"],
+  ["area", "Where"],
+];
+const NOT_STATED = "Not stated on its page";
+
+function routeFacts(option) {
+  return ROUTE_FACTS.map(([key, label]) => [label, option[key] || NOT_STATED, Boolean(option[key])]);
+}
+
+function paysSomething(option) {
+  return Boolean(option.youGet) && !/^nothing/i.test(option.youGet);
+}
+
+function routeFit(option, check) {
+  let score = 0;
+  const reasons = [];
+  if (check.goal === "money") {
+    if (paysSomething(option)) {
+      score += 2;
+      reasons.push(`You get: ${option.youGet}.`);
+    } else if (option.youGet) {
+      reasons.push(`${option.youGet}.`);
+    } else {
+      reasons.push("Its page does not say whether you get anything for it.");
+    }
+  } else if (check.goal === "reuse") {
+    if (option.type === "reuse") {
+      score += 2;
+      reasons.push("A resale route, so the device can be used again.");
+    } else if (option.type === "exchange") {
+      score += 1;
+      reasons.push("A trade-in: eligible devices are exchanged for credit.");
+    } else {
+      reasons.push("A recycling route: the materials are recovered, the device is not reused.");
+    }
+  } else if (check.goal === "recycle") {
+    if (option.type === "recycle") {
+      score += 2;
+      reasons.push("A recycling route.");
+    } else if (/recycl/i.test(option.notWorking || "")) {
+      score += 1;
+      reasons.push(`${option.notWorking}.`);
+    } else {
+      reasons.push("Mainly for resale or trade-in.");
+    }
+  }
+  if (check.works === "no") {
+    // Each fact counts once: a recycling promise already counted for the goal is not counted again here.
+    if (option.notWorking) {
+      if (!reasons.some((reason) => reason.startsWith(option.notWorking))) {
+        score += 1;
+        reasons.push(`If it doesn't work: ${option.notWorking}.`);
+      }
+    } else if (option.type !== "recycle") {
+      score -= 1;
+      reasons.push("Its page does not say whether it takes devices that don't work. Ask before booking.");
+    }
+  }
+  return { option, score, reasons };
+}
+
+// The routes in order of fit (ties keep their listed order), plus general notes for these answers.
+function routeAdvice(options, check) {
+  const ranked = options.map((option) => routeFit(option, check))
+    .map((fit, index) => ({ ...fit, index }))
+    .sort((a, b) => b.score - a.score || a.index - b.index)
+    .map(({ index, ...fit }) => fit);
+  const notes = [];
+  if (check.goal !== "recycle" && (check.works === "partly" || check.works === "no" || check.condition === "damaged")) {
+    notes.push("If it can be repaired, using it longer usually saves more than replacing it: most of a device's footprint comes from making it. Ask the maker's service centre for a quote first.");
+  }
+  if (check.condition === "damaged") {
+    notes.push("If the battery is swollen, don't charge it or post it. Tell the collector before you hand it over.");
+  }
+  return { ranked, best: ranked[0] && ranked[0].score > 0 ? ranked[0].option.optionId : null, notes };
+}
+
+function validCheck(check) {
+  return Object.entries(OLD_DEVICE_QUESTIONS)
+    .every(([key, question]) => question.answers.some(([value]) => value === check?.[key]));
+}
+
 if (typeof module !== "undefined") {
   module.exports = {
+    validTariff, runningCost,
+    OLD_DEVICE_QUESTIONS, routeFacts, routeFit, routeAdvice, validCheck, NOT_STATED,
     comparable, compareGroup, makeChoice, choiceDifference, impactTotals, planTotals, storageGb, monthKey,
     capacityFrom, prepareGuide, isOverdue, reminderCalendar, impactTimeline, stageDates,
     productSnapshot, purchaseId, purchaseTotals, lastMonths, greenActions,

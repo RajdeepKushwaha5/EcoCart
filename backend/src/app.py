@@ -117,6 +117,33 @@ def post_estimate(event):
     return 200, result
 
 
+MAX_BATCH = 60
+
+
+def post_estimates(event):
+    """Category estimates for a page of search results, from each result's title and price.
+
+    Search results have no breadcrumb, so the category comes from the title. Nothing is stored and no gap is counted.
+    """
+    body = parse_body(event)
+    items = body.get("items")
+    if not isinstance(items, list) or not 0 < len(items) <= MAX_BATCH:
+        raise ApiError(400, f"'items' must be a list of 1 to {MAX_BATCH} results")
+    results = []
+    for item in items:
+        if not isinstance(item, dict) or not isinstance(item.get("title"), str) or not item["title"].strip():
+            results.append(None)
+            continue
+        price = item.get("price")
+        if isinstance(price, bool) or not isinstance(price, (int, float)):
+            price = None
+        result = estimate([], item["title"][:300], price)["estimate"]
+        results.append(None if result is None else {
+            "kg": result["kg"], "category": result["category"], "kgPerThousandInr": result["kgPerThousandInr"],
+        })
+    return 200, {"results": results}
+
+
 def get_product(event):
     catalog = db.load_catalog()
     model_id = _path_param(event, "modelId")
@@ -233,6 +260,7 @@ def get_stats(event):
 ROUTES = {
     "POST /match": match,
     "POST /estimate": post_estimate,
+    "POST /estimates": post_estimates,
     "GET /products/{modelId}": get_product,
     "GET /catalog": get_catalog,
     "GET /stats": get_stats,

@@ -2,7 +2,8 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const { comparable, compareGroup, makeChoice, choiceDifference, impactTotals, planTotals, capacityFrom, prepareGuide, isOverdue,
-  reminderCalendar, impactTimeline, stageDates, purchaseId, purchaseTotals, lastMonths, greenActions } = require("../ui/impact.js");
+  reminderCalendar, impactTimeline, stageDates, purchaseId, purchaseTotals, lastMonths, greenActions,
+  routeAdvice, routeFacts, validCheck, NOT_STATED, validTariff, runningCost } = require("../ui/impact.js");
 
 const phone = (fields) => ({ kind: "device", category: "phone", brand: "Apple", carbonBasis: null, ...fields });
 const fridge = (fields) => ({ kind: "appliance", type: "refrigerators", capacity: { value: 240, unit: "litres" }, ...fields });
@@ -127,10 +128,12 @@ test("purchases add up by month, keep reported and estimated apart, and skip unk
     { kg: null, basis: null, at: "2026-10-10T10:00:00Z" },
   ];
   const totals = purchaseTotals(purchases);
-  assert.equal(totals.totalKg, 68.5);
+  assert.equal(totals.totalKg, undefined); // never one combined number
   assert.equal(totals.reportedKg, 63);
   assert.equal(totals.estimateKg, 5.5);
-  assert.deepEqual(totals.byMonth, { "2026-10": 65.5, "2026-09": 3 });
+  assert.equal(totals.reported, 1);
+  assert.equal(totals.estimated, 2);
+  assert.deepEqual(totals.byMonth, { "2026-10": { reported: 63, estimate: 2.5 }, "2026-09": { reported: 0, estimate: 3 } });
   assert.equal(totals.unknown, 1);
 });
 
@@ -144,4 +147,51 @@ test("the chart covers the last twelve months and the plant grows with greener a
   assert.equal(months.length, 12);
   assert.deepEqual([months[0], months[11]], ["2025-11", "2026-10"]);
   assert.equal(greenActions([{ status: "done" }, { status: "planned" }], [{ stage: "chosen" }, { stage: "considered" }, { stage: "purchased" }]), 3);
+});
+
+const ROUTES = [
+  { optionId: "apple", type: "exchange", youGet: "Instant credit towards an Apple purchase, if the device is eligible",
+    notWorking: "If it is not eligible for credit, Apple recycles it for free", cost: "Free" },
+  { optionId: "samsung", type: "recycle", youGet: "Nothing: Samsung says there is no money or discount", notWorking: null, cost: "Free" },
+  { optionId: "sell", type: "reuse", youGet: "Paid at pickup", notWorking: "Accepted, usually for a lower price", cost: "Free pickup" },
+  { optionId: "sell-tv", type: "reuse", youGet: "Paid when it is collected", notWorking: null, cost: "Free pickup" },
+];
+
+test("old-device answers order the routes and say why, from each route's own facts", () => {
+  const money = routeAdvice(ROUTES, { works: "yes", condition: "good", goal: "money" });
+  assert.equal(money.best, "apple"); // ties keep the listed order
+  assert.deepEqual(money.ranked.map((fit) => fit.option.optionId), ["apple", "sell", "sell-tv", "samsung"]);
+  assert.match(money.ranked[3].reasons[0], /no money or discount/);
+  assert.deepEqual(money.notes, []);
+
+  const broken = routeAdvice(ROUTES, { works: "no", condition: "damaged", goal: "money" });
+  // A paying route that does not say whether it takes broken devices still ranks above one that pays nothing.
+  assert.deepEqual(broken.ranked.map((fit) => fit.option.optionId), ["apple", "sell", "sell-tv", "samsung"]);
+  assert.ok(broken.ranked[2].reasons.some((reason) => /does not say whether it takes devices that don't work/.test(reason)));
+  assert.equal(broken.notes.length, 2); // repair first, and battery safety
+
+  const recycle = routeAdvice(ROUTES, { works: "no", condition: "worn", goal: "recycle" });
+  assert.equal(recycle.best, "samsung");
+  assert.deepEqual(recycle.notes, []);
+});
+
+test("route facts say when the page does not state something", () => {
+  const facts = routeFacts(ROUTES[1]);
+  assert.deepEqual(facts.find(([label]) => label === "If it doesn't work"), ["If it doesn't work", NOT_STATED, false]);
+  assert.ok(validCheck({ works: "yes", condition: "good", goal: "reuse" }));
+  assert.ok(!validCheck({ works: "maybe", condition: "good", goal: "reuse" }));
+});
+
+test("running cost uses the shopper's own rate, and payback only when it applies", () => {
+  assert.equal(validTariff("8.5"), 8.5);
+  assert.equal(validTariff(""), null);
+  assert.equal(validTariff("0"), null);
+  assert.equal(validTariff("500"), null);
+  assert.deepEqual(runningCost(192, null, 8), { yearly: 1536 });
+  // 192 against 230 kWh at 8 a unit: 304 a year less to run; 2,000 more upfront repays in about 6.6 years.
+  assert.deepEqual(runningCost(192, 230, 8, 24000, 22000),
+    { yearly: 1536, otherYearly: 1840, savedPerYear: 304, upfront: 2000, payback: 6.6 });
+  // Cheaper to run and cheaper to buy: nothing to repay.
+  assert.equal(runningCost(192, 230, 8, 21000, 22000).payback, null);
+  assert.equal(runningCost(192, 230, 8, null, 22000).upfront, null);
 });

@@ -213,3 +213,16 @@ def test_reports_keep_only_the_kind_shop_and_listing(app):
                 {"kind": "price", "shop": "ebay", "listingId": "B0DYDPBM8K"},
                 {"kind": "price", "shop": "amazon", "listingId": "<script>"}):
         assert call(app, "POST /reports", bad)[0] == 400
+
+
+def test_search_results_get_estimates_from_their_titles(app):
+    items = [{"title": "Tata Tea Premium 1 kg", "price": 487}, {"title": "Mystery thing", "price": 100}, {"title": "", "price": 5},
+             {"title": "Cotton T-shirt for men", "price": "free"}]
+    status, body = call(app, "POST /estimates", {"items": items})
+    assert status == 200
+    assert len(body["results"]) == 4
+    assert body["results"][2] is None
+    assert body["results"][3] is None  # no usable price, so no number
+    assert call(app, "POST /estimates", {"items": []})[0] == 400
+    assert call(app, "POST /estimates", {"items": [{"title": "x"}] * 61})[0] == 400
+    assert app.db.table("STATS_TABLE").items == {}

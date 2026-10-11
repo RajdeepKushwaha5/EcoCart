@@ -948,7 +948,11 @@
     "tea bags",
     "coffee powder",
     "leaf tea",
-    "dust tea"
+    "dust tea",
+    "tea premium",
+    "black tea",
+    "masala tea",
+    "filter coffee"
    ]
   },
   {
@@ -1637,7 +1641,11 @@
     "wireless earphones",
     "true wireless",
     "headset",
-    "headsets"
+    "headsets",
+    "earbuds",
+    "tws earbuds",
+    "neckband",
+    "bluetooth headphones"
    ]
   },
   {

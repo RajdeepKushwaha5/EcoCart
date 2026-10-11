@@ -6,12 +6,17 @@
     "type": "exchange",
     "brands": [],
     "accepts": "Many Apple and third-party phones, including Samsung and Google",
-    "handover": "Exchange online at apple.com/in or at an Apple Store for credit towards a new Apple device. Phones with no exchange value can be recycled with Apple for free.",
+    "handover": "Trade in online (iPhone only) or at an Apple Store for instant credit towards a purchase. A device not eligible for credit is recycled for free.",
     "url": "https://www.apple.com/in/trade-in/",
     "handoffConfirmed": false,
     "source": "https://www.apple.com/in/trade-in/",
-    "checked": "2026-09-30",
-    "categories": []
+    "checked": "2026-10-11",
+    "categories": [],
+    "method": "Online for iPhone, or at an Apple Store. Mac, iPad and Apple Watch only in store.",
+    "cost": "Free",
+    "youGet": "Instant credit towards an Apple purchase, if the device is eligible",
+    "notWorking": "If it is not eligible for credit, Apple recycles it for free",
+    "area": "apple.com (iPhone) and Apple Stores"
   },
   {
     "city": "delhi-ncr",
@@ -21,13 +26,18 @@
     "brands": [
       "Samsung"
     ],
-    "accepts": "Samsung phones, portable electronics and home appliances",
-    "handover": "Drop phones and small devices in the e-waste bin at a Samsung service centre. For TVs and home appliances, call 1800 40 7267864 for a free pickup. For other e-waste pickups, call 1800-5-7267864.",
+    "accepts": "All products Samsung sold in India: phones, tablets, TVs, monitors, laptops, washing machines, ACs, refrigerators, microwaves and dishwashers",
+    "handover": "WhatsApp or call 1800 5 7267864 to arrange an e-waste pickup. No fee is charged.",
     "url": "https://www.samsung.com/in/microsite/care-for-clean-india/",
     "handoffConfirmed": false,
-    "source": "https://www.samsung.com/in/support/mobile-devices/e-waste-care-for-clean-india/",
-    "checked": "2026-09-30",
-    "categories": []
+    "source": "https://www.samsung.com/in/microsite/care-for-clean-india/",
+    "checked": "2026-10-11",
+    "categories": [],
+    "method": "Pickup arranged on WhatsApp or by phone",
+    "cost": "Free",
+    "youGet": "Nothing: Samsung says there is no money or discount",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "delhi-ncr",
@@ -39,11 +49,16 @@
       "phone"
     ],
     "accepts": "Used phones from most brands",
-    "handover": "Get a price online, book a free pickup from home or work, and get paid when it is collected.",
+    "handover": "Get a price online, book a free pickup from home or work (or drop it at a Cashify store), and get paid at pickup.",
     "url": "https://www.cashify.in/sell-old-mobile-phone",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-mobile-phone",
-    "checked": "2026-09-30"
+    "checked": "2026-10-11",
+    "method": "Doorstep pickup, or drop-off at a Cashify store",
+    "cost": "Free pickup",
+    "youGet": "Paid at pickup",
+    "notWorking": "Accepted, usually for a lower price",
+    "area": "About 1,500 cities, as Cashify states"
   },
   {
     "city": "delhi-ncr",
@@ -54,12 +69,17 @@
     "categories": [
       "phone"
     ],
-    "accepts": "Phones from most brands, including ones that no longer work",
+    "accepts": "Phones from most brands",
     "handover": "Tell Cashify about the phone and it assigns a pickup date and time at your address. Check that your area is served.",
     "url": "https://www.cashify.in/recycle-old-phone",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/recycle-old-phone",
-    "checked": "2026-09-30"
+    "checked": "2026-10-11",
+    "method": "Doorstep pickup at a date and time Cashify assigns",
+    "cost": null,
+    "youGet": null,
+    "notWorking": null,
+    "area": "The page says when your city is not served"
   },
   {
     "city": "delhi-ncr",
@@ -75,7 +95,12 @@
     "url": "https://www.cashify.in/sell-old-laptop",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-laptop",
-    "checked": "2026-09-30"
+    "checked": "2026-10-11",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid at pickup",
+    "notWorking": null,
+    "area": "About 1,500 cities, as Cashify states"
   },
   {
     "city": "delhi-ncr",
@@ -91,7 +116,12 @@
     "url": "https://www.cashify.in/sell-old-tablet",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-tablet",
-    "checked": "2026-09-30"
+    "checked": "2026-09-30",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "delhi-ncr",
@@ -107,7 +137,12 @@
     "url": "https://www.cashify.in/sell-old-television",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-television",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "delhi-ncr",
@@ -123,7 +158,12 @@
     "url": "https://www.cashify.in/sell-old-refrigerator",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-refrigerator",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "delhi-ncr",
@@ -139,7 +179,12 @@
     "url": "https://www.cashify.in/sell-old-gaming-consoles",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-gaming-consoles",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "mumbai",
@@ -148,12 +193,17 @@
     "type": "exchange",
     "brands": [],
     "accepts": "Many Apple and third-party phones, including Samsung and Google",
-    "handover": "Exchange online at apple.com/in or at an Apple Store for credit towards a new Apple device. Phones with no exchange value can be recycled with Apple for free.",
+    "handover": "Trade in online (iPhone only) or at an Apple Store for instant credit towards a purchase. A device not eligible for credit is recycled for free.",
     "url": "https://www.apple.com/in/trade-in/",
     "handoffConfirmed": false,
     "source": "https://www.apple.com/in/trade-in/",
-    "checked": "2026-10-02",
-    "categories": []
+    "checked": "2026-10-11",
+    "categories": [],
+    "method": "Online for iPhone, or at an Apple Store. Mac, iPad and Apple Watch only in store.",
+    "cost": "Free",
+    "youGet": "Instant credit towards an Apple purchase, if the device is eligible",
+    "notWorking": "If it is not eligible for credit, Apple recycles it for free",
+    "area": "apple.com (iPhone) and Apple Stores"
   },
   {
     "city": "mumbai",
@@ -163,13 +213,18 @@
     "brands": [
       "Samsung"
     ],
-    "accepts": "Samsung phones, portable electronics and home appliances",
-    "handover": "Drop phones and small devices in the e-waste bin at a Samsung service centre. For TVs and home appliances, call 1800 40 7267864 for a free pickup. For other e-waste pickups, call 1800-5-7267864.",
+    "accepts": "All products Samsung sold in India: phones, tablets, TVs, monitors, laptops, washing machines, ACs, refrigerators, microwaves and dishwashers",
+    "handover": "WhatsApp or call 1800 5 7267864 to arrange an e-waste pickup. No fee is charged.",
     "url": "https://www.samsung.com/in/microsite/care-for-clean-india/",
     "handoffConfirmed": false,
-    "source": "https://www.samsung.com/in/support/mobile-devices/e-waste-care-for-clean-india/",
-    "checked": "2026-10-02",
-    "categories": []
+    "source": "https://www.samsung.com/in/microsite/care-for-clean-india/",
+    "checked": "2026-10-11",
+    "categories": [],
+    "method": "Pickup arranged on WhatsApp or by phone",
+    "cost": "Free",
+    "youGet": "Nothing: Samsung says there is no money or discount",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "mumbai",
@@ -181,11 +236,16 @@
       "phone"
     ],
     "accepts": "Used phones from most brands",
-    "handover": "Get a price online, book a free pickup from home or work, and get paid when it is collected.",
+    "handover": "Get a price online, book a free pickup from home or work (or drop it at a Cashify store), and get paid at pickup.",
     "url": "https://www.cashify.in/sell-old-mobile-phone-in-mumbai",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-mobile-phone-in-mumbai",
-    "checked": "2026-10-02"
+    "checked": "2026-10-11",
+    "method": "Doorstep pickup, or drop-off at a Cashify store",
+    "cost": "Free pickup",
+    "youGet": "Paid at pickup",
+    "notWorking": "Accepted, usually for a lower price",
+    "area": "About 1,500 cities, as Cashify states"
   },
   {
     "city": "mumbai",
@@ -196,12 +256,17 @@
     "categories": [
       "phone"
     ],
-    "accepts": "Phones from most brands, including ones that no longer work",
+    "accepts": "Phones from most brands",
     "handover": "Tell Cashify about the phone and it assigns a pickup date and time at your address. Check that your area is served.",
     "url": "https://www.cashify.in/recycle-old-phone",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/recycle-old-phone",
-    "checked": "2026-10-02"
+    "checked": "2026-10-11",
+    "method": "Doorstep pickup at a date and time Cashify assigns",
+    "cost": null,
+    "youGet": null,
+    "notWorking": null,
+    "area": "The page says when your city is not served"
   },
   {
     "city": "mumbai",
@@ -217,7 +282,12 @@
     "url": "https://www.cashify.in/sell-old-laptop-in-mumbai",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-laptop-in-mumbai",
-    "checked": "2026-10-02"
+    "checked": "2026-10-11",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid at pickup",
+    "notWorking": null,
+    "area": "About 1,500 cities, as Cashify states"
   },
   {
     "city": "mumbai",
@@ -233,7 +303,12 @@
     "url": "https://www.cashify.in/sell-old-tablet-in-mumbai",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-tablet-in-mumbai",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "mumbai",
@@ -249,7 +324,12 @@
     "url": "https://www.cashify.in/sell-old-television-in-mumbai",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-television-in-mumbai",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "mumbai",
@@ -265,7 +345,12 @@
     "url": "https://www.cashify.in/sell-old-refrigerator-in-mumbai",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-refrigerator-in-mumbai",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "mumbai",
@@ -281,7 +366,12 @@
     "url": "https://www.cashify.in/sell-old-gaming-consoles-in-mumbai",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-gaming-consoles-in-mumbai",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "bengaluru",
@@ -290,12 +380,17 @@
     "type": "exchange",
     "brands": [],
     "accepts": "Many Apple and third-party phones, including Samsung and Google",
-    "handover": "Exchange online at apple.com/in or at an Apple Store for credit towards a new Apple device. Phones with no exchange value can be recycled with Apple for free.",
+    "handover": "Trade in online (iPhone only) or at an Apple Store for instant credit towards a purchase. A device not eligible for credit is recycled for free.",
     "url": "https://www.apple.com/in/trade-in/",
     "handoffConfirmed": false,
     "source": "https://www.apple.com/in/trade-in/",
-    "checked": "2026-10-02",
-    "categories": []
+    "checked": "2026-10-11",
+    "categories": [],
+    "method": "Online for iPhone, or at an Apple Store. Mac, iPad and Apple Watch only in store.",
+    "cost": "Free",
+    "youGet": "Instant credit towards an Apple purchase, if the device is eligible",
+    "notWorking": "If it is not eligible for credit, Apple recycles it for free",
+    "area": "apple.com (iPhone) and Apple Stores"
   },
   {
     "city": "bengaluru",
@@ -305,13 +400,18 @@
     "brands": [
       "Samsung"
     ],
-    "accepts": "Samsung phones, portable electronics and home appliances",
-    "handover": "Drop phones and small devices in the e-waste bin at a Samsung service centre. For TVs and home appliances, call 1800 40 7267864 for a free pickup. For other e-waste pickups, call 1800-5-7267864.",
+    "accepts": "All products Samsung sold in India: phones, tablets, TVs, monitors, laptops, washing machines, ACs, refrigerators, microwaves and dishwashers",
+    "handover": "WhatsApp or call 1800 5 7267864 to arrange an e-waste pickup. No fee is charged.",
     "url": "https://www.samsung.com/in/microsite/care-for-clean-india/",
     "handoffConfirmed": false,
-    "source": "https://www.samsung.com/in/support/mobile-devices/e-waste-care-for-clean-india/",
-    "checked": "2026-10-02",
-    "categories": []
+    "source": "https://www.samsung.com/in/microsite/care-for-clean-india/",
+    "checked": "2026-10-11",
+    "categories": [],
+    "method": "Pickup arranged on WhatsApp or by phone",
+    "cost": "Free",
+    "youGet": "Nothing: Samsung says there is no money or discount",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "bengaluru",
@@ -323,11 +423,16 @@
       "phone"
     ],
     "accepts": "Used phones from most brands",
-    "handover": "Get a price online, book a free pickup from home or work, and get paid when it is collected.",
+    "handover": "Get a price online, book a free pickup from home or work (or drop it at a Cashify store), and get paid at pickup.",
     "url": "https://www.cashify.in/sell-old-mobile-phone-in-bangalore",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-mobile-phone-in-bangalore",
-    "checked": "2026-10-02"
+    "checked": "2026-10-11",
+    "method": "Doorstep pickup, or drop-off at a Cashify store",
+    "cost": "Free pickup",
+    "youGet": "Paid at pickup",
+    "notWorking": "Accepted, usually for a lower price",
+    "area": "About 1,500 cities, as Cashify states"
   },
   {
     "city": "bengaluru",
@@ -338,12 +443,17 @@
     "categories": [
       "phone"
     ],
-    "accepts": "Phones from most brands, including ones that no longer work",
+    "accepts": "Phones from most brands",
     "handover": "Tell Cashify about the phone and it assigns a pickup date and time at your address. Check that your area is served.",
     "url": "https://www.cashify.in/recycle-old-phone",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/recycle-old-phone",
-    "checked": "2026-10-02"
+    "checked": "2026-10-11",
+    "method": "Doorstep pickup at a date and time Cashify assigns",
+    "cost": null,
+    "youGet": null,
+    "notWorking": null,
+    "area": "The page says when your city is not served"
   },
   {
     "city": "bengaluru",
@@ -359,7 +469,12 @@
     "url": "https://www.cashify.in/sell-old-laptop-in-bangalore",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-laptop-in-bangalore",
-    "checked": "2026-10-02"
+    "checked": "2026-10-11",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid at pickup",
+    "notWorking": null,
+    "area": "About 1,500 cities, as Cashify states"
   },
   {
     "city": "bengaluru",
@@ -375,7 +490,12 @@
     "url": "https://www.cashify.in/sell-old-tablet-in-bangalore",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-tablet-in-bangalore",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "bengaluru",
@@ -391,7 +511,12 @@
     "url": "https://www.cashify.in/sell-old-television-in-bangalore",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-television-in-bangalore",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "bengaluru",
@@ -407,7 +532,12 @@
     "url": "https://www.cashify.in/sell-old-refrigerator-in-bangalore",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-refrigerator-in-bangalore",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "bengaluru",
@@ -423,7 +553,12 @@
     "url": "https://www.cashify.in/sell-old-gaming-consoles-in-bangalore",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-gaming-consoles-in-bangalore",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "hyderabad",
@@ -432,12 +567,17 @@
     "type": "exchange",
     "brands": [],
     "accepts": "Many Apple and third-party phones, including Samsung and Google",
-    "handover": "Exchange online at apple.com/in or at an Apple Store for credit towards a new Apple device. Phones with no exchange value can be recycled with Apple for free.",
+    "handover": "Trade in online (iPhone only) or at an Apple Store for instant credit towards a purchase. A device not eligible for credit is recycled for free.",
     "url": "https://www.apple.com/in/trade-in/",
     "handoffConfirmed": false,
     "source": "https://www.apple.com/in/trade-in/",
-    "checked": "2026-10-02",
-    "categories": []
+    "checked": "2026-10-11",
+    "categories": [],
+    "method": "Online for iPhone, or at an Apple Store. Mac, iPad and Apple Watch only in store.",
+    "cost": "Free",
+    "youGet": "Instant credit towards an Apple purchase, if the device is eligible",
+    "notWorking": "If it is not eligible for credit, Apple recycles it for free",
+    "area": "apple.com (iPhone) and Apple Stores"
   },
   {
     "city": "hyderabad",
@@ -447,13 +587,18 @@
     "brands": [
       "Samsung"
     ],
-    "accepts": "Samsung phones, portable electronics and home appliances",
-    "handover": "Drop phones and small devices in the e-waste bin at a Samsung service centre. For TVs and home appliances, call 1800 40 7267864 for a free pickup. For other e-waste pickups, call 1800-5-7267864.",
+    "accepts": "All products Samsung sold in India: phones, tablets, TVs, monitors, laptops, washing machines, ACs, refrigerators, microwaves and dishwashers",
+    "handover": "WhatsApp or call 1800 5 7267864 to arrange an e-waste pickup. No fee is charged.",
     "url": "https://www.samsung.com/in/microsite/care-for-clean-india/",
     "handoffConfirmed": false,
-    "source": "https://www.samsung.com/in/support/mobile-devices/e-waste-care-for-clean-india/",
-    "checked": "2026-10-02",
-    "categories": []
+    "source": "https://www.samsung.com/in/microsite/care-for-clean-india/",
+    "checked": "2026-10-11",
+    "categories": [],
+    "method": "Pickup arranged on WhatsApp or by phone",
+    "cost": "Free",
+    "youGet": "Nothing: Samsung says there is no money or discount",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "hyderabad",
@@ -465,11 +610,16 @@
       "phone"
     ],
     "accepts": "Used phones from most brands",
-    "handover": "Get a price online, book a free pickup from home or work, and get paid when it is collected.",
+    "handover": "Get a price online, book a free pickup from home or work (or drop it at a Cashify store), and get paid at pickup.",
     "url": "https://www.cashify.in/sell-old-mobile-phone-in-hyderabad",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-mobile-phone-in-hyderabad",
-    "checked": "2026-10-02"
+    "checked": "2026-10-11",
+    "method": "Doorstep pickup, or drop-off at a Cashify store",
+    "cost": "Free pickup",
+    "youGet": "Paid at pickup",
+    "notWorking": "Accepted, usually for a lower price",
+    "area": "About 1,500 cities, as Cashify states"
   },
   {
     "city": "hyderabad",
@@ -480,12 +630,17 @@
     "categories": [
       "phone"
     ],
-    "accepts": "Phones from most brands, including ones that no longer work",
+    "accepts": "Phones from most brands",
     "handover": "Tell Cashify about the phone and it assigns a pickup date and time at your address. Check that your area is served.",
     "url": "https://www.cashify.in/recycle-old-phone",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/recycle-old-phone",
-    "checked": "2026-10-02"
+    "checked": "2026-10-11",
+    "method": "Doorstep pickup at a date and time Cashify assigns",
+    "cost": null,
+    "youGet": null,
+    "notWorking": null,
+    "area": "The page says when your city is not served"
   },
   {
     "city": "hyderabad",
@@ -501,7 +656,12 @@
     "url": "https://www.cashify.in/sell-old-laptop-in-hyderabad",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-laptop-in-hyderabad",
-    "checked": "2026-10-02"
+    "checked": "2026-10-11",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid at pickup",
+    "notWorking": null,
+    "area": "About 1,500 cities, as Cashify states"
   },
   {
     "city": "hyderabad",
@@ -517,7 +677,12 @@
     "url": "https://www.cashify.in/sell-old-tablet-in-hyderabad",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-tablet-in-hyderabad",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "hyderabad",
@@ -533,7 +698,12 @@
     "url": "https://www.cashify.in/sell-old-television-in-hyderabad",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-television-in-hyderabad",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "hyderabad",
@@ -549,7 +719,12 @@
     "url": "https://www.cashify.in/sell-old-refrigerator-in-hyderabad",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-refrigerator-in-hyderabad",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "hyderabad",
@@ -565,7 +740,12 @@
     "url": "https://www.cashify.in/sell-old-gaming-consoles-in-hyderabad",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-gaming-consoles-in-hyderabad",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "chennai",
@@ -574,12 +754,17 @@
     "type": "exchange",
     "brands": [],
     "accepts": "Many Apple and third-party phones, including Samsung and Google",
-    "handover": "Exchange online at apple.com/in or at an Apple Store for credit towards a new Apple device. Phones with no exchange value can be recycled with Apple for free.",
+    "handover": "Trade in online (iPhone only) or at an Apple Store for instant credit towards a purchase. A device not eligible for credit is recycled for free.",
     "url": "https://www.apple.com/in/trade-in/",
     "handoffConfirmed": false,
     "source": "https://www.apple.com/in/trade-in/",
-    "checked": "2026-10-02",
-    "categories": []
+    "checked": "2026-10-11",
+    "categories": [],
+    "method": "Online for iPhone, or at an Apple Store. Mac, iPad and Apple Watch only in store.",
+    "cost": "Free",
+    "youGet": "Instant credit towards an Apple purchase, if the device is eligible",
+    "notWorking": "If it is not eligible for credit, Apple recycles it for free",
+    "area": "apple.com (iPhone) and Apple Stores"
   },
   {
     "city": "chennai",
@@ -589,13 +774,18 @@
     "brands": [
       "Samsung"
     ],
-    "accepts": "Samsung phones, portable electronics and home appliances",
-    "handover": "Drop phones and small devices in the e-waste bin at a Samsung service centre. For TVs and home appliances, call 1800 40 7267864 for a free pickup. For other e-waste pickups, call 1800-5-7267864.",
+    "accepts": "All products Samsung sold in India: phones, tablets, TVs, monitors, laptops, washing machines, ACs, refrigerators, microwaves and dishwashers",
+    "handover": "WhatsApp or call 1800 5 7267864 to arrange an e-waste pickup. No fee is charged.",
     "url": "https://www.samsung.com/in/microsite/care-for-clean-india/",
     "handoffConfirmed": false,
-    "source": "https://www.samsung.com/in/support/mobile-devices/e-waste-care-for-clean-india/",
-    "checked": "2026-10-02",
-    "categories": []
+    "source": "https://www.samsung.com/in/microsite/care-for-clean-india/",
+    "checked": "2026-10-11",
+    "categories": [],
+    "method": "Pickup arranged on WhatsApp or by phone",
+    "cost": "Free",
+    "youGet": "Nothing: Samsung says there is no money or discount",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "chennai",
@@ -607,11 +797,16 @@
       "phone"
     ],
     "accepts": "Used phones from most brands",
-    "handover": "Get a price online, book a free pickup from home or work, and get paid when it is collected.",
+    "handover": "Get a price online, book a free pickup from home or work (or drop it at a Cashify store), and get paid at pickup.",
     "url": "https://www.cashify.in/sell-old-mobile-phone-in-chennai",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-mobile-phone-in-chennai",
-    "checked": "2026-10-02"
+    "checked": "2026-10-11",
+    "method": "Doorstep pickup, or drop-off at a Cashify store",
+    "cost": "Free pickup",
+    "youGet": "Paid at pickup",
+    "notWorking": "Accepted, usually for a lower price",
+    "area": "About 1,500 cities, as Cashify states"
   },
   {
     "city": "chennai",
@@ -622,12 +817,17 @@
     "categories": [
       "phone"
     ],
-    "accepts": "Phones from most brands, including ones that no longer work",
+    "accepts": "Phones from most brands",
     "handover": "Tell Cashify about the phone and it assigns a pickup date and time at your address. Check that your area is served.",
     "url": "https://www.cashify.in/recycle-old-phone",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/recycle-old-phone",
-    "checked": "2026-10-02"
+    "checked": "2026-10-11",
+    "method": "Doorstep pickup at a date and time Cashify assigns",
+    "cost": null,
+    "youGet": null,
+    "notWorking": null,
+    "area": "The page says when your city is not served"
   },
   {
     "city": "chennai",
@@ -643,7 +843,12 @@
     "url": "https://www.cashify.in/sell-old-laptop-in-chennai",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-laptop-in-chennai",
-    "checked": "2026-10-02"
+    "checked": "2026-10-11",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid at pickup",
+    "notWorking": null,
+    "area": "About 1,500 cities, as Cashify states"
   },
   {
     "city": "chennai",
@@ -659,7 +864,12 @@
     "url": "https://www.cashify.in/sell-old-tablet-in-chennai",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-tablet-in-chennai",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "chennai",
@@ -675,7 +885,12 @@
     "url": "https://www.cashify.in/sell-old-television-in-chennai",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-television-in-chennai",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "chennai",
@@ -691,7 +906,12 @@
     "url": "https://www.cashify.in/sell-old-refrigerator-in-chennai",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-refrigerator-in-chennai",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "chennai",
@@ -707,7 +927,12 @@
     "url": "https://www.cashify.in/sell-old-gaming-consoles-in-chennai",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-gaming-consoles-in-chennai",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "pune",
@@ -716,12 +941,17 @@
     "type": "exchange",
     "brands": [],
     "accepts": "Many Apple and third-party phones, including Samsung and Google",
-    "handover": "Exchange online at apple.com/in or at an Apple Store for credit towards a new Apple device. Phones with no exchange value can be recycled with Apple for free.",
+    "handover": "Trade in online (iPhone only) or at an Apple Store for instant credit towards a purchase. A device not eligible for credit is recycled for free.",
     "url": "https://www.apple.com/in/trade-in/",
     "handoffConfirmed": false,
     "source": "https://www.apple.com/in/trade-in/",
-    "checked": "2026-10-02",
-    "categories": []
+    "checked": "2026-10-11",
+    "categories": [],
+    "method": "Online for iPhone, or at an Apple Store. Mac, iPad and Apple Watch only in store.",
+    "cost": "Free",
+    "youGet": "Instant credit towards an Apple purchase, if the device is eligible",
+    "notWorking": "If it is not eligible for credit, Apple recycles it for free",
+    "area": "apple.com (iPhone) and Apple Stores"
   },
   {
     "city": "pune",
@@ -731,13 +961,18 @@
     "brands": [
       "Samsung"
     ],
-    "accepts": "Samsung phones, portable electronics and home appliances",
-    "handover": "Drop phones and small devices in the e-waste bin at a Samsung service centre. For TVs and home appliances, call 1800 40 7267864 for a free pickup. For other e-waste pickups, call 1800-5-7267864.",
+    "accepts": "All products Samsung sold in India: phones, tablets, TVs, monitors, laptops, washing machines, ACs, refrigerators, microwaves and dishwashers",
+    "handover": "WhatsApp or call 1800 5 7267864 to arrange an e-waste pickup. No fee is charged.",
     "url": "https://www.samsung.com/in/microsite/care-for-clean-india/",
     "handoffConfirmed": false,
-    "source": "https://www.samsung.com/in/support/mobile-devices/e-waste-care-for-clean-india/",
-    "checked": "2026-10-02",
-    "categories": []
+    "source": "https://www.samsung.com/in/microsite/care-for-clean-india/",
+    "checked": "2026-10-11",
+    "categories": [],
+    "method": "Pickup arranged on WhatsApp or by phone",
+    "cost": "Free",
+    "youGet": "Nothing: Samsung says there is no money or discount",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "pune",
@@ -749,11 +984,16 @@
       "phone"
     ],
     "accepts": "Used phones from most brands",
-    "handover": "Get a price online, book a free pickup from home or work, and get paid when it is collected.",
+    "handover": "Get a price online, book a free pickup from home or work (or drop it at a Cashify store), and get paid at pickup.",
     "url": "https://www.cashify.in/sell-old-mobile-phone-in-pune",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-mobile-phone-in-pune",
-    "checked": "2026-10-02"
+    "checked": "2026-10-11",
+    "method": "Doorstep pickup, or drop-off at a Cashify store",
+    "cost": "Free pickup",
+    "youGet": "Paid at pickup",
+    "notWorking": "Accepted, usually for a lower price",
+    "area": "About 1,500 cities, as Cashify states"
   },
   {
     "city": "pune",
@@ -764,12 +1004,17 @@
     "categories": [
       "phone"
     ],
-    "accepts": "Phones from most brands, including ones that no longer work",
+    "accepts": "Phones from most brands",
     "handover": "Tell Cashify about the phone and it assigns a pickup date and time at your address. Check that your area is served.",
     "url": "https://www.cashify.in/recycle-old-phone",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/recycle-old-phone",
-    "checked": "2026-10-02"
+    "checked": "2026-10-11",
+    "method": "Doorstep pickup at a date and time Cashify assigns",
+    "cost": null,
+    "youGet": null,
+    "notWorking": null,
+    "area": "The page says when your city is not served"
   },
   {
     "city": "pune",
@@ -785,7 +1030,12 @@
     "url": "https://www.cashify.in/sell-old-laptop-in-pune",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-laptop-in-pune",
-    "checked": "2026-10-02"
+    "checked": "2026-10-11",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid at pickup",
+    "notWorking": null,
+    "area": "About 1,500 cities, as Cashify states"
   },
   {
     "city": "pune",
@@ -801,7 +1051,12 @@
     "url": "https://www.cashify.in/sell-old-tablet-in-pune",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-tablet-in-pune",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "pune",
@@ -817,7 +1072,12 @@
     "url": "https://www.cashify.in/sell-old-television-in-pune",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-television-in-pune",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "pune",
@@ -833,7 +1093,12 @@
     "url": "https://www.cashify.in/sell-old-refrigerator-in-pune",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-refrigerator-in-pune",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "pune",
@@ -849,7 +1114,12 @@
     "url": "https://www.cashify.in/sell-old-gaming-consoles-in-pune",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-gaming-consoles-in-pune",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "kolkata",
@@ -858,12 +1128,17 @@
     "type": "exchange",
     "brands": [],
     "accepts": "Many Apple and third-party phones, including Samsung and Google",
-    "handover": "Exchange online at apple.com/in or at an Apple Store for credit towards a new Apple device. Phones with no exchange value can be recycled with Apple for free.",
+    "handover": "Trade in online (iPhone only) or at an Apple Store for instant credit towards a purchase. A device not eligible for credit is recycled for free.",
     "url": "https://www.apple.com/in/trade-in/",
     "handoffConfirmed": false,
     "source": "https://www.apple.com/in/trade-in/",
-    "checked": "2026-10-02",
-    "categories": []
+    "checked": "2026-10-11",
+    "categories": [],
+    "method": "Online for iPhone, or at an Apple Store. Mac, iPad and Apple Watch only in store.",
+    "cost": "Free",
+    "youGet": "Instant credit towards an Apple purchase, if the device is eligible",
+    "notWorking": "If it is not eligible for credit, Apple recycles it for free",
+    "area": "apple.com (iPhone) and Apple Stores"
   },
   {
     "city": "kolkata",
@@ -873,13 +1148,18 @@
     "brands": [
       "Samsung"
     ],
-    "accepts": "Samsung phones, portable electronics and home appliances",
-    "handover": "Drop phones and small devices in the e-waste bin at a Samsung service centre. For TVs and home appliances, call 1800 40 7267864 for a free pickup. For other e-waste pickups, call 1800-5-7267864.",
+    "accepts": "All products Samsung sold in India: phones, tablets, TVs, monitors, laptops, washing machines, ACs, refrigerators, microwaves and dishwashers",
+    "handover": "WhatsApp or call 1800 5 7267864 to arrange an e-waste pickup. No fee is charged.",
     "url": "https://www.samsung.com/in/microsite/care-for-clean-india/",
     "handoffConfirmed": false,
-    "source": "https://www.samsung.com/in/support/mobile-devices/e-waste-care-for-clean-india/",
-    "checked": "2026-10-02",
-    "categories": []
+    "source": "https://www.samsung.com/in/microsite/care-for-clean-india/",
+    "checked": "2026-10-11",
+    "categories": [],
+    "method": "Pickup arranged on WhatsApp or by phone",
+    "cost": "Free",
+    "youGet": "Nothing: Samsung says there is no money or discount",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "kolkata",
@@ -891,11 +1171,16 @@
       "phone"
     ],
     "accepts": "Used phones from most brands",
-    "handover": "Get a price online, book a free pickup from home or work, and get paid when it is collected.",
+    "handover": "Get a price online, book a free pickup from home or work (or drop it at a Cashify store), and get paid at pickup.",
     "url": "https://www.cashify.in/sell-old-mobile-phone-in-kolkata",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-mobile-phone-in-kolkata",
-    "checked": "2026-10-02"
+    "checked": "2026-10-11",
+    "method": "Doorstep pickup, or drop-off at a Cashify store",
+    "cost": "Free pickup",
+    "youGet": "Paid at pickup",
+    "notWorking": "Accepted, usually for a lower price",
+    "area": "About 1,500 cities, as Cashify states"
   },
   {
     "city": "kolkata",
@@ -906,12 +1191,17 @@
     "categories": [
       "phone"
     ],
-    "accepts": "Phones from most brands, including ones that no longer work",
+    "accepts": "Phones from most brands",
     "handover": "Tell Cashify about the phone and it assigns a pickup date and time at your address. Check that your area is served.",
     "url": "https://www.cashify.in/recycle-old-phone",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/recycle-old-phone",
-    "checked": "2026-10-02"
+    "checked": "2026-10-11",
+    "method": "Doorstep pickup at a date and time Cashify assigns",
+    "cost": null,
+    "youGet": null,
+    "notWorking": null,
+    "area": "The page says when your city is not served"
   },
   {
     "city": "kolkata",
@@ -927,7 +1217,12 @@
     "url": "https://www.cashify.in/sell-old-laptop-in-kolkata",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-laptop-in-kolkata",
-    "checked": "2026-10-02"
+    "checked": "2026-10-11",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid at pickup",
+    "notWorking": null,
+    "area": "About 1,500 cities, as Cashify states"
   },
   {
     "city": "kolkata",
@@ -943,7 +1238,12 @@
     "url": "https://www.cashify.in/sell-old-tablet-in-kolkata",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-tablet-in-kolkata",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "kolkata",
@@ -959,7 +1259,12 @@
     "url": "https://www.cashify.in/sell-old-television-in-kolkata",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-television-in-kolkata",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "kolkata",
@@ -975,7 +1280,12 @@
     "url": "https://www.cashify.in/sell-old-refrigerator-in-kolkata",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-refrigerator-in-kolkata",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   },
   {
     "city": "kolkata",
@@ -991,6 +1301,11 @@
     "url": "https://www.cashify.in/sell-old-gaming-consoles-in-kolkata",
     "handoffConfirmed": false,
     "source": "https://www.cashify.in/sell-old-gaming-consoles-in-kolkata",
-    "checked": "2026-10-02"
+    "checked": "2026-10-02",
+    "method": "Doorstep pickup",
+    "cost": "Free pickup",
+    "youGet": "Paid when it is collected",
+    "notWorking": null,
+    "area": null
   }
 ]

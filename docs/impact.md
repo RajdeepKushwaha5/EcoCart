@@ -45,11 +45,12 @@ The dashboard's Overview opens with the shopper's all-time total: the sum of the
 
 ## Your purchases
 
-The dashboard also keeps a log of what the shopper says they bought, like a shopping history with a footprint column: a total, a month-by-month chart for the last twelve months, and a list with the date, product, shop and kg CO₂e.
+The dashboard also keeps a log of what the shopper says they bought, like a shopping history with a footprint column: two totals, a month-by-month chart for the last twelve months, and a list with the date, product, shop and kg CO₂e.
 
 - A purchase is added only by the shopper: "I bought this" on a product card, or "Did you buy any of these?" on an order confirmation page, which lists products seen in the last two days. EcoCart never reads order or payment pages.
 - Each purchase keeps where its number comes from: the maker's own lifecycle report, or a category estimate from the price. Both are labelled in the list, and a product with neither is listed without a number.
 - This is the footprint of what was bought. It is a different figure from the difference of choices above, and the two are never added together.
+- Makers' reports cover a product's whole life; category estimates cover making that kind of product, from its price. They are different methods, so the dashboard shows two totals and two chart lines and never adds them into one number.
 - The same product bought twice on one day counts once. Any purchase can be removed.
 
 ## Verifying a handover
@@ -64,3 +65,7 @@ python scripts/verify_handover.py --action-id <plan ID> --evidence "Cashify pick
 ```
 
 The plan ID is shown on each plan in the dashboard, under My actions. A verified plan cannot be set back to planned by the shopper; a verification recorded by mistake is removed with `--undo`. No collector confirms handovers automatically yet, so this figure starts at zero.
+
+## The plant
+
+The plant grows one stage for each old-device plan the shopper marks done and each lower-footprint choice they record (chosen or bought). Both are the shopper's own reports, and the plant says so under it. Only a verified handover is checked by the team, and the plant is not evidence of one.

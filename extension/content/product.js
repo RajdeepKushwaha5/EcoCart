@@ -381,20 +381,36 @@ function select(name, label, options, selected) {
     el("select", { name }, options.map(([value, text]) => el("option", { value, selected: value === selected }, text))));
 }
 
-function optionTile(option, index) {
+// What the route's own page says: how, cost, what you get, broken devices, where. Gaps are said, not filled.
+function routeFactList(option) {
+  return el("span", { className: "route-facts" }, routeFacts(option).map(([label, value, stated]) =>
+    el("span", { className: stated ? "route-fact" : "route-fact unstated" }, el("span", { className: "eyebrow" }, label), value)));
+}
+
+function handoffFlag(option) {
+  return el("span", { className: option.handoffConfirmed ? "flag ok" : "flag" },
+    option.handoffConfirmed
+      ? "Handovers here confirmed by our team"
+      : "A contact link, not a booking: EcoCart has not arranged anything with them");
+}
+
+function optionTile(fit, index, best) {
+  const { option, reasons } = fit;
   return el("label", { className: "tile" },
-    el("input", { type: "radio", name: "optionId", value: option.optionId }),
+    el("input", { type: "radio", name: "optionId", value: option.optionId, checked: option.optionId === best }),
     el("span", { className: "num" }, String(index + 1).padStart(2, "0")),
     el("span", { className: "tile-body" },
+      option.optionId === best ? el("span", { className: "best-match" }, "Best match for your answers") : null,
       el("span", { className: "tile-head" }, el("strong", {}, option.name), el("span", { className: "type" }, option.type)),
+      reasons.length ? el("span", { className: "fit" }, reasons.join(" ")) : null,
       option.accepts ? el("span", {}, `Takes: ${option.accepts}`) : null,
       el("span", {}, option.handover),
       option.address ? el("span", { className: "muted" }, option.address) : null,
+      routeFactList(option),
       el("span", { className: "meta" },
         option.url ? sourceLink(option.url, "Website") : null, option.url ? DOT : null,
         sourceLink(option.source), `${DOT}checked ${formatDate(option.checked)}`),
-      el("span", { className: option.handoffConfirmed ? "flag ok" : "flag" },
-        option.handoffConfirmed ? "Handoff confirmed by our team" : "Handoff not yet confirmed by our team"),
+      handoffFlag(option),
     ),
   );
 }
@@ -424,6 +440,7 @@ function renderOldDevice(device, { showsExchange = false, intro } = {}) {
         select("brand", "Brand", OLD_DEVICE_BRANDS[category].map((b) => [b, b])),
         select("ageYears", "Age", Array.from({ length: 11 }, (_, i) => [i, i === 10 ? "10+ years" : `${i} years`])),
         select("city", "City", data.cities.map((c) => [c.id, c.name]), lastCity),
+        Object.entries(OLD_DEVICE_QUESTIONS).map(([key, question]) => select(key, question.label, question.answers)),
       ),
       button("Show options", null, "primary", "submit"),
     );
@@ -431,7 +448,8 @@ function renderOldDevice(device, { showsExchange = false, intro } = {}) {
       event.preventDefault();
       const values = Object.fromEntries(new FormData(form));
       chrome.storage.local.set({ [CITY_KEY]: values.city });
-      showOptions({ brand: values.brand, ageYears: Number(values.ageYears), city: values.city });
+      showOptions({ brand: values.brand, ageYears: Number(values.ageYears), city: values.city,
+        works: values.works, condition: values.condition, goal: values.goal });
     });
     show(section, heading(`Tell us about your old ${word}`), form);
   }
@@ -448,7 +466,7 @@ function renderOldDevice(device, { showsExchange = false, intro } = {}) {
     }
 
     const exchangeNote = showsExchange
-      ? el("p", { className: "callout" }, `This listing shows a ${SITE.name} exchange offer. Check the buy box for the terms.`)
+      ? el("p", { className: "callout" }, `This listing shows ${/^[aeiou]/i.test(SITE.name) ? "an" : "a"} ${SITE.name} exchange offer. Check the buy box for the terms.`)
       : null;
     if (options.length === 0) {
       show(section, heading(`No options for your old ${word} here yet`), exchangeNote,
@@ -458,8 +476,10 @@ function renderOldDevice(device, { showsExchange = false, intro } = {}) {
 
     const status = el("p", { className: "note", role: "status" });
     const requestId = crypto.randomUUID();
+    const advice = routeAdvice(options, oldDevice);
     const form = el("form", { className: "form" },
-      el("div", { className: "tiles" }, options.map(optionTile)),
+      advice.notes.map((note) => el("p", { className: "callout" }, note)),
+      el("div", { className: "tiles" }, advice.ranked.map((fit, index) => optionTile(fit, index, advice.best))),
       button("Save my plan", null, "primary", "submit"),
       status,
     );
@@ -477,7 +497,8 @@ function renderOldDevice(device, { showsExchange = false, intro } = {}) {
       try {
         await api("POST", "/actions", {
           ...newDevice,
-          oldDevice: { brand: oldDevice.brand, ageYears: oldDevice.ageYears },
+          oldDevice: { brand: oldDevice.brand, ageYears: oldDevice.ageYears,
+            works: oldDevice.works, condition: oldDevice.condition, goal: oldDevice.goal },
           city: oldDevice.city,
           optionId,
           requestId,
@@ -491,7 +512,7 @@ function renderOldDevice(device, { showsExchange = false, intro } = {}) {
       }
     });
     show(section, heading(`Where your old ${word} can go`),
-      el("p", { className: "note" }, "From each company's own page. Tap a source to check the details."),
+      el("p", { className: "note" }, "Ordered by your answers. Everything below is from each company's own page; tap a source to check it."),
       exchangeNote, form);
   }
 

@@ -175,6 +175,12 @@ a:hover {
   color: var(--muted);
 }
 
+.plant-rule {
+  max-width: 34ch;
+  font: 12px/1.45 var(--sans);
+  color: var(--muted);
+}
+
 /* ---------- Plans ---------- */
 
 .action {

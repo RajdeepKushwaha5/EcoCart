@@ -101,6 +101,12 @@ Resources:
             ApiId: !Ref HttpApi
             Method: POST
             Path: /estimate
+        EstimateBatch:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: POST
+            Path: /estimates
         GetProduct:
           Type: HttpApi
           Properties:

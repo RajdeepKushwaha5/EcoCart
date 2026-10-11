@@ -481,16 +481,12 @@ function monthName(key) {
 }
 
 // A smooth curve of the footprint of what was bought, month by month, for the last twelve months.
-function purchaseChart(byMonth) {
-  const months = lastMonths(12);
-  const values = months.map((key) => byMonth[key] || 0);
-  const width = 760;
-  const height = 220;
-  const pad = { top: 16, right: 18, bottom: 30, left: 52 };
-  const top = niceMax(Math.max(...values));
-  const x = (index) => pad.left + (index / (months.length - 1)) * (width - pad.left - pad.right);
-  const y = (kg) => height - pad.bottom - (kg / top) * (height - pad.top - pad.bottom);
-  const points = values.map((value, index) => [x(index), y(value)]);
+const PURCHASE_SERIES = [
+  ["reported", "From makers' own reports"],
+  ["estimate", "Category estimates"],
+];
+
+function smoothLine(points) {
   let line = `M ${points[0][0]} ${points[0][1]}`;
   for (let index = 1; index < points.length; index += 1) {
     const [x0, y0] = points[index - 1];
@@ -498,14 +494,36 @@ function purchaseChart(byMonth) {
     const mid = (x0 + x1) / 2;
     line += ` C ${mid} ${y0}, ${mid} ${y1}, ${x1} ${y1}`;
   }
-  const area = `${line} L ${points[points.length - 1][0]} ${y(0)} L ${points[0][0]} ${y(0)} Z`;
+  return line;
+}
+
+// One line per kind of figure, on one scale, never stacked or summed.
+function purchaseChart(byMonth) {
+  const months = lastMonths(12);
+  const series = PURCHASE_SERIES.map(([basis]) => months.map((key) => byMonth[key]?.[basis] || 0));
+  const width = 760;
+  const height = 220;
+  const pad = { top: 16, right: 18, bottom: 30, left: 52 };
+  const top = niceMax(Math.max(...series.flat()));
+  const x = (index) => pad.left + (index / (months.length - 1)) * (width - pad.left - pad.right);
+  const y = (kg) => height - pad.bottom - (kg / top) * (height - pad.top - pad.bottom);
+  const lines = series.map((values, which) => {
+    const line = smoothLine(values.map((value, index) => [x(index), y(value)]));
+    return svg("path", { d: line, class: `line ${PURCHASE_SERIES[which][0]}`, pathLength: 1 });
+  });
   const tooltip = node("div", "chart-tooltip");
   tooltip.hidden = true;
-  const dots = points.map(([cx, cy], index) => {
+  const describe = (index) => PURCHASE_SERIES
+    .map(([, label], which) => `${label}: ${formatNumber(series[which][index], 1)} kg CO₂e`).join(". ");
+  const dots = months.map((key, index) => {
+    const cx = x(index);
+    const cy = y(Math.max(series[0][index], series[1][index]));
     const dot = svg("circle", { cx, cy, r: 4.5, class: "month-dot", tabindex: 0, role: "img",
-      "aria-label": `${monthLabel(months[index])}: ${formatNumber(values[index], 1)} kg CO₂e` });
+      "aria-label": `${monthLabel(key)}. ${describe(index)}` });
     const show = () => {
-      tooltip.replaceChildren(node("strong", "", `${formatNumber(values[index], 1)} kg CO₂e`), node("span", "", monthLabel(months[index])));
+      tooltip.replaceChildren(
+        ...PURCHASE_SERIES.map(([basis, label], which) => node("strong", `tip-${basis}`, `${formatNumber(series[which][index], 1)} kg · ${label.toLowerCase()}`)),
+        node("span", "", monthLabel(key)));
       tooltip.style.left = `${(cx / width) * 100}%`;
       tooltip.style.top = `${(cy / height) * 100}%`;
       tooltip.hidden = false;
@@ -521,9 +539,11 @@ function purchaseChart(byMonth) {
     svg("line", { x1: pad.left, x2: width - pad.right, y1: y(value), y2: y(value), class: "grid-line" }),
     svg("text", { x: pad.left - 8, y: y(value) + 4, class: "axis-label", "text-anchor": "end" }, `${formatNumber(value)} kg`)));
   const chart = svg("svg", { viewBox: `0 0 ${width} ${height}`, class: "purchase-chart", role: "img",
-    "aria-label": "Footprint of your purchases by month, last twelve months" },
-  ...grid, svg("path", { d: area, class: "area" }), svg("path", { d: line, class: "line", pathLength: 1 }), ...labels, ...dots);
-  return append(node("div", "alltime-chart-wrap"), chart, tooltip);
+    "aria-label": "Footprint of your purchases by month, last twelve months, makers' reports and category estimates as two lines" },
+  ...grid, ...lines, ...labels, ...dots);
+  const legend = append(node("p", "chart-legend"),
+    ...PURCHASE_SERIES.map(([basis, label]) => append(node("span", `legend-item ${basis}`), node("span", "legend-swatch"), label)));
+  return append(node("div", "alltime-chart-wrap"), chart, tooltip, legend);
 }
 
 function purchaseRow(purchase) {
@@ -550,11 +570,20 @@ function renderPurchases() {
   }
   const purchases = state.purchases.filter((purchase) => inMonth(purchase.at));
   const totals = purchaseTotals(state.purchases);
+  const plural = (count) => `${count} purchase${count === 1 ? "" : "s"}`;
+  const figure = (basis, label, kg, count, meaning) => append(node("div", `purchase-total ${basis}`),
+    node("p", "purchase-label", label),
+    append(node("p", "alltime-figure"), node("span", `purchase-number ${basis}`, formatNumber(kg, 1)), node("span", "alltime-unit", "kg CO₂e")),
+    node("p", "muted", `${plural(count)}. ${meaning}`));
   const head = append(node("div", "purchases-head"),
     node("p", "eyebrow", "Your purchases"),
-    append(node("p", "alltime-figure"), node("span", "purchase-number", formatNumber(totals.totalKg, 1)), node("span", "alltime-unit", "kg CO₂e")),
+    totals.count
+      ? append(node("div", "purchase-totals"),
+        figure("reported", "From makers' own reports", totals.reportedKg, totals.reported, "The whole life of the product, as the maker reports it."),
+        figure("estimate", "Category estimates", totals.estimateKg, totals.estimated, "Making that kind of product, estimated from its price."))
+      : null,
     node("p", "muted", totals.count
-      ? `Footprint of ${totals.count} purchase${totals.count === 1 ? "" : "s"} you logged: ${formatNumber(totals.reportedKg, 1)} kg from makers' own reports, ${formatNumber(totals.estimateKg, 1)} kg category estimates.${totals.unknown ? ` ${totals.unknown} without a footprint figure.` : ""}`
+      ? `Two different methods, so the two figures are shown apart and never added together.${totals.unknown ? ` ${plural(totals.unknown)} without a footprint figure.` : ""}`
       : "Nothing logged yet. Tap \"I bought this\" on a product card, or answer \"Did you buy any of these?\" on the order page."));
   if (!totals.count) {
     box.replaceChildren(head);
@@ -626,6 +655,8 @@ function openDirectPlan() {
   kind.addEventListener("change", () => brand.replaceChildren(...choice("brand", OLD_DEVICE_BRANDS[kind.value].map((name) => [name, name])).children));
   const age = choice("ageYears", Array.from({ length: 11 }, (_, i) => [String(i), i === 10 ? "10+ years" : `${i} years`]), "3");
   const city = choice("city", CITIES.map((item) => [item.id, item.name]));
+  const check = Object.fromEntries(Object.entries(OLD_DEVICE_QUESTIONS)
+    .map(([key, question]) => [key, choice(key, question.answers)]));
   const routes = node("div", "direct-routes");
   const status = node("p", "status");
   const requestId = crypto.randomUUID();
@@ -639,15 +670,24 @@ function openDirectPlan() {
         routes.replaceChildren(node("p", "muted", "No checked routes for this device in your city yet."));
         return;
       }
-      routes.replaceChildren(...options.map((option) => append(node("article", "route-pick"),
+      const answers = Object.fromEntries(Object.entries(check).map(([key, select]) => [key, select.value]));
+      const advice = routeAdvice(options, answers);
+      routes.replaceChildren(...advice.notes.map((note) => node("p", "callout", note)), ...advice.ranked.map(({ option, reasons }) => append(node("article", option.optionId === advice.best ? "route-pick best" : "route-pick"),
+        option.optionId === advice.best ? node("span", "best-match", "Best match for your answers") : null,
         node("p", "plan-title", option.name),
+        reasons.length ? node("p", "fit", reasons.join(" ")) : null,
         node("p", "", option.handover),
+        append(node("div", "route-facts"), ...routeFacts(option).map(([label, value, stated]) =>
+          append(node("div", stated ? "route-fact" : "route-fact unstated"), node("span", "eyebrow", label), node("span", "", value)))),
         append(node("p", "meta"), link(option.source), ` checked ${formatDay(option.checked)}`),
+        node("p", option.handoffConfirmed ? "flag ok" : "flag", option.handoffConfirmed
+          ? "Handovers here confirmed by our team"
+          : "A contact link, not a booking: EcoCart has not arranged anything with them"),
         button("Plan this", async () => {
           try {
             await api("POST", "/actions", {
               listingName: NO_NEW_DEVICE, category: kind.value, city: city.value, optionId: option.optionId, requestId,
-              oldDevice: { brand: brand.value, ageYears: Number(age.value) },
+              oldDevice: { brand: brand.value, ageYears: Number(age.value), ...answers },
             });
             await chrome.storage.local.set({ [PLANS_CHANGED_KEY]: Date.now() });
             box.replaceChildren();
@@ -663,7 +703,8 @@ function openDirectPlan() {
   };
   box.replaceChildren(append(node("div", "direct-form"),
     node("p", "start-title", "Plan for an old device"),
-    append(node("div", "direct-fields"), field("Device", kind), field("Brand", brand), field("Age", age), field("City", city)),
+    append(node("div", "direct-fields"), field("Device", kind), field("Brand", brand), field("Age", age), field("City", city),
+      ...Object.entries(OLD_DEVICE_QUESTIONS).map(([key, question]) => field(question.label, check[key]))),
     append(node("div", "controls"), button("Show routes", showRoutes, "primary"), button("Cancel", () => box.replaceChildren(), "ghost")),
     routes, status));
 }

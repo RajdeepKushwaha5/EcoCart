@@ -13,6 +13,7 @@ from pathlib import Path
 DATA_DIR = Path(__file__).resolve().parent.parent / "data"
 FACT_KEYS = ["priceInr", "updatePolicy", "repairability", "lifecycleCo2eKg", "takeBack"]
 OPTION_TYPES = {"exchange", "recycle", "reuse"}
+ROUTE_DETAILS = ["method", "cost", "youGet", "notWorking", "area"]
 CATEGORIES = {"phone", "laptop", "tablet", "watch", "earbuds", "tv", "appliance", "electronics"}
 DATE_PATTERN = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 MONTH_PATTERN = re.compile(r"^\d{4}-\d{2}(-\d{2})?$")
@@ -95,6 +96,10 @@ def check_options(options):
             errors.append(f"{label}: 'brands' must be a list (empty means any brand)")
         if not isinstance(option.get("handoffConfirmed"), bool):
             errors.append(f"{label}: 'handoffConfirmed' must be true or false")
+        # What the route's own page says, or null when it does not say. Never filled in by guessing.
+        for key in ROUTE_DETAILS:
+            if key not in option or not (option[key] is None or (isinstance(option[key], str) and option[key].strip())):
+                errors.append(f"{label}: '{key}' must be text from the source page, or null if the page does not say")
         _check_source(label, option, errors)
     return errors
 

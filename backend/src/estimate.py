@@ -87,8 +87,10 @@ def _rule_for(crumb, departments=frozenset()):
 # Every title-safe term in every singular and plural form, longest first, so the most specific phrase wins.
 TITLE_TERMS = sorted(
     {(form, term) for term in CRUMB_INDEX if term not in TITLE_SKIP and CRUMB_INDEX[term]["sector"] for form in _variants(term)},
-    key=lambda pair: -len(pair[0]),
+    key=lambda pair: (-len(pair[0]), pair[0]),
 )
+# Compiled once: there are more patterns than Python's regex cache holds, and a page of search results asks for many titles.
+TITLE_PATTERNS = [(re.compile(rf"(?<![\w-]){re.escape(form)}(?![\w-])"), form, term) for form, term in TITLE_TERMS]
 # Allowed answers for the model: every sector the rules use, with the label people see.
 ALLOWED = {}
 for _rule in DATA["rules"]:
@@ -97,9 +99,14 @@ for _rule in DATA["rules"]:
             ALLOWED.setdefault(_target["sector"], _target["label"])
 
 
+@lru_cache(maxsize=None)
+def _word_pattern(word):
+    return re.compile(rf"\b{re.escape(word)}\b")
+
+
 def _title_has(title, words):
     lowered = normalize(title)
-    return any(re.search(rf"\b{re.escape(word)}\b", lowered) for word in words)
+    return any(_word_pattern(word).search(lowered) for word in words)
 
 
 def _apply(rule, title, matched):
@@ -119,12 +126,19 @@ def sector_from_crumbs(crumbs, title):
     return None
 
 
+# Shop titles name the product first and list features after "|", "(" or ",": "Galaxy M36 5G Mobile (8GB RAM) |
+# 50MP Triple Camera | Without Charger" is a phone, not a camera or a charger.
+TITLE_HEAD = re.compile(r"\s*(?:[|(\[,]|\s-\s|\swith\s)")
+
+
 def sector_from_title(title):
-    """Last resort: the longest product phrase from the rules that appears in the title."""
+    """Last resort: the longest product phrase from the rules in the product's name, then in the whole title."""
     lowered = normalize(title)
-    for form, term in TITLE_TERMS:
-        if re.search(rf"(?<![\w-]){re.escape(form)}(?![\w-])", lowered):
-            return _apply(CRUMB_INDEX[term], title, form)
+    head = TITLE_HEAD.split(lowered, maxsplit=1)[0]
+    for text in dict.fromkeys([head, lowered]):
+        for pattern, form, term in TITLE_PATTERNS:
+            if pattern.search(text):
+                return _apply(CRUMB_INDEX[term], title, form)
     return None
 
 
