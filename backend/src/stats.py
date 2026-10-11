@@ -39,3 +39,18 @@ def record_gap(stats_table, crumbs):
         UpdateExpression="ADD hits :one",
         ExpressionAttributeValues={":one": 1},
     )
+
+
+REPORT_PREFIX = "report#"
+REPORT_KINDS = {"price", "category", "model", "source", "other"}
+SHOPS = {"amazon", "flipkart"}
+
+
+def record_report(stats_table, kind, shop, listing_id):
+    """Count a shopper's report that a card looks wrong. Only the kind, the shop and the public listing ID are kept."""
+    key = f"{REPORT_PREFIX}{kind}#{shop}#{listing_id}"[:MAX_GAP_KEY]
+    stats_table.update_item(
+        Key={"statsId": key},
+        UpdateExpression="ADD hits :one",
+        ExpressionAttributeValues={":one": 1},
+    )

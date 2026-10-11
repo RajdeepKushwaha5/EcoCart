@@ -11,8 +11,8 @@
   --line-soft: rgba(30, 64, 36, 0.12);
   --line-strong: rgba(30, 64, 36, 0.26);
   --ink: #1b3320;
-  --soft: #3d5241;
-  --muted: #5f6e61;
+  --soft: #2f4434;
+  --muted: #4a5a4d;
   --faint: rgba(27, 51, 32, 0.28);
   --green: #2f7a3b;
   --green-deep: #235e2c;
@@ -33,9 +33,10 @@
   --sans: "EcoCart Sans", "Instrument Sans", system-ui, sans-serif;
   --mono: "EcoCart Mono", "JetBrains Mono", ui-monospace, monospace;
 
-  font: 14px/1.55 var(--sans);
+  font: 15px/1.6 var(--sans);
   color: var(--ink);
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 *,
@@ -180,9 +181,9 @@ a:hover {
   display: inline-flex;
   align-items: center;
   gap: 10px;
-  font: 600 11px/1.4 var(--mono);
+  font: 600 11.5px/1.4 var(--mono);
   text-transform: uppercase;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   color: var(--muted);
 }
 
@@ -204,7 +205,7 @@ a:hover {
 }
 
 .meta {
-  font: 12px/1.6 var(--mono);
+  font: 12.5px/1.6 var(--mono);
   color: var(--muted);
 }
 
@@ -221,8 +222,8 @@ a:hover {
 }
 
 .note {
-  font-size: 12.5px;
-  line-height: 1.55;
+  font-size: 13.5px;
+  line-height: 1.6;
   color: var(--muted);
 }
 
@@ -281,7 +282,7 @@ a:hover {
 }
 
 .lede p:first-child {
-  font: 600 20px/1.35 var(--sans);
+  font: 600 21px/1.4 var(--sans);
   letter-spacing: -0.015em;
   color: var(--ink);
 }
@@ -290,9 +291,8 @@ a:hover {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  font: 600 10.5px/1.4 var(--mono);
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
+  font: 600 12px/1.4 var(--mono);
+  letter-spacing: 0.02em;
   color: var(--green-deep);
 }
 
@@ -347,13 +347,91 @@ a:hover {
 }
 
 .stat-label {
-  font-size: 12px;
-  line-height: 1.4;
+  font-size: 13px;
+  line-height: 1.45;
   color: var(--soft);
 }
 
 .stat a {
   font: 11px/1.4 var(--mono);
+  color: var(--muted);
+  justify-self: start;
+}
+
+/* ---------- Everyday terms ---------- */
+
+.everyday {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  background: var(--green-soft);
+  border: 1px solid color-mix(in srgb, var(--green) 22%, transparent);
+  border-radius: var(--radius);
+}
+
+.everyday-intro {
+  font: 600 15px/1.45 var(--sans);
+  color: var(--ink);
+}
+
+.everyday-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.everyday-item {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  grid-template-rows: auto auto auto;
+  column-gap: 10px;
+  align-items: center;
+  padding: 12px;
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 0 rgba(30, 64, 36, 0.08);
+}
+
+.everyday-icon {
+  grid-row: 1 / span 2;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  color: var(--green-deep);
+  background: var(--green-soft);
+}
+
+.everyday-icon svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.everyday-amount {
+  font: 700 24px/1.1 var(--sans);
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.everyday-unit {
+  font-size: 13px;
+  line-height: 1.35;
+  color: var(--soft);
+}
+
+.everyday-item a {
+  grid-column: 2;
+  margin-top: 4px;
+  font: 11.5px/1.4 var(--mono);
   color: var(--muted);
   justify-self: start;
 }
@@ -371,15 +449,14 @@ a:hover {
 }
 
 .chart-title {
-  font: 600 11px/1.4 var(--mono);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  font: 700 14px/1.35 var(--sans);
+  letter-spacing: -0.005em;
   color: var(--green-deep);
 }
 
 .chart-note {
-  font-size: 11.5px;
-  line-height: 1.5;
+  font-size: 12.5px;
+  line-height: 1.55;
   color: var(--muted);
 }
 
@@ -390,10 +467,10 @@ a:hover {
 
 .bar-row {
   display: grid;
-  grid-template-columns: minmax(96px, 38%) 1fr 56px;
+  grid-template-columns: minmax(96px, 38%) 1fr 60px;
   align-items: center;
   gap: 10px;
-  font-size: 12px;
+  font-size: 13px;
   color: var(--soft);
 }
 
@@ -452,7 +529,7 @@ a:hover {
 }
 
 .bar-value {
-  font: 11px/1 var(--mono);
+  font: 12px/1 var(--mono);
   text-align: right;
   color: var(--muted);
 }
@@ -610,9 +687,7 @@ a:hover {
 }
 
 .score-label {
-  font: 600 11px/1.5 var(--mono);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  font: 600 13px/1.4 var(--sans);
   color: var(--muted);
 }
 
@@ -623,7 +698,7 @@ a:hover {
 }
 
 .score-value {
-  font: 700 17px/1.3 var(--sans);
+  font: 700 18px/1.3 var(--sans);
   letter-spacing: -0.01em;
 }
 
@@ -633,8 +708,8 @@ a:hover {
 }
 
 .score-note {
-  font-size: 12.5px;
-  line-height: 1.55;
+  font-size: 13.5px;
+  line-height: 1.6;
   color: var(--muted);
 }
 
@@ -676,7 +751,7 @@ a:hover {
   justify-content: space-between;
   gap: 8px;
   margin-top: 6px;
-  font: 10.5px/1.3 var(--mono);
+  font: 11.5px/1.3 var(--mono);
   color: var(--muted);
 }
 
@@ -684,8 +759,7 @@ a:hover {
   margin-top: 10px;
   padding-top: 12px;
   border-top: 1px solid var(--line-soft);
-  font-family: var(--mono);
-  font-size: 10.5px;
+  font-size: 12.5px;
 }
 
 /* ---------- Better options ---------- */
@@ -788,7 +862,7 @@ a:hover {
 }
 
 .label-row {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--soft);
 }
 
@@ -821,9 +895,7 @@ a:hover {
 }
 
 dt {
-  font: 600 11px/1.6 var(--mono);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
+  font: 600 13px/1.5 var(--sans);
   color: var(--muted);
 }
 
@@ -1188,6 +1260,53 @@ a:focus-visible,
 @keyframes pop-in {
   from { opacity: 0; transform: translateY(6px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Footer: something looks wrong ---------- */
+
+.card-foot {
+  padding: 12px 20px 16px;
+  border-top: 1px dashed var(--line-strong);
+}
+
+.report {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+}
+
+.report-title {
+  font: 600 14px/1.4 var(--sans);
+}
+
+.btn.small {
+  padding: 8px 12px;
+  font-size: 13px;
+}
+
+/* ---------- Before you hand it over ---------- */
+
+.prepare {
+  display: grid;
+  gap: 8px;
+  padding: 14px 16px;
+  background: var(--card);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+}
+
+.prepare-steps {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  padding-left: 20px;
+  font-size: 14px;
+  color: var(--soft);
+}
+
+.prepare-steps li::marker {
+  color: var(--green);
+  font-weight: 700;
 }
 
 /* ---------- Messages and loading ---------- */

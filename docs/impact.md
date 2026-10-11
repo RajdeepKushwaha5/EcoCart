@@ -21,7 +21,7 @@ The public totals on the website show plans saved, reported done and verified, a
 
 **Devices.** Only footprints that one maker reports for its own devices are compared, because makers measure lifecycle carbon in different ways. Both must be the same kind of device (phone with phone), and both figures must be on the same basis. Where a maker reports per storage size, the chosen device must have at least as much storage as the other, so a smaller configuration never looks better just for being smaller. This is the same rule the API uses for its lower-footprint suggestion (`backend/src/compare.py`).
 
-**Appliances.** Only appliances of the same type (the shop's most specific category) whose listings both state yearly electricity use are compared. BEE labels measure yearly use under a standard test, so the real figure depends on how the appliance is used. The difference is shown in kWh a year, and converted to CO2e with India's grid factor from the Central Electricity Authority.
+**Appliances.** Only appliances of the same type (the shop's most specific category), of about the same size (capacity, tonnage or screen size stated on both listings, in the same unit and within 10%), and whose listings both state yearly electricity use are compared. A bigger fridge uses more electricity, so a size difference would make the smaller one look better unfairly. BEE labels measure yearly use under a standard test, so the real figure depends on how the appliance is used. The difference is shown in kWh a year, and converted to CO2e with India's grid factor from the Central Electricity Authority.
 
 **Everything else.** A category estimate describes the average for a kind of product at a price. Two products in the same category would differ only by price, so they are never compared, and no choice between them is counted.
 
@@ -35,7 +35,10 @@ The public totals on the website show plans saved, reported done and verified, a
 
 ## Verifying a handover
 
-A reported handover becomes verified only when the team has seen proof: a collection receipt, or the collector's written confirmation. The team records what was seen, without personal details:
+A reported handover becomes verified only when the team has seen proof: a collection receipt, or the collector's written confirmation.
+
+1. The shopper marks the plan done, then taps **Ask for verification** on it in the dashboard and types a reference: the collector and a receipt or order number. Only that reference is sent. The plan shows "Requested" until the team decides.
+2. The team lists waiting requests with `python scripts/verify_handover.py --pending`, checks each reference with the collector, and records what was seen, without personal details:
 
 ```
 python scripts/verify_handover.py --action-id <plan ID> --evidence "Cashify pickup receipt seen, 11 Oct 2026"

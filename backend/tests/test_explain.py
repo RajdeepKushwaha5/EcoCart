@@ -25,7 +25,7 @@ def test_template_adds_first_everyday_comparison():
     product = dict(PRODUCT, lifecycleCo2eKg={"value": 47.9, "source": SRC, "checked": "2026-10-01"})
     carbon = {"equivalents": [{"amount": 340, "unit": "km in a petrol hatchback"}, {"amount": 67, "unit": "kWh"}]}
     assert template_summary(product, carbon).endswith(
-        "Samsung reports a lifecycle footprint of 47.9 kg CO2e for this model, "
+        "Samsung reports a lifecycle footprint of 47.9 kg CO₂e for this model, "
         "roughly the same as 340 km in a petrol hatchback."
     )
 

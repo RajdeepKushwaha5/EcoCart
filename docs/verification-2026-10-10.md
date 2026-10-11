@@ -43,3 +43,10 @@ Earlier today, with the previous build (0.8.3), none of four cards was redrawn i
 2. Try one real old-device handover. If it happens and the receipt is seen, record it with `scripts/verify_handover.py` so the Verified stage shows a true example.
 3. Get the organisers' written answer on the code written before the event.
 4. Make the GitHub repository public and open it signed out.
+
+## Update, 11 October 2026 (extension 0.9.2)
+
+- The card writes CO₂e properly and adds four everyday comparisons, each with its source: km in a petrol hatchback and km on a 110 cc scooter (India GHG Program), full smartphone charges (US EPA's 0.019 kWh per charge times India's CEA grid factor), and kWh of grid electricity (CEA). For the iPhone 16's 56 kg CO₂e: 400 km, 1,500 km, 4,100 charges, 79 kWh.
+- New: "Something looks wrong?" on every card, a "Before you hand it over" checklist with the maker's own guide, reminders with a calendar file, "Ask for verification" on reported handovers, backup and restore, duplicate-safe plan saving, and appliance comparisons only at about the same size.
+- Backend: 96 tests passed, and the live API passed all 360 smoke checks. Extension: 34 Node tests passed. Agent teams: 19 tests passed.
+- End to end with real mouse clicks (`tests/e2e/journey.js`): 18 of 18 checks passed. The test plan was deleted, and the public totals were back at 0 afterwards.

@@ -46,7 +46,7 @@ def badge(product):
     if end is not None:
         return f"Updates till at least {MONTHS[end.month - 1][:3]} {end.year}"
     if carbon_block(product, []) is not None:
-        return "CO2e published"
+        return "CO₂e published"
     return None
 
 

@@ -161,6 +161,18 @@ Resources:
             ApiId: !Ref HttpApi
             Method: DELETE
             Path: /actions/{actionId}
+        RequestVerification:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: POST
+            Path: /actions/{actionId}/verification
+        Report:
+          Type: HttpApi
+          Properties:
+            ApiId: !Ref HttpApi
+            Method: POST
+            Path: /reports
 
   PriceRefreshLogGroup:
     Type: AWS::Logs::LogGroup

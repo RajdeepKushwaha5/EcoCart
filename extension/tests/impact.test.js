@@ -1,10 +1,11 @@
 // Run: node --test extension/tests/impact.test.js
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const { comparable, compareGroup, makeChoice, choiceDifference, impactTotals, planTotals } = require("../ui/impact.js");
+const { comparable, compareGroup, makeChoice, choiceDifference, impactTotals, planTotals, capacityFrom, prepareGuide, isOverdue,
+  reminderCalendar } = require("../ui/impact.js");
 
 const phone = (fields) => ({ kind: "device", category: "phone", brand: "Apple", carbonBasis: null, ...fields });
-const fridge = (fields) => ({ kind: "appliance", type: "refrigerators", ...fields });
+const fridge = (fields) => ({ kind: "appliance", type: "refrigerators", capacity: { value: 240, unit: "litres" }, ...fields });
 
 test("maker-reported footprints compare only within one maker and one kind of device", () => {
   const pro = phone({ key: "a", carbonKg: 70 });
@@ -62,4 +63,34 @@ test("plan totals keep saved, reported and verified apart", () => {
     { status: "planned" }, { status: "done" }, { status: "done", verified: { at: "2026-10-11" } },
   ]);
   assert.deepEqual(totals, { saved: 3, waiting: 1, reported: 2, verified: 1 });
+});
+
+test("appliances compare only at about the same size, stated on both listings", () => {
+  const a = fridge({ key: "a", kwhYear: 190 });
+  assert.equal(comparable(a, fridge({ key: "b", kwhYear: 250, capacity: { value: 250, unit: "litres" } })), true);
+  assert.equal(comparable(a, fridge({ key: "b", kwhYear: 250, capacity: { value: 340, unit: "litres" } })), false);
+  assert.equal(comparable(a, fridge({ key: "b", kwhYear: 250, capacity: null })), false);
+  assert.equal(comparable(a, fridge({ key: "b", kwhYear: 250, capacity: { value: 240, unit: "kg" } })), false);
+});
+
+test("capacity is read only from size labels", () => {
+  assert.deepEqual(capacityFrom({ "Capacity": "240 L" }), { value: 240, unit: "litres" });
+  assert.deepEqual(capacityFrom({ "Tonnage": "1.5 Ton" }), { value: 1.5, unit: "tons" });
+  assert.equal(capacityFrom({ "Item Weight": "7 kg" }), null);
+});
+
+test("preparation guides come from the maker, or Google for other Android phones", () => {
+  assert.match(prepareGuide("Apple", "phone").url, /support\.apple\.com/);
+  assert.match(prepareGuide("Samsung", "phone").url, /samsung\.com\/in/);
+  assert.match(prepareGuide("Xiaomi", "phone").url, /support\.google\.com/);
+  assert.equal(prepareGuide("LG", "appliance"), null);
+});
+
+test("reminders: overdue after the day passes, and a valid calendar file", () => {
+  assert.equal(isOverdue("2026-10-01", "2026-10-11"), true);
+  assert.equal(isOverdue("2026-10-11", "2026-10-11"), false);
+  const file = reminderCalendar({ actionId: "a1", day: "2026-10-20", title: "Hand over; today", details: "x" });
+  assert.match(file, /DTSTART;VALUE=DATE:20261020/);
+  assert.ok(file.includes("SUMMARY:Hand over\\; today"));
+  assert.match(file, /^BEGIN:VCALENDAR[\s\S]*END:VCALENDAR$/);
 });

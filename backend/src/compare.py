@@ -132,6 +132,6 @@ def find_lower_footprint(current, page_price, catalog, today):
         "kg": kg,
         "basis": carbon.get("basis"),
         "carbonSource": carbon["source"],
-        "reason": f"{current['brand']} reports {kg:g} kg CO2e for it{_basis(carbon)}, "
+        "reason": f"{current['brand']} reports {kg:g} kg CO₂e for it{_basis(carbon)}, "
                   f"compared with {current_carbon['kg']:g} kg for this one{_basis(current_carbon)}.",
     }

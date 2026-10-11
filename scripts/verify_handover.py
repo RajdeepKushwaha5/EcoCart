@@ -4,7 +4,8 @@ Proof is a collection receipt, or the collector confirming the handover in writi
 personal details: for example "Cashify pickup receipt seen, 11 Oct 2026". The plan ID is shown on each plan in the
 shopper's dashboard, under My actions.
 
-Run: python scripts/verify_handover.py --action-id <id> --evidence "<what was seen>" [--undo]
+Run: python scripts/verify_handover.py --pending            (requests waiting for the team)
+     python scripts/verify_handover.py --action-id <id> --evidence "<what was seen>" [--undo]
 """
 
 import argparse
@@ -41,7 +42,8 @@ def find_action(table, action_id):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    parser.add_argument("--action-id", required=True)
+    parser.add_argument("--pending", action="store_true", help="List handovers whose shoppers asked for verification")
+    parser.add_argument("--action-id")
     parser.add_argument("--evidence", help="What the team saw, without personal details")
     parser.add_argument("--undo", action="store_true", help="Remove a verification recorded by mistake")
     parser.add_argument("--stack-name", default="ecocart-india")
@@ -52,6 +54,23 @@ def main():
     dynamodb = boto3.resource("dynamodb", region_name=args.region)
     actions_table = dynamodb.Table(names["ActionsTable"])
     stats_table = dynamodb.Table(names["StatsTable"])
+
+    if args.pending:
+        kwargs = {"FilterExpression": Attr("verificationRequest").exists() & Attr("verified").not_exists()}
+        waiting = []
+        while True:
+            page = actions_table.scan(**kwargs)
+            waiting.extend(page["Items"])
+            if "LastEvaluatedKey" not in page:
+                break
+            kwargs["ExclusiveStartKey"] = page["LastEvaluatedKey"]
+        for item in sorted(waiting, key=lambda entry: entry["verificationRequest"]["at"]):
+            request = item["verificationRequest"]
+            print(f"{item['actionId']}  {item['optionName']}, {item['city']}  asked {request['at'][:10]}: {request['note']}")
+        print(f"{len(waiting)} waiting.")
+        return
+    if not args.action_id:
+        parser.error("--action-id is required unless --pending is given")
 
     item = find_action(actions_table, args.action_id)
     if item is None:

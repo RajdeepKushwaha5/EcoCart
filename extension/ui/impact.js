@@ -5,6 +5,7 @@
 const SHORTLIST_KEY = "shortlist";
 const CHOICES_KEY = "choices";
 const ACTIVITY_KEY = "activity";
+const REMINDERS_KEY = "planReminders";
 const MAX_SHORTLIST = 40;
 const MAX_CHOICES = 100;
 const MAX_ACTIVITY = 500;
@@ -35,13 +36,38 @@ function devicesComparable(chosen, instead) {
   return chosenGb !== null && insteadGb !== null && chosenGb >= insteadGb;
 }
 
-// Appliances compare only within the same type (the shop's most specific category) and only when both labels
-// state yearly electricity use, which BEE labels measure under the same standard test.
+// An appliance's size as its listing states it: litres, kg of laundry, tons of cooling, inches of screen.
+const CAPACITY_UNITS = [
+  [/\b(\d+(?:\.\d+)?)\s*(?:l|ltr|litres?|liters?)\b/i, "litres"],
+  [/\b(\d+(?:\.\d+)?)\s*(?:tons?|tr)\b/i, "tons"],
+  [/\b(\d+(?:\.\d+)?)\s*kg\b/i, "kg"],
+  [/\b(\d+(?:\.\d+)?)\s*(?:inch|inches|in|")(?=\W|$)/i, "inches"],
+];
+const CAPACITY_LABEL = /capacity|volume|tonnage|screen size|display size/i;
+const CAPACITY_TOLERANCE = 0.1;
+
+function capacityFrom(details) {
+  for (const [label, value] of Object.entries(details || {})) {
+    if (!CAPACITY_LABEL.test(label)) continue;
+    for (const [pattern, unit] of CAPACITY_UNITS) {
+      const found = pattern.exec(value);
+      if (found) return { value: Number(found[1]), unit };
+    }
+  }
+  return null;
+}
+
+// Appliances compare only within the same type (the shop's most specific category), at about the same size, and
+// only when both labels state yearly electricity use, which BEE labels measure under the same standard test.
+// A bigger fridge uses more electricity, so without a stated size on both there is no fair comparison.
 function appliancesComparable(chosen, instead) {
   if (!chosen || !instead || chosen.key === instead.key) return false;
   if (chosen.kind !== "appliance" || instead.kind !== "appliance") return false;
   if (!chosen.type || chosen.type !== instead.type) return false;
-  return chosen.kwhYear != null && instead.kwhYear != null;
+  if (chosen.kwhYear == null || instead.kwhYear == null) return false;
+  const [a, b] = [chosen.capacity, instead.capacity];
+  if (!a || !b || a.unit !== b.unit) return false;
+  return Math.abs(a.value - b.value) <= CAPACITY_TOLERANCE * Math.max(a.value, b.value);
 }
 
 function comparable(chosen, instead) {
@@ -78,7 +104,7 @@ function makeChoice(chosen, instead, stage = "chosen", now = new Date()) {
     stage,
     chosen: side(chosen),
     instead: side(instead),
-    unit: device ? "kg CO2e" : "kWh a year",
+    unit: device ? "kg CO₂e" : "kWh a year",
     brand: device ? chosen.brand : null,
     type: device ? chosen.category : chosen.type,
     createdAt: now.toISOString(),
@@ -122,6 +148,63 @@ function planTotals(actions) {
     reported: actions.filter((action) => action.status === "done").length,
     verified: actions.filter((action) => action.verified).length,
   };
+}
+
+// ---------- Getting an old phone ready to hand over ----------
+
+// The maker's own instructions. Anything not listed gets Google's guide for Android phones.
+const PREPARE_GUIDES = {
+  Apple: { name: "Apple's checklist", url: "https://support.apple.com/en-in/109511" },
+  Samsung: { name: "Samsung's reset guide", url: "https://www.samsung.com/in/support/mobile-devices/perform-a-factory-reset-on-samsung-galaxy-device/" },
+  Android: { name: "Google's reset guide for Android", url: "https://support.google.com/android/answer/6088915" },
+};
+
+// Phones and tablets only: the guides and steps below are written for them.
+function prepareGuide(brand, category) {
+  if (category !== "phone" && category !== "tablet") return null;
+  return PREPARE_GUIDES[brand] || PREPARE_GUIDES.Android;
+}
+
+const PREPARE_STEPS = [
+  "Back up your photos, contacts and chats.",
+  "Sign out of your accounts, so the device is not locked to you.",
+  "Erase it with a factory reset.",
+  "Take out the SIM card and any memory card.",
+];
+
+// ---------- Reminders ----------
+
+async function loadReminders() {
+  const stored = await chrome.storage.local.get(REMINDERS_KEY);
+  return stored[REMINDERS_KEY] || {};
+}
+
+async function setReminder(actionId, day) {
+  const reminders = await loadReminders();
+  if (day) reminders[actionId] = day;
+  else delete reminders[actionId];
+  await chrome.storage.local.set({ [REMINDERS_KEY]: reminders });
+}
+
+function isOverdue(day, today = new Date().toISOString().slice(0, 10)) {
+  return Boolean(day) && day < today;
+}
+
+// A calendar file for one reminder, so the shopper's own calendar app does the reminding.
+function reminderCalendar({ actionId, day, title, details }) {
+  const date = day.replaceAll("-", "");
+  const escape = (text) => String(text).replace(/[\\;,]/g, (match) => `\\${match}`).replace(/\n/g, "\\n");
+  return [
+    "BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//EcoCart//Old-device plan//EN",
+    "BEGIN:VEVENT",
+    `UID:${actionId}@ecocart`,
+    `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, "").slice(0, 15)}Z`,
+    `DTSTART;VALUE=DATE:${date}`,
+    `SUMMARY:${escape(title)}`,
+    `DESCRIPTION:${escape(details)}`,
+    "BEGIN:VALARM", "TRIGGER:PT9H", "ACTION:DISPLAY", `DESCRIPTION:${escape(title)}`, "END:VALARM",
+    "END:VEVENT", "END:VCALENDAR",
+  ].join("\r\n");
 }
 
 function monthKey(isoText) {
@@ -201,5 +284,8 @@ async function logActivity(type, { name, kind, key } = {}) {
 
 // Lets the Node tests load this file. The browser ignores it.
 if (typeof module !== "undefined") {
-  module.exports = { comparable, compareGroup, makeChoice, choiceDifference, impactTotals, planTotals, storageGb, monthKey };
+  module.exports = {
+    comparable, compareGroup, makeChoice, choiceDifference, impactTotals, planTotals, storageGb, monthKey,
+    capacityFrom, prepareGuide, isOverdue, reminderCalendar,
+  };
 }

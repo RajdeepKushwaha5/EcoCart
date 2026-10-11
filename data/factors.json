@@ -5,7 +5,26 @@
     "kgCo2ePerUnit": 0.14,
     "source": "https://indiaghgp.org/sites/default/files/Road%20Transport%20Technical%20Paper.pdf",
     "checked": "2026-09-30",
-    "notes": "India GHG Program, Hatchback <1400 CC Gasoline, 0.140 kg CO2/km including the uplift factor (page 9)."
+    "notes": "India GHG Program, Hatchback <1400 CC Gasoline, 0.140 kg CO2/km including the uplift factor (page 9).",
+    "order": 1
+  },
+  {
+    "factorId": "scooter-km",
+    "unit": "km on a 110 cc scooter",
+    "kgCo2ePerUnit": 0.0368,
+    "source": "https://indiaghgp.org/sites/default/files/Road%20Transport%20Technical%20Paper.pdf",
+    "checked": "2026-10-10",
+    "notes": "India GHG Program, Scooter <110 CC, 0.0368 kg CO2/km including the 10% uplift factor (page 9, summary of two-wheeler factors).",
+    "order": 2
+  },
+  {
+    "factorId": "phone-charge",
+    "unit": "full smartphone charges",
+    "kgCo2ePerUnit": 0.0135,
+    "source": "https://www.epa.gov/energy/greenhouse-gases-equivalencies-calculator-calculations-and-references",
+    "checked": "2026-10-10",
+    "notes": "US EPA: 0.019 kWh to charge a smartphone fully. Multiplied by India's grid factor, 0.710 kg CO2 per kWh (CEA CO2 Baseline Database v21.0): 0.0135 kg per charge.",
+    "order": 3
   },
   {
     "factorId": "india-grid-kwh",
@@ -13,6 +32,7 @@
     "kgCo2ePerUnit": 0.71,
     "source": "https://cea.nic.in/wp-content/uploads/baseline/2025/12/User_Guide_V_21.0.pdf",
     "checked": "2026-09-30",
-    "notes": "CEA CO2 Baseline Database v21.0, weighted average for FY 2024-25: 0.710 tCO2/MWh."
+    "notes": "CEA CO2 Baseline Database v21.0, weighted average for FY 2024-25: 0.710 tCO2/MWh.",
+    "order": 4
   }
 ]

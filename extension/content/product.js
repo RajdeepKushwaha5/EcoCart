@@ -56,8 +56,39 @@ function mountCard(tagText) {
   }, "Hide");
 
   shadow.append(el("section", { className: "card", "aria-label": "EcoCart" },
-    logoBar(tagText, toggle), body));
+    logoBar(tagText, toggle), body, el("footer", { className: "card-foot" }, reportControl())));
   return body;
+}
+
+const REPORT_KINDS = [
+  ["price", "The price is wrong"],
+  ["category", "Wrong kind of product"],
+  ["model", "Wrong model"],
+  ["source", "A source is out of date"],
+  ["other", "Something else"],
+];
+
+// Only the kind of problem, the shop and this listing's public ID are sent. Never the page or anything typed.
+function reportControl() {
+  const wrap = el("div", { className: "report" });
+  const ask = () => show(wrap, el("button", { className: "text-btn", type: "button", onClick: choose }, "Something looks wrong?"));
+  const send = async (kind) => {
+    show(wrap, el("p", { className: "note" }, "Sending..."));
+    try {
+      await api("POST", "/reports", { kind, shop: SITE.name.toLowerCase(), listingId: SITE.listingId() });
+      show(wrap, el("p", { className: "note" }, "Thanks. Only the kind of problem and this listing's ID were sent, so the team can check it."));
+    } catch {
+      show(wrap, el("p", { className: "note" }, "Couldn't send it just now. "), el("button", { className: "text-btn", type: "button", onClick: choose }, "Try again"));
+    }
+  };
+  function choose() {
+    show(wrap,
+      el("p", { className: "report-title" }, "What looks wrong?"),
+      el("div", { className: "row" }, REPORT_KINDS.map(([kind, label]) => button(label, () => send(kind), "ghost small"))),
+      el("button", { className: "text-btn", type: "button", onClick: ask }, "Cancel"));
+  }
+  ask();
+  return wrap;
 }
 
 // The card reads in three steps: the evidence, what it means, and what the shopper can do about it.
@@ -286,6 +317,7 @@ function renderOldDevice(device, { showsExchange = false, intro } = {}) {
     }
 
     const status = el("p", { className: "note", role: "status" });
+    const requestId = crypto.randomUUID();
     const form = el("form", { className: "form" },
       el("div", { className: "tiles" }, options.map(optionTile)),
       button("Save my plan", null, "primary", "submit"),
@@ -308,11 +340,12 @@ function renderOldDevice(device, { showsExchange = false, intro } = {}) {
           oldDevice: { brand: oldDevice.brand, ageYears: oldDevice.ageYears },
           city: oldDevice.city,
           optionId,
+          requestId,
         }, true);
         if (device.planKey) await rememberPlan(device.planKey);
         await logActivity("planned", { name: device.listingName || device.modelId, kind: "plan" });
         await chrome.storage.local.set({ [PLANS_CHANGED_KEY]: Date.now() });
-        show(section, await savedMessage(word));
+        show(section, await savedMessage(word), prepareChecklist(oldDevice.brand, category));
       } catch {
         status.textContent = "Couldn't save. Please try again.";
       }
@@ -324,6 +357,16 @@ function renderOldDevice(device, { showsExchange = false, intro } = {}) {
 
   ask();
   return section;
+}
+
+// What to do before handing an old phone or tablet over, with the maker's own instructions.
+function prepareChecklist(brand, category) {
+  const guide = prepareGuide(brand, category);
+  if (!guide) return null;
+  return el("div", { className: "prepare" },
+    el("p", { className: "eyebrow accent" }, "Before you hand it over"),
+    el("ol", { className: "prepare-steps" }, PREPARE_STEPS.map((step) => el("li", {}, step))),
+    el("p", { className: "meta" }, "Step by step: ", sourceLink(guide.url, guide.name)));
 }
 
 // Shown after a plan is saved: the user's plant, and what makes it grow.
@@ -364,7 +407,7 @@ function estimateMethod(estimate, page) {
   return el("details", { className: "details" },
     el("summary", {}, "How this is worked out"),
     el("div", { className: "details-body" },
-      el("p", {}, `${formatRupees(estimate.priceInr)} (the price on this page) × about ${estimate.kgPerThousandInr} kg CO2e per ₹1,000, `
+      el("p", {}, `${formatRupees(estimate.priceInr)} (the price on this page) × about ${estimate.kgPerThousandInr} kg CO₂e per ₹1,000, `
         + `the average for "${estimate.sector.name}" in India.`),
       el("p", { className: "muted" }, sortedBy),
       el("p", { className: "muted" },
@@ -379,7 +422,7 @@ function renderEstimate(estimate, page) {
   return el("div", { className: "estimate" },
     el("p", { className: "estimate-flag" }, "Category estimate, not measured for this product"),
     el("p", { className: "stat-value" }, el("span", { className: "approx" }, "About "), formatNumber(estimate.kg),
-      el("span", { className: "unit" }, " kg CO2e")),
+      el("span", { className: "unit" }, " kg CO₂e")),
     el("p", { className: "muted" }, `Typical for ${estimate.category.toLowerCase()} at this price in India.`),
     el("p", { className: "note" },
       "This is an average for the whole category, worked out from the price. A specific product can be well above or below it."),

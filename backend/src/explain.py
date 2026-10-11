@@ -43,7 +43,7 @@ def template_summary(product, carbon=None):
 
     co2 = product.get("lifecycleCo2eKg")
     if is_sourced(co2) and isinstance(co2.get("value"), (int, float)):
-        second = f"{brand} reports a lifecycle footprint of {co2['value']} kg CO2e for this model"
+        second = f"{brand} reports a lifecycle footprint of {co2['value']} kg CO₂e for this model"
         comparisons = (carbon or {}).get("equivalents") or []
         if comparisons:
             first_comparison = comparisons[0]

@@ -29,6 +29,14 @@ def test_block_uses_only_sourced_factors():
     ]
 
 
+def test_factors_follow_their_set_order():
+    ordered = [
+        {"factorId": "b", "unit": "b", "kgCo2ePerUnit": 1, "source": SRC, "checked": "2026-10-01", "order": 2},
+        {"factorId": "a", "unit": "a", "kgCo2ePerUnit": 1, "source": SRC, "checked": "2026-10-01", "order": 1},
+    ]
+    assert [item["factorId"] for item in carbon_block(PRODUCT, ordered)["equivalents"]] == ["a", "b"]
+
+
 def test_no_block_without_sourced_figure():
     assert carbon_block({"brand": "X", "lifecycleCo2eKg": None}, FACTORS) is None
     unsourced = {"brand": "X", "lifecycleCo2eKg": {"value": 60, "source": None, "checked": None}}

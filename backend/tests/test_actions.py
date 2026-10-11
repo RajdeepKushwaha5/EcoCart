@@ -110,3 +110,26 @@ def test_only_a_reported_handover_can_be_verified_and_then_not_undone(table):
         actions.update_status(table, "s1", created["actionId"], {"status": "planned"})
     assert error.value.status == 409
     assert actions.delete_action(table, "s1", created["actionId"]) == (True, True)
+
+
+def test_a_retried_save_returns_the_first_plan(table):
+    body = {**BODY, "requestId": "save-1"}
+    first = actions.create_action(table, "s1", body, CATALOG, OPTIONS)
+    assert actions.find_by_request(table, "s1", body)["actionId"] == first["actionId"]
+    assert actions.find_by_request(table, "s2", body) is None
+    assert actions.find_by_request(table, "s1", BODY) is None
+
+
+def test_verification_is_requested_only_for_a_reported_handover(table):
+    created = actions.create_action(table, "s1", BODY, CATALOG, OPTIONS)
+    with pytest.raises(ApiError) as error:
+        actions.request_verification(table, "s1", created["actionId"], {"note": "Cashify order 123"})
+    assert error.value.status == 409
+    actions.update_status(table, "s1", created["actionId"], {"status": "done"})
+    with pytest.raises(ApiError):
+        actions.request_verification(table, "s1", created["actionId"], {"note": ""})
+    item = actions.request_verification(table, "s1", created["actionId"], {"note": "Cashify order 123"})
+    assert item["verificationRequest"]["note"] == "Cashify order 123"
+    with pytest.raises(ApiError) as error:
+        actions.request_verification(table, "s2", created["actionId"], {"note": "x"})
+    assert error.value.status == 404

@@ -1,6 +1,7 @@
 """Lambda entry point for the EcoCart HTTP API."""
 
 import logging
+import re
 from datetime import date
 
 import actions
@@ -109,7 +110,8 @@ def post_estimate(event):
     if result["estimate"]:
         kg = result["estimate"]["kg"]
         result["estimate"]["equivalents"] = [
-            {"amount": round_significant(kg / factor["kgCo2ePerUnit"]), "unit": factor["unit"], "source": factor["source"]}
+            {"factorId": factor["factorId"], "amount": round_significant(kg / factor["kgCo2ePerUnit"]), "unit": factor["unit"],
+             "source": factor["source"]}
             for factor in usable_factors(db.load_factors())
         ]
     return 200, result
@@ -159,6 +161,10 @@ def _record_gap(crumbs):
 def post_action(event):
     session_id = session_id_from_event(event, db.table("SESSIONS_TABLE"))
     body = parse_body(event)
+    # A retried save returns the plan the first attempt stored, and counts nothing again.
+    existing = actions.find_by_request(db.table("ACTIONS_TABLE"), session_id, body)
+    if existing is not None:
+        return 200, db.to_plain(existing)
     city = require_string(body, "city", max_length=60)
     item = actions.create_action(
         db.table("ACTIONS_TABLE"), session_id, body, db.load_catalog(), _options(city, category=None)
@@ -180,6 +186,32 @@ def patch_action(event):
     )
     _count(completed=completed_change)
     return 200, db.to_plain(item)
+
+
+def post_verification(event):
+    session_id = session_id_from_event(event, db.table("SESSIONS_TABLE"))
+    item = actions.request_verification(
+        db.table("ACTIONS_TABLE"), session_id, _path_param(event, "actionId"), parse_body(event)
+    )
+    return 200, db.to_plain(item)
+
+
+# Amazon ASINs and Flipkart product IDs: letters and digits only.
+LISTING_ID = re.compile(r"^[A-Za-z0-9]{6,24}$")
+
+
+def post_report(event):
+    """A shopper says a card looks wrong. Only the kind of problem, the shop and the listing ID are kept."""
+    body = parse_body(event)
+    kind, shop, listing_id = body.get("kind"), body.get("shop"), body.get("listingId")
+    if kind not in stats.REPORT_KINDS:
+        raise ApiError(400, f"'kind' must be one of {sorted(stats.REPORT_KINDS)}")
+    if shop not in stats.SHOPS:
+        raise ApiError(400, f"'shop' must be one of {sorted(stats.SHOPS)}")
+    if not isinstance(listing_id, str) or not LISTING_ID.match(listing_id):
+        raise ApiError(400, "'listingId' must be the shop's product ID")
+    stats.record_report(db.table("STATS_TABLE"), kind, shop, listing_id)
+    return 204, None
 
 
 def delete_action(event):
@@ -211,6 +243,8 @@ ROUTES = {
     "GET /actions": get_actions,
     "PATCH /actions/{actionId}": patch_action,
     "DELETE /actions/{actionId}": delete_action,
+    "POST /actions/{actionId}/verification": post_verification,
+    "POST /reports": post_report,
 }
 
 

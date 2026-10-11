@@ -90,7 +90,7 @@ async function deviceAnswer(sample) {
     el("p", "try-lede", card.explanation),
     fact("Security updates", support ? `Until at least ${support.value}` : card.headline.value, link(card.headline.source, "Official policy")),
     card.carbon
-      ? fact("Reported footprint", `${number(card.carbon.kg)} kg CO2e`, `Reported by ${card.product.brand}`, card.carbon.basis ? `, ${card.carbon.basis}. ` : ". ", link(card.carbon.source))
+      ? fact("Reported footprint", `${number(card.carbon.kg)} kg CO₂e`, `Reported by ${card.product.brand}`, card.carbon.basis ? `, ${card.carbon.basis}. ` : ". ", link(card.carbon.source))
       : fact("Reported footprint", `Not published by ${card.product.brand}`),
   ];
   const means = [
@@ -134,8 +134,8 @@ async function estimateAnswer(sample) {
   const rank = estimate.perRupee;
   const know = [
     el("p", "try-flag", "Category estimate, not measured for this product"),
-    el("p", "try-big", el("span", "try-approx", "About "), number(estimate.kg), el("span", "try-unit", " kg CO2e")),
-    el("p", "", `Typical for ${estimate.category.toLowerCase()} at this price in India: ${rupees(estimate.priceInr)} × about ${estimate.kgPerThousandInr} kg CO2e per ₹1,000, the Open CEDA average for "${estimate.sector.name}".`),
+    el("p", "try-big", el("span", "try-approx", "About "), number(estimate.kg), el("span", "try-unit", " kg CO₂e")),
+    el("p", "", `Typical for ${estimate.category.toLowerCase()} at this price in India: ${rupees(estimate.priceInr)} × about ${estimate.kgPerThousandInr} kg CO₂e per ₹1,000, the Open CEDA average for "${estimate.sector.name}".`),
     el("p", "try-meta", "Covers making the product up to the factory gate. ", link(estimate.dataset.source, "Dataset")),
     sample.labels.length
       ? fact("Labels on the listing", sample.labels.join(", "), "Stated by the seller, not checked by EcoCart.")

@@ -65,10 +65,12 @@ See [docs/method.md](docs/method.md) for the evidence rules.
 | GET | `/stats` | Public totals: plans saved, plans marked done, plans verified, devices covered |
 | GET | `/options?city=&brand=&category=` | Verified old-device options |
 | POST | `/sessions` | Returns an anonymous token |
-| POST | `/actions` | Bearer token, at most 50 plans per session. `{modelIdBought}` or `{listingName, category}`, plus `{oldDevice: {brand, ageYears}, city, optionId}` |
+| POST | `/actions` | Bearer token, at most 50 plans per session. A repeated `requestId` returns the plan already saved, so a retry never saves twice. `{modelIdBought}` or `{listingName, category}`, plus `{oldDevice: {brand, ageYears}, city, optionId}` |
 | GET | `/actions` | Bearer token. This session's plans |
 | PATCH | `/actions/{actionId}` | Bearer token. `{status: "planned" or "done"}`. A verified plan cannot go back to planned. |
 | DELETE | `/actions/{actionId}` | Bearer token |
+| POST | `/actions/{actionId}/verification` | Bearer token. `{note}`: the collector and a receipt or order number, for the team to check |
+| POST | `/reports` | `{kind, shop, listingId}` when a shopper says a card looks wrong. Only those three are kept, as a count |
 
 ## Run locally (no AWS)
 
@@ -130,7 +132,8 @@ Requirements: Python 3.12+, AWS CLI with credentials, [AWS SAM CLI](https://docs
 - **Category gaps:** breadcrumbs that no rule matched are counted (the breadcrumb only). Each week, run
   `python scripts/list_gaps.py`, add terms for the top ones to `data/sectors.json`, then run `build_estimates.py` and
   deploy. Add `--clear` once they are covered.
-- **Verified handovers:** when the team has seen a collection receipt or the collector's written confirmation for a plan,
+- **Reports from shoppers:** `python scripts/list_gaps.py --reports` lists cards marked as wrong, by kind, shop and listing.
+- **Verified handovers:** `python scripts/verify_handover.py --pending` lists shoppers' requests. When the team has seen a collection receipt or the collector's written confirmation for a plan,
   record it with `python scripts/verify_handover.py --action-id <plan ID> --evidence "<what was seen>"`. The plan ID is
   shown on each plan in the dashboard. See [docs/impact.md](docs/impact.md).
 - **Try EcoCart samples:** `site/samples.json` holds listings saved from the shops with their date. Refresh the prices

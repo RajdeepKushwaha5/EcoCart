@@ -179,3 +179,37 @@ def test_unmatched_breadcrumb_is_counted_without_the_title(app):
     call(app, "POST /estimate", {"title": "Shirt", "crumbs": ["Clothing & Accessories"], "price": 300})
     gaps = app.db.table("STATS_TABLE").items
     assert gaps == {("gap#mystery things > odd stuff",): {"statsId": "gap#mystery things > odd stuff", "hits": 2}}
+
+
+def test_a_retried_save_is_stored_and_counted_once(app):
+    _, session = call(app, "POST /sessions")
+    body = {"modelIdBought": "a55", "oldPhone": {"brand": "Xiaomi", "ageYears": 3}, "optionId": "any", "city": "delhi-ncr",
+            "requestId": "retry-me"}
+    first_status, first = call(app, "POST /actions", body, token=session["token"])
+    again_status, again = call(app, "POST /actions", body, token=session["token"])
+    assert (first_status, again_status) == (201, 200)
+    assert again["actionId"] == first["actionId"]
+    assert call(app, "GET /stats")[1]["plansSaved"] == 1
+
+
+def test_verification_request_route(app):
+    _, session = call(app, "POST /sessions")
+    token = session["token"]
+    body = {"modelIdBought": "a55", "oldPhone": {"brand": "Xiaomi", "ageYears": 3}, "optionId": "any", "city": "delhi-ncr"}
+    _, action = call(app, "POST /actions", body, token=token)
+    path = {"actionId": action["actionId"]}
+    assert call(app, "POST /actions/{actionId}/verification", {"note": "Receipt 9"}, token=token, path=path)[0] == 409
+    call(app, "PATCH /actions/{actionId}", {"status": "done"}, token=token, path=path)
+    status, item = call(app, "POST /actions/{actionId}/verification", {"note": "Receipt 9"}, token=token, path=path)
+    assert status == 200 and item["verificationRequest"]["note"] == "Receipt 9"
+
+
+def test_reports_keep_only_the_kind_shop_and_listing(app):
+    assert call(app, "POST /reports", {"kind": "price", "shop": "amazon", "listingId": "B0DYDPBM8K"})[0] == 204
+    assert call(app, "POST /reports", {"kind": "price", "shop": "amazon", "listingId": "B0DYDPBM8K"})[0] == 204
+    stats_table = app.db.table("STATS_TABLE")
+    assert stats_table.items[("report#price#amazon#B0DYDPBM8K",)]["hits"] == 2
+    for bad in ({"kind": "rude", "shop": "amazon", "listingId": "B0DYDPBM8K"},
+                {"kind": "price", "shop": "ebay", "listingId": "B0DYDPBM8K"},
+                {"kind": "price", "shop": "amazon", "listingId": "<script>"}):
+        assert call(app, "POST /reports", bad)[0] == 400

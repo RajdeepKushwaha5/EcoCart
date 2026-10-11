@@ -13,10 +13,12 @@ def round_significant(value, digits=2):
 
 
 def usable_factors(factors):
-    return [
+    """Sourced factors in their set order. The table is scanned in no particular order, so the order is stored."""
+    usable = [
         factor for factor in factors
         if is_sourced(factor) and isinstance(factor.get("kgCo2ePerUnit"), (int, float)) and factor["kgCo2ePerUnit"] > 0
     ]
+    return sorted(usable, key=lambda factor: factor.get("order", 99))
 
 
 def carbon_block(product, factors):

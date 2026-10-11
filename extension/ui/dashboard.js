@@ -3,7 +3,10 @@
 import { api, button, celebrate, formatDay, loadActions, node, pad, planStage, planSummary, PLANS_CHANGED_KEY, renderPlant } from "./shared.js";
 
 const VIEWED_KEY = "viewedPhones";
-const LOCAL_KEYS = new Set([SHORTLIST_KEY, CHOICES_KEY, ACTIVITY_KEY, VIEWED_KEY]);
+const LOCAL_KEYS = new Set([SHORTLIST_KEY, CHOICES_KEY, ACTIVITY_KEY, VIEWED_KEY, REMINDERS_KEY]);
+// Everything EcoCart keeps in this browser, for backup and restore. The session token links to the saved plans.
+const BACKUP_KEYS = [SHORTLIST_KEY, CHOICES_KEY, ACTIVITY_KEY, VIEWED_KEY, REMINDERS_KEY, "plannedFor", "confirmedMatches",
+  "lastCity", "sessionToken"];
 const PLAN_REFRESH_MS = 60000;
 const MONTHS = ["January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"];
@@ -27,6 +30,7 @@ const state = {
   choices: [],
   activity: [],
   viewed: [],
+  reminders: {},
   gridFactor: null,
   month: "all",
   type: "all",
@@ -77,11 +81,12 @@ function monthLabel(key) {
 // ---------- Loading ----------
 
 async function loadLocal() {
-  const stored = await chrome.storage.local.get([SHORTLIST_KEY, CHOICES_KEY, ACTIVITY_KEY, VIEWED_KEY]);
+  const stored = await chrome.storage.local.get([SHORTLIST_KEY, CHOICES_KEY, ACTIVITY_KEY, VIEWED_KEY, REMINDERS_KEY]);
   state.shortlist = stored[SHORTLIST_KEY] || [];
   state.choices = stored[CHOICES_KEY] || [];
   state.activity = stored[ACTIVITY_KEY] || [];
   state.viewed = stored[VIEWED_KEY] || [];
+  state.reminders = stored[REMINDERS_KEY] || {};
 }
 
 async function loadPlans() {
@@ -238,12 +243,22 @@ function tile(id, label, value, unit, sub, level) {
   return card;
 }
 
+function overdueCount(actions) {
+  return actions.filter((action) => isOverdue(state.reminders[action.actionId])).length;
+}
+
+function waitingNote(waiting) {
+  const overdue = overdueCount(waiting);
+  if (overdue) return `${overdue} past ${overdue === 1 ? "its" : "their"} reminder date`;
+  return waiting.length ? "Each has a next step" : "Nothing waiting";
+}
+
 function renderOverview() {
   const f = figures();
   const tiles = [];
   if (shows("plans")) {
     tiles.push(
-      tile("waiting", "Plans waiting for action", pad(f.plans.waiting.length), null, "Each has a next step", "Intention"),
+      tile("waiting", "Plans waiting for action", pad(f.plans.waiting.length), null, waitingNote(f.plans.waiting), "Intention"),
       tile("reported", "Handed over, reported by you", pad(f.plans.reported.length), null, "Marked done by you", "Your statement"),
       tile("verified", "Verified handovers", pad(f.plans.verified.length), null,
         f.plans.verified.length ? "With a receipt or partner confirmation" : "Needs a receipt or partner confirmation", "Verified"),
@@ -254,11 +269,11 @@ function renderOverview() {
     const power = f.totals.applianceKwhYear;
     const yearlyKg = state.gridFactor ? power.chosen * state.gridFactor.kgCo2ePerUnit : null;
     tiles.push(
-      tile("devices", "Footprint difference of your choices", formatNumber(devices.chosen, 1), "kg CO2e",
+      tile("devices", "Footprint difference of your choices", formatNumber(devices.chosen, 1), "kg CO₂e",
         devices.count ? `${devices.count} choice${devices.count === 1 ? "" : "s"}, ${formatNumber(devices.purchased, 1)} kg bought (you said)` : "Choose a lower-footprint option on a device card",
         "Maker-reported"),
       tile("electricity", "Electricity difference", formatNumber(power.chosen), "kWh a year",
-        power.count ? `About ${formatNumber(yearlyKg, 0)} kg CO2e a year on India's grid` : "Compare two shortlisted appliances", "Energy label"),
+        power.count ? `About ${formatNumber(yearlyKg, 0)} kg CO₂e a year on India's grid` : "Compare two shortlisted appliances", "Energy label"),
     );
   }
   if (shows("checks")) {
@@ -280,12 +295,14 @@ function renderNext() {
   if (next) {
     const route = routeFor(next);
     const old = next.oldDevice || next.oldPhone;
-    box.replaceChildren(
+    const day = state.reminders[next.actionId];
+    box.replaceChildren(...[
       node("p", "eyebrow accent", "Your next step"),
       node("p", "next-title", `Hand your old ${old.brand} ${DEVICE_WORDS[next.category] || "phone"} to ${next.optionName}`),
+      day ? node("p", isOverdue(day) ? "due overdue" : "due", `${isOverdue(day) ? "Was due" : "Due"} ${formatDay(day)}`) : null,
       route ? node("p", "muted", route.handover) : null,
       button("Mark it done", () => changePlan(next, "PATCH", { status: "done" }), "primary"),
-    );
+    ].filter(Boolean));
     return;
   }
   const comparable = shortlistGroups().find(([, items]) => items.length >= 2
@@ -324,8 +341,10 @@ function stageTrack(action) {
     ["Reported done", action.doneAt, action.status === "done"],
     ["Verified", action.verified?.at, Boolean(action.verified)],
   ];
+  const requested = !action.verified && action.verificationRequest;
   return append(node("ol", "stages"), steps.map(([label, at, reached]) => append(node("li", reached ? "reached" : ""),
-    node("span", "stage-dot"), node("span", "stage-label", label), node("span", "stage-date", reached && at ? formatDay(at) : "Not yet"))));
+    node("span", "stage-dot"), node("span", "stage-label", label),
+    node("span", "stage-date", reached && at ? formatDay(at) : label === "Verified" && requested ? `Requested ${formatDay(requested.at)}` : "Not yet"))));
 }
 
 function routeDetails(action) {
@@ -336,6 +355,87 @@ function routeDetails(action) {
     route.address ? node("p", "muted", route.address) : null,
     append(node("p", "meta"), link(route.url, "Website"), " ", link(route.source), ` checked ${formatDay(route.checked)}`),
     node("p", route.handoffConfirmed ? "flag ok" : "flag", route.handoffConfirmed ? "Handoff confirmed by our team" : "Handoff not yet confirmed by our team"));
+}
+
+function downloadFile(name, text, type) {
+  const url = URL.createObjectURL(new Blob([text], { type }));
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = name;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+function reminderRow(action) {
+  const day = state.reminders[action.actionId];
+  const wrap = node("div", "reminder");
+  const input = node("input");
+  input.type = "date";
+  input.min = new Date().toISOString().slice(0, 10);
+  input.value = day || "";
+  input.setAttribute("aria-label", "Reminder date");
+  input.addEventListener("change", () => setReminder(action.actionId, input.value || null));
+  const old = action.oldDevice || action.oldPhone;
+  const word = DEVICE_WORDS[action.category] || "phone";
+  wrap.append(node("span", "eyebrow", "Remind me on"), input);
+  if (day) {
+    wrap.append(
+      node("span", isOverdue(day) ? "due overdue" : "due", isOverdue(day) ? "Overdue" : `In ${Math.ceil((new Date(day) - Date.now()) / 86400000)} days`),
+      button("Add to calendar", () => downloadFile(`ecocart-${action.actionId}.ics`, reminderCalendar({
+        actionId: action.actionId,
+        day,
+        title: `Hand over your old ${old.brand} ${word} (EcoCart)`,
+        details: `${action.optionName}, ${action.city}. Mark it done in EcoCart afterwards.`,
+      }), "text/calendar"), "ghost small"),
+    );
+  }
+  return wrap;
+}
+
+function checklist(action) {
+  const old = action.oldDevice || action.oldPhone;
+  const guide = prepareGuide(old.brand, action.category);
+  if (!guide) return null;
+  const details = node("details", "prepare");
+  const summary = node("summary", "", "Before you hand it over");
+  const steps = node("ol", "prepare-steps");
+  for (const step of PREPARE_STEPS) steps.append(node("li", "", step));
+  details.append(summary, steps, append(node("p", "meta"), "Step by step: ", link(guide.url, guide.name)));
+  return details;
+}
+
+function verificationRow(action) {
+  if (action.verified || action.status !== "done") return null;
+  const request = action.verificationRequest;
+  if (request) {
+    return append(node("div", "verify requested"),
+      node("p", "", `You asked for verification on ${formatDay(request.at)}: "${request.note}".`),
+      node("p", "muted", "The team checks it with the collector. Until then it stays labelled as reported by you."));
+  }
+  const form = node("form", "verify");
+  const input = node("input");
+  input.type = "text";
+  input.maxLength = 300;
+  input.required = true;
+  input.placeholder = "Collector and receipt or order number, for example Cashify order 4411";
+  input.setAttribute("aria-label", "Receipt or order reference");
+  form.append(
+    node("p", "", "Have a receipt or order number? Ask the team to verify this handover."),
+    append(node("div", "verify-row"), input, button("Ask for verification", () => form.requestSubmit(), "primary small")),
+    node("p", "muted", "Only the reference you type is sent. Leave out names, addresses and phone numbers."),
+  );
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    try {
+      await api("POST", `/actions/${encodeURIComponent(action.actionId)}/verification`, { note: input.value.trim() });
+      await chrome.storage.local.set({ [PLANS_CHANGED_KEY]: Date.now() });
+      await loadPlans();
+      renderAll();
+    } catch {
+      $("status").textContent = "Couldn't send the request. Please try again.";
+    }
+  });
+  return form;
 }
 
 function timelineItem(action) {
@@ -350,6 +450,9 @@ function timelineItem(action) {
     node("p", "", planSummary(action)),
     stageTrack(action),
     routeDetails(action),
+    action.status === "planned" ? reminderRow(action) : null,
+    action.status === "planned" ? checklist(action) : null,
+    verificationRow(action),
     action.verified
       ? node("p", "meta", `Verified ${formatDay(action.verified.at)}: ${action.verified.evidence}`)
       : node("p", "meta", `Plan ID ${action.actionId}. A handover is verified only after the EcoCart team has seen the collection receipt or the collector's confirmation.`),
@@ -650,6 +753,25 @@ $("drawer").addEventListener("click", (event) => {
 });
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && !$("drawer").hidden) closeDrawer();
+});
+$("backup").addEventListener("click", async () => {
+  const data = await chrome.storage.local.get(BACKUP_KEYS);
+  const backup = { app: "EcoCart", version: 1, savedAt: new Date().toISOString(), data };
+  downloadFile(`ecocart-backup-${new Date().toISOString().slice(0, 10)}.json`, JSON.stringify(backup, null, 2), "application/json");
+});
+$("restore").addEventListener("change", async (event) => {
+  const [file] = event.target.files;
+  event.target.value = "";
+  if (!file) return;
+  try {
+    const backup = JSON.parse(await file.text());
+    if (backup?.app !== "EcoCart" || typeof backup.data !== "object") throw new Error("Not an EcoCart backup");
+    const data = Object.fromEntries(Object.entries(backup.data).filter(([key]) => BACKUP_KEYS.includes(key)));
+    await chrome.storage.local.set({ ...data, [PLANS_CHANGED_KEY]: Date.now() });
+    $("status").textContent = `Restored the backup from ${formatDay(backup.savedAt)}.`;
+  } catch {
+    $("status").textContent = "That file is not an EcoCart backup, so nothing was changed.";
+  }
 });
 $("clear-history").addEventListener("click", async () => {
   await chrome.storage.local.remove([ACTIVITY_KEY, VIEWED_KEY]);

@@ -1824,6 +1824,14 @@ button:focus-visible {
 
 /* ---------- Live totals ---------- */
 
+.metrics-note {
+  max-width: 760px;
+  margin: 32px 0 0;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
 .metric-cards {
   grid-template-columns: 1.4fr repeat(3, 1fr);
 }

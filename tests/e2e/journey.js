@@ -1,6 +1,6 @@
-// The whole shopper journey with the real extension on live shop pages:
-// card on Amazon and Flipkart, a recorded lower-footprint choice, the shortlist, an old-device plan saved,
-// found in the popup, marked done (the dashboard updates without a reload), and deleted again.
+// The whole shopper journey with the real extension on live shop pages, pressing controls with real mouse clicks:
+// card on Amazon and Flipkart, a recorded lower-footprint choice, the shortlist, an old-device plan saved, a reminder,
+// marked done from the popup (the dashboard updates without a reload), a verification request, and deleted again.
 //
 // Setup: cd tests/e2e && npm install
 // Run:   node journey.js            (set BROWSER to a Chrome or Edge executable if it is not found)
@@ -36,6 +36,27 @@ function check(name, ok, detail = "") {
 // Runs code against the card's shadow root, which page scripts cannot see directly.
 function inCard(page, source) {
   return page.evaluate((code) => new Function("root", code)(document.getElementById("ecocart-card")?.shadowRoot), source);
+}
+
+// Code that finds a control inside the card's shadow root ("card") or on an ordinary page ("page").
+const cardControl = (expression) => ({ where: "card", code: `return (${expression}) || null` });
+const pageControl = (expression) => ({ where: "page", code: `return (${expression}) || null` });
+
+async function handleIn(page, control) {
+  const handle = await page.evaluateHandle(({ where, code }) => {
+    const root = where === "card" ? document.getElementById("ecocart-card")?.shadowRoot : document;
+    return new Function("root", code)(root);
+  }, control);
+  const element = handle.asElement();
+  if (!element) throw new Error(`Control not found: ${control.code.slice(8, 100)}`);
+  return element;
+}
+
+// A real mouse click at the control's position, so the test fails if the control is hidden or covered.
+async function realClick(page, control) {
+  const element = await handleIn(page, control);
+  await element.scrollIntoView();
+  await element.click();
 }
 
 async function openCard(page, url) {
@@ -88,24 +109,30 @@ async function main() {
     check("phone card on Amazon in three steps", (await openCard(page, PAGES.iphone)) === steps);
     const offered = await inCard(page, `return [...root.querySelectorAll("button")].some((b) => b.textContent.includes("choose this instead"))`);
     check("same-maker lower-footprint option offered", offered);
-    await inCard(page, `[...root.querySelectorAll("button")].find((b) => b.textContent.includes("choose this instead"))?.click()`);
+    await realClick(page, cardControl(`[...root.querySelectorAll("button")].find((b) => b.textContent.includes("choose this instead"))`));
     await wait(1500);
     const recorded = await inCard(page, `return [...root.querySelectorAll(".choice .note")].map((n) => n.textContent).join(" ")`);
     check("choice recorded with the maker's figures", /Recorded: you chose/.test(recorded), recorded.slice(0, 80));
     check("shortlist button follows the choice", await inCard(page, `return Boolean(root.querySelector(".shortlist-state"))`));
+    check("everyday comparisons shown", await inCard(page, `return root.querySelectorAll(".everyday-item").length >= 3`));
 
     check("phone card on Flipkart in three steps", (await openCard(page, PAGES.galaxyFlipkart)) === steps);
     check("grocery estimate on Flipkart in three steps", (await openCard(page, PAGES.tea)) === steps);
     check("estimate is labelled", await inCard(page, `return /Category estimate, not measured/i.test(root.textContent)`));
+    check("report link on the card", await inCard(page, `return root.textContent.includes("Something looks wrong?")`));
 
     await openCard(page, PAGES.galaxy);
-    await inCard(page, `[...root.querySelectorAll("button")].find((b) => b.textContent.trim() === "Plan it").click()`);
+    await realClick(page, cardControl(`[...root.querySelectorAll("button")].find((b) => b.textContent.trim() === "Plan it")`));
     await page.waitForFunction(() => document.getElementById("ecocart-card").shadowRoot.querySelector("select[name=city]"), { timeout: 10000 });
-    await inCard(page, `root.querySelector("select[name=city]").value = "bengaluru"; root.querySelector("select[name=ageYears]").value = "4"; root.querySelector("form button[type=submit]").click()`);
+    await (await handleIn(page, cardControl(`root.querySelector("select[name=city]")`))).select("bengaluru");
+    await (await handleIn(page, cardControl(`root.querySelector("select[name=ageYears]")`))).select("4");
+    await realClick(page, cardControl(`root.querySelector("form button[type=submit]")`));
     await page.waitForFunction(() => document.getElementById("ecocart-card").shadowRoot.querySelector("input[name=optionId]"), { timeout: 15000 });
-    await inCard(page, `root.querySelector("input[name=optionId]").click(); root.querySelector(".tiles").closest("form").querySelector("button[type=submit]").click()`);
+    await realClick(page, cardControl(`root.querySelector(".tile")`));
+    await realClick(page, cardControl(`root.querySelector(".tiles").closest("form").querySelector("button[type=submit]")`));
     const saved = await page.waitForFunction(() => /Plan saved/.test(document.getElementById("ecocart-card").shadowRoot.textContent), { timeout: 15000 }).then(() => true, () => false);
-    check("old-device plan saved", saved);
+    check("old-device plan saved with real clicks", saved);
+    check("preparation checklist after saving", await inCard(page, `return Boolean(root.querySelector(".prepare-steps"))`));
 
     const worker = await browser.waitForTarget((target) => target.type() === "service_worker");
     const extensionId = new URL(worker.url()).host;
@@ -119,18 +146,34 @@ async function main() {
     check("dashboard counts the waiting plan", before["Plans waiting for action"] === "01", JSON.stringify(before));
     check("dashboard counts the choice", Number(before["Footprint difference of your choices"]) > 0);
 
+    await realClick(dashboard, pageControl(`document.getElementById("tab-actions")`));
+    await dashboard.evaluate(() => {
+      const input = document.querySelector(".reminder input[type=date]");
+      input.value = new Date(Date.now() + 7 * 86400000).toISOString().slice(0, 10);
+      input.dispatchEvent(new Event("change"));
+    });
+    await wait(1500);
+    check("reminder set, with a calendar file to add", await dashboard.evaluate(() => [...document.querySelectorAll(".plan button")].some((b) => b.textContent === "Add to calendar")));
+
     const popup = await browser.newPage();
     await popup.goto(`chrome-extension://${extensionId}/ui/popup.html`);
     await popup.waitForSelector(".action", { timeout: 15000 });
-    await popup.evaluate(() => [...document.querySelectorAll(".action button")].find((b) => b.textContent === "Mark done").click());
+    await realClick(popup, pageControl(`[...document.querySelectorAll(".action button")].find((b) => b.textContent === "Mark done")`));
     await wait(4000);
     await dashboard.bringToFront();
+    await wait(1500);
+    await realClick(dashboard, pageControl(`document.getElementById("tab-overview")`));
     const after = await tiles();
     check("dashboard updates live when the popup marks it done", after["Handed over, reported by you"] === "01", JSON.stringify(after));
 
-    await dashboard.evaluate(() => document.getElementById("tab-actions").click());
-    await dashboard.evaluate(() => document.querySelector(".celebrate button")?.click());
-    await dashboard.evaluate(() => [...document.querySelectorAll(".plan button")].find((b) => b.textContent === "Delete").click());
+    await realClick(dashboard, pageControl(`document.getElementById("tab-actions")`));
+    const note = await handleIn(dashboard, pageControl(`document.querySelector(".verify input")`));
+    await note.type("Test reference 0000, delete me");
+    await realClick(dashboard, pageControl(`[...document.querySelectorAll(".verify button")].find((b) => b.textContent === "Ask for verification")`));
+    await wait(3500);
+    check("verification requested from the dashboard", await dashboard.evaluate(() => document.body.textContent.includes("You asked for verification")));
+
+    await realClick(dashboard, pageControl(`[...document.querySelectorAll(".plan button")].find((b) => b.textContent === "Delete")`));
     await wait(3000);
     check("test plan deleted", (await dashboard.evaluate(() => document.querySelectorAll(".plan").length)) === 0);
   } finally {

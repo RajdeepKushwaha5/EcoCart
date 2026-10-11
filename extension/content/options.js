@@ -73,6 +73,7 @@ function shortlistItem(page, card, category, estimate = null) {
     price: page.price,
     type: clean(page.crumbs[page.crumbs.length - 1] || "").toLowerCase() || null,
     kwhYear,
+    capacity: capacityFrom(page.details),
     stars: energyStars(page),
   };
   if (kwhYear != null && (!category || category === "appliance" || category === "tv")) {
@@ -210,6 +211,34 @@ function yearChart(title, years, note) {
     note ? el("p", { className: "chart-note" }, note) : null);
 }
 
+// Simple line icons for the everyday comparisons. Fixed shapes only, never page data.
+const EVERYDAY_ICONS = {
+  "petrol-car-km": '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 15l1.6-5a2 2 0 0 1 1.9-1.4h9a2 2 0 0 1 1.9 1.4L20 15v3h-2.2M4 15v3h2.2M4 15h16M9.8 18h4.4"/><circle cx="7.6" cy="18" r="1.6"/><circle cx="16.4" cy="18" r="1.6"/></svg>',
+  "scooter-km": '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="17" r="2.4"/><circle cx="18" cy="17" r="2.4"/><path d="M8.4 17h7.2M15 17l-2-8h-2.5M13 9h3l2 8M6 14.6V12h5"/></svg>',
+  "phone-charge": '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M12.6 8l-2 4h3l-2 4"/></svg>',
+  "india-grid-kwh": '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3v5M15 3v5M7 8h10v3a5 5 0 0 1-10 0V8zM12 16v5"/></svg>',
+};
+
+function everydayIcon(factorId) {
+  const icon = el("span", { className: "everyday-icon" });
+  icon.innerHTML = EVERYDAY_ICONS[factorId] || EVERYDAY_ICONS["india-grid-kwh"];
+  return icon;
+}
+
+// A footprint in things people do every day: driving, riding a scooter, charging a phone, using electricity.
+function everydayTerms(equivalents, intro) {
+  if (!equivalents?.length) return null;
+  return el("div", { className: "everyday" },
+    el("p", { className: "everyday-intro" }, intro),
+    el("ul", { className: "everyday-list" }, equivalents.map((item) => el("li", { className: "everyday-item" },
+      everydayIcon(item.factorId),
+      el("span", { className: "everyday-amount" }, formatNumber(item.amount)),
+      el("span", { className: "everyday-unit" }, item.unit),
+      sourceLink(item.source, "Source"),
+    ))),
+  );
+}
+
 function shortModel(name, brand) {
   return name.startsWith(`${brand} `) ? name.slice(brand.length + 1) : name;
 }
@@ -219,14 +248,15 @@ function deviceMeaning(card, category) {
   const word = DEVICE_WORDS[category];
   const support = card?.scorecard?.support;
   const footprint = card?.scorecard?.footprint;
-  const equivalent = card?.carbon?.equivalents?.[0];
   const yearsLeft = yearsUntil(support?.value);
   const tiles = statTiles([
     yearsLeft ? { value: yearsLeft.toFixed(1), unit: "yrs", label: `of security updates left, until at least ${support.value}` } : null,
-    card?.carbon ? { value: formatNumber(card.carbon.kg), unit: "kg CO2e", label: `lifecycle footprint ${card.product.brand} reports` } : null,
+    card?.carbon ? { value: formatNumber(card.carbon.kg), unit: "kg CO₂e", label: `lifecycle footprint ${card.product.brand} reports` } : null,
     footprint?.rank ? { value: ordinal(footprint.rank), unit: `of ${footprint.count}`, label: `lowest footprint among ${footprint.brand} ${word}s` } : null,
-    equivalent ? { value: `≈ ${formatNumber(equivalent.amount)}`, unit: equivalent.unit.split(" ")[0], label: equivalent.unit.split(" ").slice(1).join(" "), source: equivalent.source } : null,
   ]);
+  const everyday = card?.carbon
+    ? everydayTerms(card.carbon.equivalents, `Its ${formatNumber(card.carbon.kg)} kg CO₂e is about the same as any one of these:`)
+    : null;
 
   const charts = [];
   if (footprint?.devices?.length >= 3) {
@@ -245,18 +275,17 @@ function deviceMeaning(card, category) {
     charts.push(yearChart(`How long ${word}s in EcoCart's list get security updates`, support.years,
       `${support.count} ${word}s by the year their promised updates end. Highlighted: this one, until at least ${support.value}.`));
   }
-  return [tiles, ...charts];
+  return [tiles, everyday, ...charts];
 }
 
 // What a category estimate means: everyday terms, and the category beside everyday ones per rupee spent.
 function estimateCharts(estimate) {
   const rank = estimate.perRupee;
-  const equivalent = estimate.equivalents?.[0];
   const tiles = statTiles([
-    { value: formatNumber(estimate.kgPerThousandInr), unit: "kg CO2e", label: "per ₹1,000 spent, the category average" },
+    { value: formatNumber(estimate.kgPerThousandInr), unit: "kg CO₂e", label: "per ₹1,000 spent, the category average" },
     rank.rank ? { value: ordinal(rank.rank), unit: `of ${rank.count}`, label: "product types, lowest per rupee first" } : null,
-    equivalent ? { value: `≈ ${formatNumber(equivalent.amount)}`, unit: equivalent.unit.split(" ")[0], label: equivalent.unit.split(" ").slice(1).join(" "), source: equivalent.source } : null,
   ]);
+  const everyday = everydayTerms(estimate.equivalents, `About ${formatNumber(estimate.kg)} kg CO₂e is roughly the same as any one of these:`);
   const chart = rank.examples?.length >= 3
     ? barChart("Per ₹1,000 spent, beside everyday categories", rank.examples.map((item) => ({
       label: item.label,
@@ -266,7 +295,7 @@ function estimateCharts(estimate) {
       tag: item.current ? "this one" : null,
     })), "Open CEDA averages for India. They describe each category, not any one product.")
     : null;
-  return [tiles, chart];
+  return [everyday, tiles, chart];
 }
 
 // ---------- Scorecard ----------
@@ -344,7 +373,7 @@ function footprintRow(card, word) {
     ? `Reported by ${footprint.brand}`
     : `Compared with ${footprint.count} ${footprint.brand} ${word}s; makers measure differently, so only the same maker is compared`;
   return {
-    label: "Reported footprint", value: `${formatNumber(footprint.value)} kg CO2e`, position: footprint.position,
+    label: "Reported footprint", value: `${formatNumber(footprint.value)} kg CO₂e`, position: footprint.position,
     ends: [`${footprint.low} kg`, `${footprint.high} kg`],
     note: [compared, carbon.basis ? `${DOT}${carbon.basis}` : null, DOT, sourceLink(carbon.source)],
   };
@@ -397,7 +426,7 @@ function catalogAlternativeRows(card, item) {
       modelId: lower.modelId, name: lower.displayName, price: lower.price.value, shop: SITE.name, url: SITE.searchUrl(lower.displayName),
       carbonKg: lower.kg, carbonBasis: lower.basis || null, carbonSource: lower.carbonSource,
     };
-    const difference = `${formatNumber(Math.round((card.carbon.kg - lower.kg) * 10) / 10)} kg CO2e`;
+    const difference = `${formatNumber(Math.round((card.carbon.kg - lower.kg) * 10) / 10)} kg CO₂e`;
     rows.push(optionRow("Same maker, similar price, lower footprint", lower.displayName,
       el("p", {}, lower.reason),
       el("p", { className: "meta" }, `${formatRupees(lower.price.value)} as of ${formatDate(lower.price.checked)}${DOT}`,
@@ -460,7 +489,7 @@ async function energyOptionRow(page, typeName) {
   if (kwh) {
     const grid = (await loadFactors()).find((factor) => factor.factorId === "india-grid-kwh");
     body.push(el("p", {}, `Its label says it uses ${formatNumber(kwh)} kWh a year`,
-      grid ? `, about ${formatNumber(Math.round(kwh * grid.kgCo2ePerUnit))} kg CO2e a year from India's grid. ` : ". ",
+      grid ? `, about ${formatNumber(Math.round(kwh * grid.kgCo2ePerUnit))} kg CO₂e a year from India's grid. ` : ". ",
       grid ? sourceLink(grid.source, "Grid factor") : null));
   }
   if (stars && stars < 5) {

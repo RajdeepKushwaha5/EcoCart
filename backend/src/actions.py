@@ -13,6 +13,7 @@ MAX_LISTING_NAME = 150
 # Plenty for a household, and it stops one session from inflating the public totals.
 MAX_PLANS_PER_SESSION = 50
 MAX_EVIDENCE = 300
+MAX_REQUEST_ID = 64
 
 
 def new_action_id():
@@ -54,9 +55,28 @@ def _new_device(body, catalog):
     return None, name, category
 
 
+def _request_id(body):
+    """An ID the extension makes up for each save, so a retried request does not save the plan twice."""
+    value = body.get("requestId")
+    if value is None:
+        return None
+    if not isinstance(value, str) or not value.strip() or len(value) > MAX_REQUEST_ID:
+        raise ApiError(400, "'requestId' must be a short string")
+    return value.strip()
+
+
+def find_by_request(actions_table, session_id, body):
+    """The plan an earlier attempt of this same request already saved, if any."""
+    request_id = _request_id(body)
+    if request_id is None:
+        return None
+    return next((item for item in list_actions(actions_table, session_id) if item.get("requestId") == request_id), None)
+
+
 def create_action(actions_table, session_id, body, catalog, options):
     if len(list_actions(actions_table, session_id)) >= MAX_PLANS_PER_SESSION:
         raise ApiError(429, f"A session can keep at most {MAX_PLANS_PER_SESSION} plans")
+    request_id = _request_id(body)
     model_id, model_name, category = _new_device(body, catalog)
     # "oldPhone" is what earlier versions of the extension send.
     old_device = validate_old_device(body.get("oldDevice", body.get("oldPhone")))
@@ -78,6 +98,8 @@ def create_action(actions_table, session_id, body, catalog, options):
         "status": "planned",
         "createdAt": _now(),
     }
+    if request_id:
+        item["requestId"] = request_id
     actions_table.put_item(Item=item)
     return _public(item)
 
@@ -128,6 +150,22 @@ def delete_action(actions_table, session_id, action_id):
     item = _owned_action(actions_table, session_id, action_id)
     actions_table.delete_item(Key={"sessionId": session_id, "actionId": action_id})
     return item["status"] == "done", bool(item.get("verified"))
+
+
+def request_verification(actions_table, session_id, action_id, body):
+    """The shopper asks the team to verify a handover they reported, with a receipt or order reference.
+
+    The note should name the collector and a receipt or order number, never personal details.
+    """
+    item = _owned_action(actions_table, session_id, action_id)
+    if item["status"] != "done":
+        raise ApiError(409, "Mark the plan done before asking for verification")
+    if item.get("verified"):
+        raise ApiError(409, "This handover is already verified")
+    note = require_string(body, "note", max_length=MAX_EVIDENCE)
+    item["verificationRequest"] = {"at": _now(), "note": note}
+    actions_table.put_item(Item=item)
+    return _public(item)
 
 
 def verify(item, evidence, verified_at=None):

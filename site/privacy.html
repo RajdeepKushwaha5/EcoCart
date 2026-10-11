@@ -51,7 +51,7 @@
     <main>
       <a class="back" href="./">EcoCart</a>
       <h1>Privacy</h1>
-      <p class="muted">Last updated 10 October 2026. This covers the EcoCart browser extension and this website.</p>
+      <p class="muted">Last updated 11 October 2026. This covers the EcoCart browser extension and this website.</p>
 
       <p>
         EcoCart has no accounts. It never asks for your name, email, phone number or address, and it does not use ads,
@@ -81,13 +81,21 @@
             <th>When you save a plan for an old device</th>
             <td>The device you are buying (its name), the brand and age of the old device, your city, the option you picked, and later whether you marked it done. Plans are linked to a random token, not to you.</td>
           </tr>
+          <tr>
+            <th>When you ask for a handover to be verified</th>
+            <td>The reference you type, such as the collector and a receipt or order number. It is kept with that plan so the team can check it. Please leave out names, addresses and phone numbers.</td>
+          </tr>
+          <tr>
+            <th>When you tap "Something looks wrong?"</th>
+            <td>The kind of problem you pick (for example "The price is wrong"), the shop, and the listing's public product ID. Nothing from the page and nothing about you. Reports are counted so the team can fix the reading of that listing.</td>
+          </tr>
         </table>
       </div>
 
       <h2>What is stored, and where</h2>
       <ul>
         <li><b>On our server (Amazon Web Services, Mumbai region):</b> your saved plans, linked to a one-way hash of a random token. We cannot tell who you are from it. Totals shown on this site (plans saved, marked done and verified) are simple counters. A plan is marked verified only when the EcoCart team has seen a collection receipt or the collector's confirmation; only a short note of what was seen is kept, never personal details.</li>
-        <li><b>In your browser only:</b> the random token, the devices you recently looked at (for the dashboard and the order-page reminder), device matches you confirmed, the city you last picked, your shortlist, the choices you record between shortlisted products, and a list of what you did (product name, kind and date) for the activity chart. None of this leaves your browser.</li>
+        <li><b>In your browser only:</b> the random token, the devices you recently looked at (for the dashboard and the order-page reminder), device matches you confirmed, the city you last picked, your shortlist, the choices you record between shortlisted products, the reminder dates you set, and a list of what you did (product name, kind and date) for the activity chart. None of this leaves your browser, unless you download a backup file yourself.</li>
         <li><b>Server logs:</b> errors are logged to help fix problems and deleted after 14 days. They do not contain your plans.</li>
       </ul>
 
