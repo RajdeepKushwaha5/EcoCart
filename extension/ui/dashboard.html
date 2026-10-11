@@ -18,6 +18,7 @@
 
     <section class="dashboard-hero" aria-labelledby="dashboard-title">
       <div class="dashboard-hero-copy">
+        <div id="greeting" class="greeting"></div>
         <span class="dashboard-kicker">What changed because you used EcoCart</span>
         <h1 id="dashboard-title">Check, choose, act. <span>Then see the result.</span></h1>
         <p>Every number here comes from something you did, and you can open it to see where it comes from.</p>
@@ -27,6 +28,7 @@
     <div class="layout">
       <aside class="side">
         <div id="plant" class="plant"></div>
+        <p class="side-note">Your plant grows one stage for every greener action: a lower-footprint choice, or an old device handed over.</p>
         <p class="side-note">Kept in this browser, except your old-device plans, which are stored under an anonymous session so you can mark them done from any page.</p>
       </aside>
 
@@ -52,6 +54,7 @@
                 <option value="plans">Old-device plans</option>
                 <option value="choices">Choices</option>
                 <option value="checks">Products checked</option>
+                <option value="purchases">Purchases</option>
               </select>
             </label>
           </div>
@@ -60,6 +63,7 @@
 
         <section id="panel-overview" class="panel" role="tabpanel" aria-labelledby="tab-overview">
           <div id="alltime" class="alltime" aria-live="polite"></div>
+          <div id="purchases" class="purchases" aria-live="polite"></div>
           <div id="tiles" class="tiles"></div>
           <p class="note">Tap any number to see what it counts, where it comes from and how sure it is.</p>
         </section>

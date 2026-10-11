@@ -24,11 +24,42 @@ function purchaseQuestion(choice) {
   return section;
 }
 
+// "Did you buy any of these?" for products looked at in the last two days. Yes adds one to the purchase log.
+function recentPurchaseQuestion(products) {
+  const section = el("div", { className: "old-phone" });
+  const row = (product) => {
+    const line = el("div", { className: "bought-row" },
+      el("div", {},
+        el("p", { className: "decide-text" }, el("strong", {}, product.name.slice(0, 80))),
+        el("p", { className: "meta" }, product.kg != null
+          ? `About ${formatNumber(product.kg)} kg CO₂e, ${product.basis === "reported" ? "as its maker reports" : "a category estimate"}`
+          : "No footprint figure for it")));
+    line.append(button("Yes, I bought it", async () => {
+      await logPurchase(product);
+      show(line, el("p", { className: "shortlist-state" }, el("span", { className: "tick", "aria-hidden": "true" }), `Added: ${product.name.slice(0, 50)}`));
+    }, "ghost small"));
+    return line;
+  };
+  show(section,
+    el("p", { className: "eyebrow accent" }, "Your purchases"),
+    el("p", { className: "section-title" }, "Did you buy any of these?"),
+    el("p", { className: "muted" }, "EcoCart does not read this page. Tell it what you bought, and your dashboard adds it to your purchases."),
+    products.map(row),
+    dashboardLink("See your purchases"));
+  return section;
+}
+
 async function showThankYouReminder() {
   const choice = await recentUnboughtChoice();
   const [latest] = await recentlyViewed();
   const recentView = latest && (Date.now() - new Date(latest.viewedAt).getTime()) / 3_600_000 <= REMINDER_WINDOW_HOURS;
-  if (!choice && !recentView) return;
+  const cutoff = Date.now() - REMINDER_WINDOW_HOURS * 3_600_000;
+  const recentProducts = [];
+  for (const product of await loadRecentProducts()) {
+    if (new Date(product.seenAt).getTime() < cutoff || recentProducts.length >= 3) continue;
+    if (!(await hasPurchasedToday(product.key))) recentProducts.push(product);
+  }
+  if (!choice && !recentView && recentProducts.length === 0) return;
 
   const category = latest?.category || "phone";
   const word = DEVICE_WORDS[category];
@@ -40,9 +71,10 @@ async function showThankYouReminder() {
   }, "Close");
 
   shadow.append(el("section", { className: "card floating", "aria-label": "EcoCart reminder" },
-    logoBar(recentView ? `Got a new ${word}?` : "Your choice", close),
+    logoBar(recentView ? `Got a new ${word}?` : "Your order", close),
     el("div", { className: "body" },
       choice ? purchaseQuestion(choice) : null,
+      recentProducts.length ? recentPurchaseQuestion(recentProducts) : null,
       recentView
         ? renderOldDevice({ modelId: latest.modelId, category }, {
           intro: `If you just bought the ${latest.displayName} you were looking at, plan what happens to your old ${word}.`,

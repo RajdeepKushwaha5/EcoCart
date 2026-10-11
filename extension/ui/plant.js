@@ -1,4 +1,4 @@
-// A plant that grows one stage for every completed old-phone plan.
+// A plant that grows one stage for every greener action: an old device handed over, or a lower-footprint choice.
 // Loaded as a plain script by the content scripts, the popup and the dashboard, so it defines globals.
 
 const PLANT_STAGES = ["Seed", "Sprout", "Seedling", "Young plant", "Budding", "In bloom"];
@@ -7,16 +7,15 @@ const PLANT_STEM_HEIGHTS = [0, 16, 32, 48, 60, 66];
 const PLANT_SOIL_Y = 104;
 const PLANT_X = 60;
 
-function plantStage(completed) {
-  const stage = Math.min(completed, PLANT_MAX_STAGE);
+function plantStage(actions) {
+  const stage = Math.min(actions, PLANT_MAX_STAGE);
   const remaining = PLANT_MAX_STAGE - stage;
-  const plans = remaining === 1 ? "plan" : "plans";
   return {
     stage,
     name: PLANT_STAGES[stage],
     next: remaining === 0
-      ? "Fully grown. Every plan you complete still counts."
-      : `${remaining} more completed ${plans} to full bloom`,
+      ? "Fully grown. Every greener action still counts."
+      : `${remaining} more greener ${remaining === 1 ? "action" : "actions"} to full bloom`,
   };
 }
 

@@ -2,7 +2,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const { comparable, compareGroup, makeChoice, choiceDifference, impactTotals, planTotals, capacityFrom, prepareGuide, isOverdue,
-  reminderCalendar, impactTimeline, stageDates } = require("../ui/impact.js");
+  reminderCalendar, impactTimeline, stageDates, purchaseId, purchaseTotals, lastMonths, greenActions } = require("../ui/impact.js");
 
 const phone = (fields) => ({ kind: "device", category: "phone", brand: "Apple", carbonBasis: null, ...fields });
 const fridge = (fields) => ({ kind: "appliance", type: "refrigerators", capacity: { value: 240, unit: "litres" }, ...fields });
@@ -117,4 +117,31 @@ test("a choice remembers when it was chosen and when it was bought", () => {
   assert.equal(bought.chosenAt, now.toISOString());
   assert.equal(bought.purchasedAt, later.toISOString());
   assert.equal(stageDates(bought, "chosen", later).purchasedAt, null);
+});
+
+test("purchases add up by month, keep reported and estimated apart, and skip unknown footprints", () => {
+  const purchases = [
+    { kg: 63, basis: "reported", at: "2026-10-05T10:00:00Z" },
+    { kg: 2.5, basis: "estimate", at: "2026-10-09T10:00:00Z" },
+    { kg: 3, basis: "estimate", at: "2026-09-20T10:00:00Z" },
+    { kg: null, basis: null, at: "2026-10-10T10:00:00Z" },
+  ];
+  const totals = purchaseTotals(purchases);
+  assert.equal(totals.totalKg, 68.5);
+  assert.equal(totals.reportedKg, 63);
+  assert.equal(totals.estimateKg, 5.5);
+  assert.deepEqual(totals.byMonth, { "2026-10": 65.5, "2026-09": 3 });
+  assert.equal(totals.unknown, 1);
+});
+
+test("the same product bought twice on one day is one purchase", () => {
+  assert.equal(purchaseId({ key: "amazon:B0X" }, "2026-10-11T08:00:00Z"), purchaseId({ key: "amazon:B0X" }, "2026-10-11T20:00:00Z"));
+  assert.notEqual(purchaseId({ key: "amazon:B0X" }, "2026-10-11T08:00:00Z"), purchaseId({ key: "amazon:B0X" }, "2026-10-12T08:00:00Z"));
+});
+
+test("the chart covers the last twelve months and the plant grows with greener actions", () => {
+  const months = lastMonths(12, new Date(2026, 9, 11));
+  assert.equal(months.length, 12);
+  assert.deepEqual([months[0], months[11]], ["2025-11", "2026-10"]);
+  assert.equal(greenActions([{ status: "done" }, { status: "planned" }], [{ stage: "chosen" }, { stage: "considered" }, { stage: "purchased" }]), 3);
 });

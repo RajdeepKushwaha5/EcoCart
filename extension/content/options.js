@@ -129,6 +129,31 @@ function shortlistControl(item) {
   return wrap;
 }
 
+// A moment of thanks when the shopper picks the lower-footprint option. The plant grows with each greener choice.
+async function celebrateChoice(anchor, chosen, difference) {
+  const card = anchor.getRootNode().querySelector(".card");
+  if (!card) return;
+  const choices = await loadChoices();
+  const grown = choices.filter((choice) => choice.stage === "chosen" || choice.stage === "purchased").length;
+  const { stage, name } = plantStage(grown);
+  const art = el("div", { className: "celebrate-plant" });
+  art.innerHTML = plantSvg(stage); // Fixed shapes only, no page data.
+  const close = () => overlay.remove();
+  const overlay = el("div", { className: "celebrate", role: "dialog", "aria-label": "Nice choice" },
+    el("div", { className: "celebrate-panel" },
+      el("button", { className: "celebrate-close", type: "button", "aria-label": "Close", onClick: close }, "×"),
+      art,
+      el("p", { className: "celebrate-title" }, "Woah, nice choice!"),
+      el("p", { className: "celebrate-text" }, `You picked the ${chosen.name}: ${difference} less, by ${chosen.brand}'s own reports. Your plant is now: ${name}.`),
+      el("p", { className: "celebrate-quote" }, "\u201cThe greatest threat to our planet is the belief that someone else will save it.\u201d Robert Swan"),
+      button("Keep shopping", close, "primary")));
+  overlay.addEventListener("click", (event) => {
+    if (event.target === overlay) close();
+  });
+  card.append(overlay);
+  overlay.querySelector(".btn").focus();
+}
+
 // Records that the shopper picked one product over a comparable one. Nothing is recorded for an unfair comparison.
 function choiceControls(chosen, instead, difference) {
   const status = el("p", { className: "note", role: "status" });
@@ -141,6 +166,7 @@ function choiceControls(chosen, instead, difference) {
     await addToShortlist(instead);
     await addToShortlist(chosen);
     await saveChoice(choice);
+    if (stage === "chosen") celebrateChoice(status, chosen, difference);
     status.replaceChildren(stage === "chosen"
       ? `Recorded: you chose the ${chosen.name}. By ${chosen.brand}'s own reports, that is ${difference} less. `
       : "Both are on your shortlist, side by side. ",

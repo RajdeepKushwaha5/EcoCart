@@ -6,6 +6,11 @@ const SHORTLIST_KEY = "shortlist";
 const CHOICES_KEY = "choices";
 const ACTIVITY_KEY = "activity";
 const REMINDERS_KEY = "planReminders";
+const PURCHASES_KEY = "purchases";
+const RECENT_KEY = "recentProducts";
+const NAME_KEY = "userName";
+const MAX_PURCHASES = 500;
+const MAX_RECENT = 20;
 const MAX_SHORTLIST = 40;
 const MAX_CHOICES = 100;
 const MAX_ACTIVITY = 500;
@@ -185,6 +190,83 @@ function planTotals(actions) {
   };
 }
 
+// ---------- Purchases ----------
+
+// A product as the card saw it: what it is, where, its price, and its footprint with where that number comes from.
+// basis: "reported" (the maker's own lifecycle figure) or "estimate" (Open CEDA's average for its category and price).
+function productSnapshot({ key, name, shop, url, price, kg, basis, category, source }) {
+  return { key, name: String(name || "").slice(0, 150), shop, url, price: price ?? null, kg: kg ?? null, basis: basis || null,
+    category: category || null, source: source || null };
+}
+
+// The same product bought twice on one day counts once; on another day it is a new purchase.
+function purchaseId(snapshot, at) {
+  return `${snapshot.key}@${at.slice(0, 10)}`;
+}
+
+// Totals for the purchases dashboard. Only purchases with a footprint add to the kilograms.
+function purchaseTotals(purchases) {
+  const byMonth = {};
+  let totalKg = 0;
+  let reportedKg = 0;
+  let estimateKg = 0;
+  for (const purchase of purchases) {
+    if (purchase.kg == null) continue;
+    totalKg += purchase.kg;
+    if (purchase.basis === "reported") reportedKg += purchase.kg;
+    else estimateKg += purchase.kg;
+    const month = purchase.at.slice(0, 7);
+    byMonth[month] = (byMonth[month] || 0) + purchase.kg;
+  }
+  return { totalKg, reportedKg, estimateKg, byMonth, count: purchases.length,
+    unknown: purchases.filter((purchase) => purchase.kg == null).length };
+}
+
+// The last twelve months, oldest first, as "YYYY-MM".
+function lastMonths(count = 12, now = new Date()) {
+  return Array.from({ length: count }, (_, index) => {
+    const date = new Date(now.getFullYear(), now.getMonth() - (count - 1 - index), 1);
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+  });
+}
+
+// Greener actions grow the plant: plans handed over, and lower-footprint choices made.
+function greenActions(actions, choices) {
+  const done = actions.filter((action) => action.status === "done").length;
+  const chosen = choices.filter((choice) => choice.stage === "chosen" || choice.stage === "purchased").length;
+  return done + chosen;
+}
+
+async function loadPurchases() {
+  return readList(PURCHASES_KEY);
+}
+
+async function loadRecentProducts() {
+  return readList(RECENT_KEY);
+}
+
+async function rememberProduct(snapshot) {
+  const others = (await loadRecentProducts()).filter((item) => item.key !== snapshot.key);
+  await chrome.storage.local.set({ [RECENT_KEY]: [{ ...snapshot, seenAt: new Date().toISOString() }, ...others].slice(0, MAX_RECENT) });
+}
+
+async function logPurchase(snapshot) {
+  const at = new Date().toISOString();
+  const id = purchaseId(snapshot, at);
+  const purchases = (await loadPurchases()).filter((item) => item.id !== id);
+  await chrome.storage.local.set({ [PURCHASES_KEY]: [{ ...snapshot, id, at }, ...purchases].slice(0, MAX_PURCHASES) });
+  await logActivity("bought", { name: snapshot.name, kind: "purchase", key: snapshot.key });
+}
+
+async function hasPurchasedToday(key) {
+  const today = new Date().toISOString().slice(0, 10);
+  return (await loadPurchases()).some((item) => item.key === key && item.at.slice(0, 10) === today);
+}
+
+async function removePurchase(id) {
+  await chrome.storage.local.set({ [PURCHASES_KEY]: (await loadPurchases()).filter((item) => item.id !== id) });
+}
+
 // ---------- Old devices ----------
 
 // Brands offered in the old-device form, by kind of device.
@@ -350,5 +432,6 @@ if (typeof module !== "undefined") {
   module.exports = {
     comparable, compareGroup, makeChoice, choiceDifference, impactTotals, planTotals, storageGb, monthKey,
     capacityFrom, prepareGuide, isOverdue, reminderCalendar, impactTimeline, stageDates,
+    productSnapshot, purchaseId, purchaseTotals, lastMonths, greenActions,
   };
 }

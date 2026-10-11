@@ -28,30 +28,31 @@
 }
 
 :root {
-  --bg: oklch(0.06 0.008 260);
-  --card: oklch(0.09 0.008 260);
-  --raise: oklch(0.12 0.008 260);
-  --hover: oklch(0.14 0.01 260);
-  --line: oklch(0.94 0.005 90 / 0.1);
-  --line-strong: oklch(0.94 0.005 90 / 0.25);
-  --ink: oklch(0.94 0.005 90);
-  --soft: oklch(0.94 0.005 90 / 0.7);
-  --muted: oklch(0.55 0.015 90);
-  --faint: oklch(0.94 0.005 90 / 0.3);
-  --pink: #eca8d6;
-  --amber: #fbbf24;
-  --pot: #3a3328;
-  --pot-line: #5c5140;
-  --soil: #2a2118;
-  --bloom: #eca8d6;
-  /* Leaves of the plant drawing. */
-  --accent: #8fd3a8;
+  /* Light and green, like the card on the shop page: a cream page, deep green ink and leaf-green accents. */
+  --bg: #fbfaf3;
+  --card: #ffffff;
+  --raise: #f2f0e5;
+  --hover: #e8e5d7;
+  --line: rgba(30, 64, 36, 0.12);
+  --line-strong: rgba(30, 64, 36, 0.26);
+  --ink: #1b3320;
+  --soft: #2f4434;
+  --muted: #4a5a4d;
+  --faint: rgba(27, 51, 32, 0.3);
+  --pink: #b8437f;
+  --amber: #9a5e0a;
+  --pot: #b4875a;
+  --pot-line: #8a6440;
+  --soil: #6b4b2e;
+  --bloom: #e98bb8;
+  /* Leaves of the plant drawing, and the main green. */
+  --accent: #2f7a3b;
 
   --sans: "EcoCart Sans", "Instrument Sans", system-ui, sans-serif;
-  --serif: "EcoCart Serif", "Instrument Serif", Georgia, serif;
+  --serif: var(--sans);
   --mono: "EcoCart Mono", "JetBrains Mono", ui-monospace, monospace;
 
-  color-scheme: dark;
+  color-scheme: light;
 }
 
 * {
@@ -101,7 +102,7 @@ a:hover {
   display: inline-flex;
   align-items: baseline;
   gap: 6px;
-  font: 400 24px/1 var(--serif);
+  font: 700 24px/1 var(--sans);
   letter-spacing: -0.01em;
 }
 
@@ -152,7 +153,7 @@ a:hover {
 }
 
 .big-num {
-  font: 400 52px/0.95 var(--serif);
+  font: 700 52px/0.95 var(--sans);
   letter-spacing: -0.03em;
   color: var(--ink);
 }
@@ -166,7 +167,7 @@ a:hover {
 }
 
 .plant-name {
-  font: 400 22px/1.1 var(--serif);
+  font: 700 22px/1.1 var(--sans);
 }
 
 .plant-next {
@@ -212,7 +213,7 @@ a:hover {
 }
 
 .action-title {
-  font: 400 19px/1.2 var(--serif);
+  font: 700 19px/1.2 var(--sans);
 }
 
 .action .muted,
@@ -297,7 +298,7 @@ a:focus-visible {
 }
 
 .empty-title {
-  font: 400 24px/1.1 var(--serif);
+  font: 700 24px/1.1 var(--sans);
   color: var(--ink);
 }
 
@@ -310,7 +311,7 @@ a:focus-visible {
   display: grid;
   place-items: center;
   padding: 16px;
-  background: oklch(0.06 0.008 260 / 0.8);
+  background: rgba(251, 250, 243, 0.85);
   backdrop-filter: blur(10px);
   animation: fade-in 300ms ease-out;
 }
@@ -337,7 +338,7 @@ a:focus-visible {
 }
 
 .celebrate-stage {
-  font: 400 40px/1 var(--serif);
+  font: 700 40px/1 var(--sans);
   letter-spacing: -0.02em;
 }
 

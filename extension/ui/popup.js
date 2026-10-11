@@ -26,8 +26,9 @@ async function load({ completed = false } = {}) {
   const done = actions.filter((action) => action.status === "done").length;
   savedCount.textContent = pad(actions.length);
   doneCount.textContent = pad(done);
-  renderPlant(plant, done);
-  if (completed) celebrate(done);
+  const grown = greenActions(actions, await loadChoices());
+  renderPlant(plant, grown);
+  if (completed) celebrate(grown);
 
   if (actions.length === 0) {
     const empty = node("div", "empty");

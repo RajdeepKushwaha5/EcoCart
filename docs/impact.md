@@ -43,6 +43,15 @@ The dashboard's Overview opens with the shopper's all-time total: the sum of the
 - The total is also given in everyday terms (km by car or scooter, phone charges) using the same sourced factors as the card.
 - It lives in the browser with the choices. A backup file keeps it across reinstalls.
 
+## Your purchases
+
+The dashboard also keeps a log of what the shopper says they bought, like a shopping history with a footprint column: a total, a month-by-month chart for the last twelve months, and a list with the date, product, shop and kg CO₂e.
+
+- A purchase is added only by the shopper: "I bought this" on a product card, or "Did you buy any of these?" on an order confirmation page, which lists products seen in the last two days. EcoCart never reads order or payment pages.
+- Each purchase keeps where its number comes from: the maker's own lifecycle report, or a category estimate from the price. Both are labelled in the list, and a product with neither is listed without a number.
+- This is the footprint of what was bought. It is a different figure from the difference of choices above, and the two are never added together.
+- The same product bought twice on one day counts once. Any purchase can be removed.
+
 ## Verifying a handover
 
 A reported handover becomes verified only when the team has seen proof: a collection receipt, or the collector's written confirmation.

@@ -7,10 +7,10 @@ const SITE_URL = "https://main.d3ogmfe7tt7uwb.amplifyapp.com/";
 const START_SEEN_KEY = "startSeen";
 
 const VIEWED_KEY = "viewedPhones";
-const LOCAL_KEYS = new Set([SHORTLIST_KEY, CHOICES_KEY, ACTIVITY_KEY, VIEWED_KEY, REMINDERS_KEY]);
+const LOCAL_KEYS = new Set([SHORTLIST_KEY, CHOICES_KEY, ACTIVITY_KEY, VIEWED_KEY, REMINDERS_KEY, PURCHASES_KEY, NAME_KEY]);
 // Everything EcoCart keeps in this browser, for backup and restore. The session token links to the saved plans.
-const BACKUP_KEYS = [SHORTLIST_KEY, CHOICES_KEY, ACTIVITY_KEY, VIEWED_KEY, REMINDERS_KEY, "plannedFor", "confirmedMatches",
-  "lastCity", "sessionToken"];
+const BACKUP_KEYS = [SHORTLIST_KEY, CHOICES_KEY, ACTIVITY_KEY, VIEWED_KEY, REMINDERS_KEY, PURCHASES_KEY, RECENT_KEY, NAME_KEY,
+  "plannedFor", "confirmedMatches", "lastCity", "sessionToken"];
 const PLAN_REFRESH_MS = 60000;
 const MONTHS = ["January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December"];
@@ -24,6 +24,7 @@ const ACTIVITY_TYPES = {
   compared: { label: "Compared", group: "choices" },
   chose: { label: "Chose", group: "choices" },
   planned: { label: "Planned", group: "plans" },
+  bought: { label: "Bought", group: "purchases" },
 };
 
 const state = {
@@ -35,6 +36,8 @@ const state = {
   activity: [],
   viewed: [],
   reminders: {},
+  purchases: [],
+  name: "",
   gridFactor: null,
   factors: [],
   month: "all",
@@ -86,12 +89,14 @@ function monthLabel(key) {
 // ---------- Loading ----------
 
 async function loadLocal() {
-  const stored = await chrome.storage.local.get([SHORTLIST_KEY, CHOICES_KEY, ACTIVITY_KEY, VIEWED_KEY, REMINDERS_KEY]);
+  const stored = await chrome.storage.local.get([SHORTLIST_KEY, CHOICES_KEY, ACTIVITY_KEY, VIEWED_KEY, REMINDERS_KEY, PURCHASES_KEY, NAME_KEY]);
   state.shortlist = stored[SHORTLIST_KEY] || [];
   state.choices = stored[CHOICES_KEY] || [];
   state.activity = stored[ACTIVITY_KEY] || [];
   state.viewed = stored[VIEWED_KEY] || [];
   state.reminders = stored[REMINDERS_KEY] || {};
+  state.purchases = stored[PURCHASES_KEY] || [];
+  state.name = stored[NAME_KEY] || "";
 }
 
 async function loadPlans() {
@@ -434,6 +439,138 @@ function renderAllTime() {
   ].filter(Boolean));
 }
 
+// ---------- Greeting ----------
+
+function renderGreeting() {
+  const box = $("greeting");
+  if (state.name) {
+    const change = node("button", "text-btn", "Change");
+    change.type = "button";
+    change.addEventListener("click", () => editName());
+    box.replaceChildren(node("p", "greeting-text", `Welcome back, ${state.name}`), change);
+    return;
+  }
+  const add = node("button", "text-btn", "What should we call you?");
+  add.type = "button";
+  add.addEventListener("click", () => editName());
+  box.replaceChildren(node("p", "greeting-text", "Welcome"), add);
+}
+
+function editName() {
+  const form = node("form", "greeting-form");
+  const input = node("input");
+  input.type = "text";
+  input.maxLength = 40;
+  input.value = state.name;
+  input.placeholder = "Your first name";
+  input.setAttribute("aria-label", "Your first name");
+  form.append(input, button("Save", () => form.requestSubmit(), "primary small"));
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    await chrome.storage.local.set({ [NAME_KEY]: input.value.trim().slice(0, 40) });
+  });
+  $("greeting").replaceChildren(form, node("p", "muted", "Kept only in this browser."));
+  input.focus();
+}
+
+// ---------- Purchases ----------
+
+function monthName(key) {
+  const [year, month] = key.split("-").map(Number);
+  return new Date(year, month - 1, 1).toLocaleDateString("en-IN", { month: "short" });
+}
+
+// A smooth curve of the footprint of what was bought, month by month, for the last twelve months.
+function purchaseChart(byMonth) {
+  const months = lastMonths(12);
+  const values = months.map((key) => byMonth[key] || 0);
+  const width = 760;
+  const height = 220;
+  const pad = { top: 16, right: 18, bottom: 30, left: 52 };
+  const top = niceMax(Math.max(...values));
+  const x = (index) => pad.left + (index / (months.length - 1)) * (width - pad.left - pad.right);
+  const y = (kg) => height - pad.bottom - (kg / top) * (height - pad.top - pad.bottom);
+  const points = values.map((value, index) => [x(index), y(value)]);
+  let line = `M ${points[0][0]} ${points[0][1]}`;
+  for (let index = 1; index < points.length; index += 1) {
+    const [x0, y0] = points[index - 1];
+    const [x1, y1] = points[index];
+    const mid = (x0 + x1) / 2;
+    line += ` C ${mid} ${y0}, ${mid} ${y1}, ${x1} ${y1}`;
+  }
+  const area = `${line} L ${points[points.length - 1][0]} ${y(0)} L ${points[0][0]} ${y(0)} Z`;
+  const tooltip = node("div", "chart-tooltip");
+  tooltip.hidden = true;
+  const dots = points.map(([cx, cy], index) => {
+    const dot = svg("circle", { cx, cy, r: 4.5, class: "month-dot", tabindex: 0, role: "img",
+      "aria-label": `${monthLabel(months[index])}: ${formatNumber(values[index], 1)} kg CO₂e` });
+    const show = () => {
+      tooltip.replaceChildren(node("strong", "", `${formatNumber(values[index], 1)} kg CO₂e`), node("span", "", monthLabel(months[index])));
+      tooltip.style.left = `${(cx / width) * 100}%`;
+      tooltip.style.top = `${(cy / height) * 100}%`;
+      tooltip.hidden = false;
+    };
+    dot.addEventListener("mouseenter", show);
+    dot.addEventListener("focus", show);
+    dot.addEventListener("mouseleave", () => { tooltip.hidden = true; });
+    dot.addEventListener("blur", () => { tooltip.hidden = true; });
+    return dot;
+  });
+  const labels = months.map((key, index) => svg("text", { x: x(index), y: height - 8, class: "axis-label", "text-anchor": "middle" }, monthName(key)));
+  const grid = [0, top / 2, top].map((value) => svg("g", {},
+    svg("line", { x1: pad.left, x2: width - pad.right, y1: y(value), y2: y(value), class: "grid-line" }),
+    svg("text", { x: pad.left - 8, y: y(value) + 4, class: "axis-label", "text-anchor": "end" }, `${formatNumber(value)} kg`)));
+  const chart = svg("svg", { viewBox: `0 0 ${width} ${height}`, class: "purchase-chart", role: "img",
+    "aria-label": "Footprint of your purchases by month, last twelve months" },
+  ...grid, svg("path", { d: area, class: "area" }), svg("path", { d: line, class: "line", pathLength: 1 }), ...labels, ...dots);
+  return append(node("div", "alltime-chart-wrap"), chart, tooltip);
+}
+
+function purchaseRow(purchase) {
+  const row = node("tr");
+  const product = node("td");
+  product.append(purchase.url ? link(purchase.url, purchase.name.slice(0, 70)) : node("span", "", purchase.name.slice(0, 70)));
+  const remove = button("Remove", () => removePurchase(purchase.id), "ghost small");
+  const basis = purchase.basis === "reported" ? "Maker's report" : purchase.basis === "estimate" ? "Category estimate" : "No figure";
+  row.append(
+    append(node("td", "num"), purchase.kg == null ? "Not known" : `+ ${formatNumber(purchase.kg, 1)} kg`),
+    product,
+    node("td", "", purchase.shop),
+    node("td", "", formatDay(purchase.at)),
+    append(node("td"), node("span", `pill ${purchase.basis || ""}`, basis)),
+    append(node("td"), remove));
+  return row;
+}
+
+function renderPurchases() {
+  const box = $("purchases");
+  if (!shows("purchases")) {
+    box.replaceChildren();
+    return;
+  }
+  const purchases = state.purchases.filter((purchase) => inMonth(purchase.at));
+  const totals = purchaseTotals(state.purchases);
+  const head = append(node("div", "purchases-head"),
+    node("p", "eyebrow", "Your purchases"),
+    append(node("p", "alltime-figure"), node("span", "purchase-number", formatNumber(totals.totalKg, 1)), node("span", "alltime-unit", "kg CO₂e")),
+    node("p", "muted", totals.count
+      ? `Footprint of ${totals.count} purchase${totals.count === 1 ? "" : "s"} you logged: ${formatNumber(totals.reportedKg, 1)} kg from makers' own reports, ${formatNumber(totals.estimateKg, 1)} kg category estimates.${totals.unknown ? ` ${totals.unknown} without a footprint figure.` : ""}`
+      : "Nothing logged yet. Tap \"I bought this\" on a product card, or answer \"Did you buy any of these?\" on the order page."));
+  if (!totals.count) {
+    box.replaceChildren(head);
+    return;
+  }
+  const table = node("table", "purchase-table");
+  table.append(append(node("thead"), append(node("tr"), ["CO₂e", "Product", "Shop", "Date", "Figure", ""].map((label) => node("th", "", label)))));
+  const body = node("tbody");
+  body.append(...purchases.slice(0, 20).map(purchaseRow));
+  table.append(body);
+  box.replaceChildren(head, purchaseChart(totals.byMonth),
+    append(node("p", "eyebrow"), state.month === "all" ? "Purchases" : `Purchases in ${monthLabel(state.month)}`),
+    purchases.length ? table : node("p", "muted", "None in this month."),
+    node("p", "note", "Makers' reports cover a product's whole life; category estimates cover making it, from its price. Both are labelled, and neither is a measurement of your item."));
+}
+
 // ---------- Start here ----------
 
 const START_PATHS = [
@@ -578,7 +715,7 @@ async function changePlan(action, method, body) {
     state.justChanged = action.actionId;
     await loadPlans();
     renderAll();
-    if (body?.status === "done") celebrate(state.actions.filter((item) => item.status === "done").length);
+    if (body?.status === "done") celebrate(greenActions(state.actions, state.choices));
   } catch {
     $("status").textContent = "Couldn't update that plan. Please try again.";
   }
@@ -966,9 +1103,11 @@ function renderAll() {
     const firstVisit = !stored[START_SEEN_KEY] && state.actions.length === 0 && state.choices.length === 0;
     renderStart(firstVisit || $("start").dataset.open === "true");
   });
-  renderPlant($("plant"), state.actions.filter((action) => action.status === "done").length);
+  renderPlant($("plant"), greenActions(state.actions, state.choices));
+  renderGreeting();
   renderNext();
   renderAllTime();
+  renderPurchases();
   renderOverview();
   renderTimeline();
   renderGroups();

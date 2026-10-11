@@ -111,23 +111,54 @@ function checkedMeta(fact, label = "Source") {
   return [sourceLink(fact.source, label), fact.checked ? `${DOT}checked ${formatDate(fact.checked)}` : null];
 }
 
-// The footprint as time one city tree needs to take that much CO2 out of the air (US EPA: about 60 kg a year per tree).
-function treeLine(equivalents) {
-  const tree = equivalents?.find((item) => item.factorId === "tree-year");
-  if (!tree) return null;
-  const years = tree.amount;
+// How long one city tree needs to take in this much CO2 (US EPA: about 60 kg a year per tree), in plain words.
+function treeTime(years) {
   const days = Math.round(years * 365);
-  const months = Math.round(years * 12);
-  const span = days < 1 ? "less than a day"
-    : days < 60 ? `about ${days} ${days === 1 ? "day" : "days"}`
-      : years < 2 ? `about ${months} months`
-        : `about ${formatNumber(Math.round(years))} years`;
-  const text = years > 10
-    ? `It would take about ${formatNumber(Math.round(years))} city trees a whole year to take in this much CO₂ from the air.`
-    : `One city tree would need ${span} to take in this much CO₂ from the air.`;
-  return el("p", { className: "tree-line" },
-    el("span", { className: "tree-emoji", "aria-hidden": "true" }, "🌳"),
-    el("span", {}, text, " ", sourceLink(tree.source, "US EPA")));
+  if (days < 1) return "less than a day of one city tree soaking up CO₂";
+  if (days < 60) return `${days} ${days === 1 ? "day" : "days"} of one city tree soaking up CO₂`;
+  if (years < 2) return `${Math.round(years * 12)} months of one city tree soaking up CO₂`;
+  if (years <= 10) return `${formatNumber(Math.round(years))} years of one city tree soaking up CO₂`;
+  return `${formatNumber(Math.round(years))} city trees soaking up CO₂ for a whole year`;
+}
+
+// The friendly opening line: the footprint in one sentence, then what it is like in everyday terms.
+function friendlyBanner(sentence, equivalents) {
+  const find = (id) => equivalents?.find((item) => item.factorId === id);
+  const car = find("petrol-car-km");
+  const phone = find("phone-charge");
+  const tree = find("tree-year");
+  const likes = [
+    car ? `${formatNumber(car.amount)} km in a petrol car` : null,
+    phone ? `${formatNumber(phone.amount)} phone charges` : null,
+    tree ? treeTime(tree.amount) : null,
+  ].filter(Boolean);
+  const like = likes.length > 1 ? `${likes.slice(0, -1).join(", ")} or ${likes[likes.length - 1]}` : likes[0];
+  const sources = [car, phone, tree].filter(Boolean).map((item) => item.source);
+  return el("div", { className: "banner" },
+    el("span", { className: "banner-icon", "aria-hidden": "true" }, "🌍"),
+    el("div", {},
+      el("p", { className: "banner-text" }, sentence),
+      like ? el("p", { className: "banner-like" }, "That's like ", el("strong", {}, like), ".") : null,
+      sources.length ? el("p", { className: "meta" }, "Sources: ",
+        [...new Set(sources)].map((url, index) => [index ? DOT : null, sourceLink(url, new URL(url).hostname.replace(/^www\./, ""))])) : null));
+}
+
+// "I bought this": adds the product to the shopper's purchase log, with its footprint and where that number comes from.
+function purchaseControl(snapshot) {
+  const wrap = el("div", { className: "purchase" });
+  const done = () => show(wrap, el("p", { className: "shortlist-state" }, el("span", { className: "tick", "aria-hidden": "true" }), "In your purchases"),
+    dashboardLink("See your purchases"));
+  hasPurchasedToday(snapshot.key).then((bought) => {
+    if (bought) {
+      done();
+      return;
+    }
+    show(wrap, button("I bought this", async () => {
+      await logPurchase(snapshot);
+      done();
+    }, "ghost"));
+  });
+  return wrap;
 }
 
 function deviceDecision(card, page, category, item) {
@@ -140,8 +171,7 @@ function deviceDecision(card, page, category, item) {
       ? factLine(`Security updates until at least ${support.value}.`, checkedMeta(policy, `${product.brand}'s policy`))
       : policy?.value ? factLine(`${product.brand}: "${policy.value}".`, checkedMeta(policy, "Policy")) : null,
     card.carbon
-      ? [factLine(`${formatNumber(card.carbon.kg)} kg CO₂e over its life, as ${product.brand} reports.`, checkedMeta(card.carbon, "Report")),
-        treeLine(card.carbon.equivalents)]
+      ? factLine(`${formatNumber(card.carbon.kg)} kg CO₂e over its life, as ${product.brand} reports.`, checkedMeta(card.carbon, "Report"))
       : factLine(`${product.brand} has not published this ${word}'s footprint.`),
   ];
   const check = [];
@@ -165,8 +195,19 @@ function deviceDecision(card, page, category, item) {
   return decisionBlock(
     decisionRow("What to know", know),
     decisionRow("Worth checking", check),
-    decisionRow("What you can do", shortlistControl(item)),
+    decisionRow("What you can do", el("div", { className: "row" }, shortlistControl(item), purchaseControl(cardSnapshot(card, page, item)))),
   );
+}
+
+function cardSnapshot(card, page, item) {
+  return productSnapshot({ key: item.key, name: card.product.displayName, shop: SITE.name, url: SITE.productUrl(), price: page.price,
+    kg: card.carbon?.kg ?? null, basis: card.carbon ? "reported" : null, category: DEVICE_WORDS[card.product.category],
+    source: card.carbon?.source });
+}
+
+function estimateSnapshot(estimate, page, item) {
+  return productSnapshot({ key: item.key, name: page.title, shop: SITE.name, url: SITE.productUrl(), price: page.price,
+    kg: estimate?.kg ?? null, basis: estimate ? "estimate" : null, category: estimate?.category, source: estimate?.dataset.source });
 }
 
 // The card reads in three steps: the evidence, what it means, and what the shopper can do about it.
@@ -215,17 +256,19 @@ async function renderUnsupported(body, page, category) {
   const item = shortlistItem(page, null, category);
   logActivity("checked", item);
   const appliance = category === "appliance" || category === "tv" ? await applianceFacts(page, item) : { lines: [], compare: null };
+  rememberProduct(estimateSnapshot(estimate, page, item));
   show(body,
+    estimate ? friendlyBanner(
+      `Making a ${word} like this produces about ${formatNumber(estimate.kg)} kg of CO₂e: the average for ${estimate.category.toLowerCase()} at this price in India.`,
+      estimate.equivalents) : null,
     decisionBlock(
       decisionRow("What to know", appliance.lines,
-        estimate ? [
-          el("p", { className: "decide-figure" }, `About ${formatNumber(estimate.kg)} kg CO₂e`),
-          factLine(`The average for ${estimate.category.toLowerCase()} at this price in India. The maker publishes no figures for this ${word}, so this is a category estimate, not a measurement.`,
-            sourceLink(estimate.dataset.source, "Open CEDA")),
-          treeLine(estimate.equivalents),
-        ] : factLine(`No lifecycle figures from the maker for this ${word} yet, so none are shown.`)),
+        estimate
+          ? factLine(`The maker publishes no figures for this ${word}, so this is a category estimate for ${estimate.category.toLowerCase()} at this price in India, not a measurement.`,
+            sourceLink(estimate.dataset.source, "Open CEDA"))
+          : factLine(`No lifecycle figures from the maker for this ${word} yet, so none are shown.`)),
       decisionRow("Worth checking", appliance.compare),
-      decisionRow("What you can do", shortlistControl(item))),
+      decisionRow("What you can do", el("div", { className: "row" }, shortlistControl(item), purchaseControl(estimateSnapshot(estimate, page, item))))),
     renderOldDevice({ modelId: null, listingName: page.title, category, planKey }, { showsExchange: page.showsExchange }),
     evidence(
       cardStep("01", "What we know", estimate ? renderEstimate(estimate, page) : null, renderLabels(page)),
@@ -314,7 +357,11 @@ async function renderCard(body, card, page) {
   const scorecard = await deviceScorecard(card, page, category, planKey);
   const item = shortlistItem(page, card, category);
   logActivity("checked", item);
+  rememberProduct(cardSnapshot(card, page, item));
   show(body,
+    card.carbon ? friendlyBanner(
+      `Making, shipping, using and recycling this ${DEVICE_WORDS[category]} produces about ${formatNumber(card.carbon.kg)} kg of CO₂e, as ${card.product.brand} reports.`,
+      card.carbon.equivalents) : null,
     deviceDecision(card, page, category, item),
     renderOldDevice({ modelId: card.product.modelId, category, planKey }, { showsExchange: page.showsExchange }),
     evidence(
@@ -464,14 +511,14 @@ function prepareChecklist(brand, category) {
 
 // Shown after a plan is saved: the user's plant, and what makes it grow.
 async function savedMessage(word) {
-  let completed = 0;
+  let grown = 0;
   try {
     const { actions } = await api("GET", "/actions", undefined, true);
-    completed = actions.filter((action) => action.status === "done").length;
+    grown = greenActions(actions, await loadChoices());
   } catch {
     // The plan is saved either way; the plant just starts from the seed picture.
   }
-  const { stage, name } = plantStage(completed);
+  const { stage, name } = plantStage(grown);
   const art = el("div", { className: "saved-plant" });
   art.innerHTML = plantSvg(stage); // Fixed shapes only, no user data.
   return el("div", { className: "saved" },
@@ -559,16 +606,18 @@ async function showEstimate(page) {
   logActivity("checked", item);
   const labels = listingCertifications(page).map(([name]) => name);
   const labelLine = labels.length ? factLine(`The listing claims ${labels.join(", ")}. EcoCart has not checked these.`) : null;
+  rememberProduct(estimateSnapshot(estimate, page, item));
   if (estimate) {
     show(body,
+      friendlyBanner(
+        `Making a product like this produces about ${formatNumber(estimate.kg)} kg of CO₂e: the average for ${estimate.category.toLowerCase()} at this price in India.`,
+        estimate.equivalents),
       decisionBlock(
         decisionRow("What to know",
-          el("p", { className: "decide-figure" }, `About ${formatNumber(estimate.kg)} kg CO₂e`),
-          factLine(`The average for ${estimate.category.toLowerCase()} at this price in India, not a measurement of this product.`,
+          factLine("A category estimate, not a measurement of this product. A specific product can be well above or below it.",
             sourceLink(estimate.dataset.source, "Open CEDA")),
-          treeLine(estimate.equivalents),
           labelLine),
-        decisionRow("What you can do", shortlistControl(item))),
+        decisionRow("What you can do", el("div", { className: "row" }, shortlistControl(item), purchaseControl(estimateSnapshot(estimate, page, item))))),
       evidence(
         cardStep("01", "What we know", renderEstimate(estimate, page), renderLabels(page)),
         cardStep("02", "What this means", estimateCharts(estimate), estimateScorecard(estimate, page)),
@@ -579,7 +628,7 @@ async function showEstimate(page) {
   show(body,
     decisionBlock(
       decisionRow("What to know", renderNoEstimate(result.reason === "no-price" && page.noFeaturedOffer ? "no-offer" : result.reason), labelLine),
-      decisionRow("What you can do", shortlistControl(item))),
+      decisionRow("What you can do", el("div", { className: "row" }, shortlistControl(item), purchaseControl(estimateSnapshot(null, page, item))))),
     evidence(
       cardStep("01", "What we know", renderLabels(page)),
       cardStep("02", "What this means", facts.length ? renderScorecard(facts) : null),

@@ -23,3 +23,13 @@
   border-radius: 2px;
   background: #2f7a3b;
 }
+
+.badge.claim {
+  color: #6b4a0a;
+  background: #fbf0db;
+  border-color: rgba(154, 94, 10, 0.3);
+}
+
+.badge.claim .mark {
+  background: #9a5e0a;
+}

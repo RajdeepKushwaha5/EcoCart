@@ -107,8 +107,9 @@ async function main() {
     const steps = "What we know / What this means / More options";
 
     check("phone card on Amazon in three steps", (await openCard(page, PAGES.iphone)) === steps);
-    check("the decision comes first, the evidence behind one tap", await inCard(page,
-      `return root.querySelector(".body > *")?.classList.contains("decide") && !root.querySelector("details.evidence").open`));
+    check("the banner and decision come first, the evidence behind one tap", await inCard(page,
+      `const parts = [...root.querySelector(".body").children].map((node) => node.className);
+       return parts[0] === "banner" && parts[1] === "decide" && !root.querySelector("details.evidence").open`));
     const offered = await inCard(page, `return [...root.querySelectorAll("button")].some((b) => b.textContent.includes("choose this instead"))`);
     check("same-maker lower-footprint option offered", offered);
     await realClick(page, cardControl(`[...root.querySelectorAll("button")].find((b) => b.textContent.includes("choose this instead"))`));
@@ -117,6 +118,12 @@ async function main() {
     check("choice recorded with the maker's figures", /Recorded: you chose/.test(recorded), recorded.slice(0, 80));
     check("shortlist button follows the choice", await inCard(page, `return Boolean(root.querySelector(".shortlist-state"))`));
     check("everyday comparisons shown", await inCard(page, `return root.querySelectorAll(".everyday-item").length >= 3`));
+    check("friendly banner in plain words", await inCard(page, `return /That's like .*km in a petrol car/.test(root.querySelector(".banner")?.textContent || "")`));
+    check("celebration after the greener choice", await inCard(page, `return Boolean(root.querySelector(".celebrate"))`));
+    await realClick(page, cardControl(`root.querySelector(".celebrate .btn")`));
+    await realClick(page, cardControl(`[...root.querySelectorAll("button")].find((b) => b.textContent === "I bought this")`));
+    await wait(800);
+    check("purchase logged from the card", await inCard(page, `return /In your purchases/.test(root.textContent)`));
 
     check("phone card on Flipkart in three steps", (await openCard(page, PAGES.galaxyFlipkart)) === steps);
     check("grocery estimate on Flipkart in three steps", (await openCard(page, PAGES.tea)) === steps);
@@ -155,6 +162,11 @@ async function main() {
     // Chosen but not reported bought: it is a possible difference, never shown as a reported purchase.
     check("all-time: chosen counts as possible, not as bought", allTime.reported === 0 && allTime.possible > 0 && allTime.steps === 1,
       JSON.stringify(allTime));
+    const purchased = await dashboard.evaluate(() => ({
+      rows: document.querySelectorAll(".purchase-table tbody tr").length,
+      total: Number(document.querySelector(".purchase-number")?.textContent),
+    }));
+    check("purchases dashboard lists the purchase with its footprint", purchased.rows === 1 && purchased.total > 0, JSON.stringify(purchased));
 
     await realClick(dashboard, pageControl(`document.getElementById("tab-actions")`));
     await dashboard.evaluate(() => {
