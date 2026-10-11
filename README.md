@@ -65,6 +65,10 @@ The card starts with **What to know**, **Worth checking** and **What you can do*
 
 ## 5. Architecture
 
+![EcoCart architecture: the extension reads the listing, API Gateway passes the request to Lambda, Lambda applies the rules and stores sourced facts in DynamoDB; Amplify hosts the website, EventBridge runs the daily price and weekly support refresh, CloudWatch alarms notify through SNS, and Strands agent teams draft devices and rules that a person approves before they are published](docs/ecocart-architecture.png)
+
+The same flow in more detail:
+
 ```mermaid
 flowchart TB
     subgraph Browser[Your browser]
