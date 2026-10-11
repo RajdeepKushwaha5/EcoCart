@@ -2,7 +2,7 @@
 const test = require("node:test");
 const assert = require("node:assert/strict");
 const { comparable, compareGroup, makeChoice, choiceDifference, impactTotals, planTotals, capacityFrom, prepareGuide, isOverdue,
-  reminderCalendar } = require("../ui/impact.js");
+  reminderCalendar, impactTimeline, stageDates } = require("../ui/impact.js");
 
 const phone = (fields) => ({ kind: "device", category: "phone", brand: "Apple", carbonBasis: null, ...fields });
 const fridge = (fields) => ({ kind: "appliance", type: "refrigerators", capacity: { value: 240, unit: "litres" }, ...fields });
@@ -93,4 +93,28 @@ test("reminders: overdue after the day passes, and a valid calendar file", () =>
   assert.match(file, /DTSTART;VALUE=DATE:20261020/);
   assert.ok(file.includes("SUMMARY:Hand over\\; today"));
   assert.match(file, /^BEGIN:VCALENDAR[\s\S]*END:VCALENDAR$/);
+});
+
+test("the all-time record adds chosen differences in date order and keeps bought and electricity apart", () => {
+  const at = (day) => new Date(`2026-10-${day}T10:00:00Z`);
+  const first = makeChoice(phone({ key: "air", carbonKg: 55 }), phone({ key: "pro", carbonKg: 63 }), "chosen", at("05"));
+  const second = makeChoice(phone({ key: "16e", carbonKg: 48 }), phone({ key: "16", carbonKg: 56 }), "purchased", at("09"));
+  const appliance = makeChoice(fridge({ key: "f1", kwhYear: 190 }), fridge({ key: "f2", kwhYear: 250 }), "chosen", at("07"));
+  const considering = makeChoice(phone({ key: "x", carbonKg: 40 }), phone({ key: "y", carbonKg: 90 }), "considered", at("08"));
+  const { points, totals } = impactTimeline([second, considering, appliance, first]);
+  assert.deepEqual(points.map((point) => point.at.slice(8, 10)), ["05", "07", "09"]);
+  assert.deepEqual(points.map((point) => point.deviceKg), [8, 8, 16]);
+  assert.deepEqual(totals, { deviceKg: 16, boughtKg: 8, kwhYear: 60, choices: 3 });
+});
+
+test("a choice remembers when it was chosen and when it was bought", () => {
+  const now = new Date("2026-10-11T00:00:00Z");
+  assert.deepEqual(stageDates({}, "considered", now), { chosenAt: null, purchasedAt: null });
+  const chosen = stageDates({}, "chosen", now);
+  assert.equal(chosen.chosenAt, now.toISOString());
+  const later = new Date("2026-10-15T00:00:00Z");
+  const bought = stageDates(chosen, "purchased", later);
+  assert.equal(bought.chosenAt, now.toISOString());
+  assert.equal(bought.purchasedAt, later.toISOString());
+  assert.equal(stageDates(bought, "chosen", later).purchasedAt, null);
 });

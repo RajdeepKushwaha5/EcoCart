@@ -70,3 +70,18 @@ footer a {
 footer a::after {
   content: " \2197";
 }
+
+.popup-alltime {
+  margin: 0 0 12px;
+  font-size: 13px;
+  color: var(--soft);
+}
+
+.popup-alltime:empty {
+  display: none;
+}
+
+.popup-alltime strong {
+  font: 400 20px var(--serif);
+  color: var(--accent);
+}

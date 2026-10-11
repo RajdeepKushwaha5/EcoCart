@@ -264,6 +264,176 @@ select {
   display: none;
 }
 
+/* ---------- All time ---------- */
+
+.alltime {
+  display: grid;
+  gap: 18px;
+  padding: 28px;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 7%, transparent), transparent 70%);
+}
+
+.alltime-head {
+  display: grid;
+  gap: 8px;
+}
+
+.alltime-figure {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.alltime-number {
+  font: 400 clamp(56px, 7vw, 88px)/1 var(--serif);
+  letter-spacing: -0.03em;
+  color: var(--accent);
+}
+
+.alltime-number.changed {
+  animation: value-flash 1600ms ease-out;
+}
+
+.alltime-unit {
+  font: 14px var(--mono);
+  color: var(--soft);
+}
+
+.alltime-terms {
+  display: grid;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--soft);
+}
+
+.alltime-everyday {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.alltime-everyday li {
+  padding: 8px 12px;
+  border: 1px solid var(--line);
+  font-size: 13px;
+}
+
+.alltime-everyday strong {
+  font: 400 20px var(--serif);
+  color: var(--ink);
+}
+
+.alltime-everyday a {
+  font-size: 11px;
+}
+
+.alltime-chart-wrap {
+  position: relative;
+  display: grid;
+  gap: 10px;
+}
+
+.alltime-chart {
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.alltime-chart .grid-line {
+  stroke: var(--line);
+}
+
+.alltime-chart .axis-label {
+  font: 11px var(--mono);
+  fill: var(--muted);
+}
+
+.alltime-chart .area {
+  fill: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+.alltime-chart .line {
+  fill: none;
+  stroke-width: 2.5;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  animation: draw-line 1400ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.alltime-chart .line.chosen {
+  stroke: var(--accent);
+}
+
+.alltime-chart .line.bought {
+  stroke: var(--pink);
+  stroke-dasharray: 0.012 0.008;
+  stroke-dashoffset: 0;
+  animation: none;
+}
+
+@keyframes draw-line {
+  to { stroke-dashoffset: 0; }
+}
+
+.alltime-chart .dot {
+  fill: var(--bg);
+  stroke: var(--accent);
+  stroke-width: 2.5;
+  cursor: pointer;
+  transition: r 200ms ease;
+}
+
+.alltime-chart .dot.bought {
+  fill: var(--pink);
+  stroke: var(--pink);
+}
+
+.alltime-chart .dot:hover,
+.alltime-chart .dot:focus {
+  r: 9;
+  outline: none;
+}
+
+.chart-tooltip {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  gap: 2px;
+  min-width: 220px;
+  max-width: 300px;
+  padding: 10px 12px;
+  font-size: 12px;
+  background: var(--card);
+  border: 1px solid var(--line-strong);
+  transform: translate(-50%, calc(-100% - 14px));
+  pointer-events: none;
+}
+
+.chart-tooltip[hidden] {
+  display: none;
+}
+
+.chart-tooltip strong {
+  font: 400 18px var(--serif);
+  color: var(--accent);
+}
+
+.swatch.bought-line {
+  background: var(--pink);
+}
+
+.alltime-power {
+  padding: 12px 14px;
+  border-left: 2px solid var(--amber);
+  font-size: 14px;
+  color: var(--soft);
+}
+
 /* ---------- Overview tiles ---------- */
 
 .tiles {
@@ -886,8 +1056,14 @@ input[type="date"],
   .plan.moved,
   .stages li.reached::before,
   .drawer-panel,
-  .live.pulse .live-dot {
+  .live.pulse .live-dot,
+  .alltime-number.changed {
     animation: none;
+  }
+
+  .alltime-chart .line {
+    animation: none;
+    stroke-dashoffset: 0;
   }
 
   .tile-card,

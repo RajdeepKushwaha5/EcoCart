@@ -32,6 +32,7 @@ const state = {
   viewed: [],
   reminders: {},
   gridFactor: null,
+  factors: [],
   month: "all",
   type: "all",
   tab: "overview",
@@ -115,6 +116,7 @@ async function loadRoutes() {
 async function loadGridFactor() {
   try {
     const { factors } = await api("GET", "/factors", undefined, false);
+    state.factors = factors;
     state.gridFactor = factors.find((factor) => factor.factorId === "india-grid-kwh") || null;
   } catch {
     state.gridFactor = null;
@@ -281,6 +283,141 @@ function renderOverview() {
       `${state.shortlist.length} on your shortlist, ${f.totals.considered} being compared`, "Engagement"));
   }
   $("tiles").replaceChildren(...tiles);
+}
+
+// ---------- All time ----------
+
+const SVG = "http://www.w3.org/2000/svg";
+
+function svg(tag, attrs = {}, ...children) {
+  const element = document.createElementNS(SVG, tag);
+  for (const [key, value] of Object.entries(attrs)) element.setAttribute(key, value);
+  element.append(...children.filter(Boolean));
+  return element;
+}
+
+function roundSignificant(value, digits = 2) {
+  if (!value) return 0;
+  const scale = 10 ** (digits - 1 - Math.floor(Math.log10(Math.abs(value))));
+  return Math.round(value * scale) / scale;
+}
+
+// A tidy top for the chart's scale: 1, 2, 2.5 or 5 times a power of ten.
+function niceMax(value) {
+  if (value <= 0) return 10;
+  const power = 10 ** Math.floor(Math.log10(value));
+  return [1, 2, 2.5, 5, 10].map((step) => step * power).find((step) => step >= value);
+}
+
+function everydayList(kg) {
+  const items = state.factors.filter((factor) => factor.factorId !== "india-grid-kwh" || state.factors.length < 3);
+  if (!kg || items.length === 0) return null;
+  return append(node("ul", "alltime-everyday"), items.map((factor) => append(node("li"),
+    node("strong", "", formatNumber(roundSignificant(kg / factor.kgCo2ePerUnit))),
+    ` ${factor.unit} `, link(factor.source, "Source"))));
+}
+
+// Running total of the footprint difference, one step per recorded device choice.
+function allTimeChart(points) {
+  const width = 760;
+  const height = 260;
+  const pad = { top: 18, right: 24, bottom: 34, left: 52 };
+  const devicePoints = points.filter((point) => point.choice.kind === "device");
+  const start = new Date(devicePoints[0].at).getTime();
+  const end = Math.max(Date.now(), start + 86400000);
+  const top = niceMax(devicePoints[devicePoints.length - 1].deviceKg);
+  const x = (time) => pad.left + ((time - start) / (end - start)) * (width - pad.left - pad.right);
+  const y = (kg) => height - pad.bottom - (kg / top) * (height - pad.top - pad.bottom);
+
+  const stepPath = (key) => {
+    let path = `M ${x(start)} ${y(0)}`;
+    let last = 0;
+    for (const point of devicePoints) {
+      const px = x(new Date(point.at).getTime());
+      path += ` L ${px} ${y(last)} L ${px} ${y(point[key])}`;
+      last = point[key];
+    }
+    return `${path} L ${x(end)} ${y(last)}`;
+  };
+  const area = `${stepPath("deviceKg")} L ${x(end)} ${y(0)} Z`;
+
+  const grid = [0, top / 2, top].map((value) => svg("g", {},
+    svg("line", { x1: pad.left, x2: width - pad.right, y1: y(value), y2: y(value), class: "grid-line" }),
+    svg("text", { x: pad.left - 8, y: y(value) + 4, class: "axis-label", "text-anchor": "end" }, `${formatNumber(value)} kg`)));
+  const dateLabel = (time) => new Date(time).toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+  const axis = [
+    svg("text", { x: pad.left, y: height - 10, class: "axis-label" }, dateLabel(start)),
+    svg("text", { x: width - pad.right, y: height - 10, class: "axis-label", "text-anchor": "end" }, "Today"),
+  ];
+
+  const tooltip = node("div", "chart-tooltip");
+  tooltip.hidden = true;
+  const dots = devicePoints.map((point) => {
+    const cx = x(new Date(point.at).getTime());
+    const cy = y(point.deviceKg);
+    const bought = point.choice.stage === "purchased";
+    const dot = svg("circle", { cx, cy, r: 6, class: bought ? "dot bought" : "dot", tabindex: 0, role: "button",
+      "aria-label": `${formatDay(point.at)}: chose ${point.choice.chosen.name}, ${formatNumber(point.difference, 1)} kg CO₂e lower` });
+    const showTip = () => {
+      tooltip.replaceChildren(
+        node("strong", "", `${formatNumber(point.difference, 1)} kg CO₂e lower`),
+        node("span", "", `${point.choice.chosen.name} instead of ${point.choice.instead.name}`),
+        node("span", "muted", `${formatDay(point.at)}${bought ? ", bought (you said)" : ""}. Running total ${formatNumber(point.deviceKg, 1)} kg`));
+      tooltip.style.left = `${(cx / width) * 100}%`;
+      tooltip.style.top = `${(cy / height) * 100}%`;
+      tooltip.hidden = false;
+    };
+    dot.addEventListener("mouseenter", showTip);
+    dot.addEventListener("focus", showTip);
+    dot.addEventListener("mouseleave", () => { tooltip.hidden = true; });
+    dot.addEventListener("blur", () => { tooltip.hidden = true; });
+    dot.addEventListener("click", () => DETAILS.devices(figures()));
+    dot.addEventListener("keydown", (event) => { if (event.key === "Enter") DETAILS.devices(figures()); });
+    return dot;
+  });
+
+  const chart = svg("svg", { viewBox: `0 0 ${width} ${height}`, class: "alltime-chart", role: "img",
+    "aria-label": `Running total of the footprint difference of your choices, now ${formatNumber(devicePoints[devicePoints.length - 1].deviceKg, 1)} kg CO₂e` },
+    ...grid,
+    svg("path", { d: area, class: "area" }),
+    svg("path", { d: stepPath("deviceKg"), class: "line chosen", pathLength: 1 }),
+    svg("path", { d: stepPath("boughtKg"), class: "line bought", pathLength: 1 }),
+    ...axis,
+    ...dots);
+  const legend = append(node("div", "legend"),
+    append(node("span", "legend-item"), node("span", "swatch chose"), "Chosen"),
+    append(node("span", "legend-item"), node("span", "swatch bought-line"), "Of which bought (you said)"));
+  return append(node("div", "alltime-chart-wrap"), chart, tooltip, legend);
+}
+
+function renderAllTime() {
+  const { points, totals } = impactTimeline(state.choices);
+  const box = $("alltime");
+  const value = formatNumber(totals.deviceKg, 1);
+  const number = node("span", "alltime-number", value);
+  if (state.lastValues.has("alltime") && state.lastValues.get("alltime") !== value) number.classList.add("changed");
+  state.lastValues.set("alltime", value);
+
+  const head = append(node("div", "alltime-head"),
+    node("p", "eyebrow", "All time, from the choices you recorded"),
+    append(node("p", "alltime-figure"), number, node("span", "alltime-unit", "kg CO₂e lower footprint")),
+    node("p", "muted", totals.deviceKg
+      ? `${totals.choices} choice${totals.choices === 1 ? "" : "s"}. ${formatNumber(totals.boughtKg, 1)} kg of it from products you said you bought.`
+      : "Choose a lower-footprint option on a device card, and it adds up here."));
+  const yearlyKg = state.gridFactor ? totals.kwhYear * state.gridFactor.kgCo2ePerUnit : null;
+  const devicePoints = points.filter((point) => point.choice.kind === "device");
+
+  box.replaceChildren(...[
+    head,
+    totals.deviceKg ? append(node("div", "alltime-terms"), node("p", "", "That is about the same as any one of these:"), everydayList(totals.deviceKg)) : null,
+    devicePoints.length ? allTimeChart(points) : emptyState("No choices yet",
+      "When a device card offers a lower-footprint option from the same maker, tap \"I'll choose this instead\". Each choice adds a step to this chart."),
+    totals.kwhYear ? node("p", "alltime-power",
+      `Appliances you chose also use about ${formatNumber(totals.kwhYear)} kWh a year less${yearlyKg ? `, about ${formatNumber(yearlyKg)} kg CO₂e a year on India's grid` : ""}. `
+      + "That repeats every year the appliance runs, so it is counted separately.") : null,
+    node("p", "note", "Each step is the difference between the footprint the maker reports for what you chose and for what you compared it with. "
+      + "It is not a measured saving, and products you only looked at never count."),
+  ].filter(Boolean));
 }
 
 // ---------- Next step ----------
@@ -715,6 +852,7 @@ function renderAll() {
   renderMonthOptions();
   renderPlant($("plant"), state.actions.filter((action) => action.status === "done").length);
   renderNext();
+  renderAllTime();
   renderOverview();
   renderTimeline();
   renderGroups();

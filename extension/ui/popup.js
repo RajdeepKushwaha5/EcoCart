@@ -44,9 +44,24 @@ async function load({ completed = false } = {}) {
   list.replaceChildren(...shown.map((action) => actionCard(action, load, showError)));
 }
 
-// A plan saved or changed on a shop page shows up here at once.
+// The all-time footprint difference of the shopper's recorded choices. impact.js is loaded first as a plain script.
+async function loadAllTime() {
+  const { totals } = impactTimeline(await loadChoices());
+  const line = document.getElementById("alltime");
+  if (!totals.deviceKg) {
+    line.replaceChildren();
+    return;
+  }
+  line.replaceChildren(node("strong", "", `${totals.deviceKg.toLocaleString("en-IN", { maximumFractionDigits: 1 })} kg CO₂e`),
+    ` lower footprint from your choices, all time`);
+}
+
+// A plan saved or changed on a shop page shows up here at once, and so does a new choice.
 chrome.storage.onChanged.addListener((changes, area) => {
-  if (area === "local" && changes[PLANS_CHANGED_KEY]) load();
+  if (area !== "local") return;
+  if (changes[PLANS_CHANGED_KEY]) load();
+  if (changes[CHOICES_KEY]) loadAllTime();
 });
 
 load();
+loadAllTime();

@@ -109,6 +109,16 @@ function makeChoice(chosen, instead, stage = "chosen", now = new Date()) {
     type: device ? chosen.category : chosen.type,
     createdAt: now.toISOString(),
     updatedAt: now.toISOString(),
+    ...stageDates({}, stage, now),
+  };
+}
+
+// chosenAt: the first time it counted. purchasedAt: when the shopper said they bought it, cleared if they take it back.
+function stageDates(choice, stage, now = new Date()) {
+  const counted = stage === "chosen" || stage === "purchased";
+  return {
+    chosenAt: counted ? choice.chosenAt || now.toISOString() : null,
+    purchasedAt: stage === "purchased" ? choice.purchasedAt || now.toISOString() : null,
   };
 }
 
@@ -139,6 +149,31 @@ function impactTotals(choices) {
     if (choice.stage === "purchased") bucket.purchased += difference;
   }
   return totals;
+}
+
+// The all-time record of a shopper's choices, in date order, with running totals for the chart.
+// Device lifecycle differences (kg CO2e, once) and appliance electricity differences (kWh a year) measure different
+// things, so they are kept as separate totals and never added together.
+function impactTimeline(choices) {
+  const counted = choices
+    .filter((choice) => choice.stage === "chosen" || choice.stage === "purchased")
+    .map((choice) => ({ choice, at: choice.chosenAt || choice.updatedAt || choice.createdAt }))
+    .filter((entry) => entry.at)
+    .sort((a, b) => a.at.localeCompare(b.at));
+  let deviceKg = 0;
+  let boughtKg = 0;
+  let kwhYear = 0;
+  const points = counted.map(({ choice, at }) => {
+    const difference = choiceDifference(choice);
+    if (choice.kind === "device") {
+      deviceKg += difference;
+      if (choice.stage === "purchased") boughtKg += difference;
+    } else {
+      kwhYear += difference;
+    }
+    return { at, choice, difference, deviceKg, boughtKg, kwhYear };
+  });
+  return { points, totals: { deviceKg, boughtKg, kwhYear, choices: points.length } };
 }
 
 function planTotals(actions) {
@@ -255,7 +290,9 @@ async function saveChoice(choice) {
   const involved = new Set([choice.chosen.key, choice.instead.key]);
   const others = choices.filter((item) => item.id !== choice.id
     && !involved.has(item.chosen.key) && !involved.has(item.instead.key));
-  const saved = existing ? { ...existing, stage: choice.stage, updatedAt: choice.updatedAt } : choice;
+  const saved = existing
+    ? { ...existing, stage: choice.stage, updatedAt: choice.updatedAt, ...stageDates(existing, choice.stage) }
+    : choice;
   await chrome.storage.local.set({ [CHOICES_KEY]: [saved, ...others].slice(0, MAX_CHOICES) });
   await logActivity(saved.stage === "considered" ? "compared" : "chose", { name: saved.chosen.name, kind: saved.kind });
   return saved;
@@ -263,9 +300,18 @@ async function saveChoice(choice) {
 
 async function setChoiceStage(id, stage) {
   if (!CHOICE_STAGES.includes(stage)) return;
+  const now = new Date();
   const choices = (await loadChoices()).map((choice) => (choice.id === id
-    ? { ...choice, stage, updatedAt: new Date().toISOString() } : choice));
+    ? { ...choice, stage, updatedAt: now.toISOString(), ...stageDates(choice, stage, now) } : choice));
   await chrome.storage.local.set({ [CHOICES_KEY]: choices });
+}
+
+// The most recent choice not yet marked as bought, made within the last few days, for the order page to ask about.
+async function recentUnboughtChoice(days = 14) {
+  const cutoff = Date.now() - days * 86400000;
+  return (await loadChoices())
+    .filter((choice) => choice.stage === "chosen" && new Date(choice.chosenAt || choice.updatedAt).getTime() >= cutoff)
+    .sort((a, b) => (b.chosenAt || b.updatedAt).localeCompare(a.chosenAt || a.updatedAt))[0] || null;
 }
 
 async function removeChoice(id) {
@@ -286,6 +332,6 @@ async function logActivity(type, { name, kind, key } = {}) {
 if (typeof module !== "undefined") {
   module.exports = {
     comparable, compareGroup, makeChoice, choiceDifference, impactTotals, planTotals, storageGb, monthKey,
-    capacityFrom, prepareGuide, isOverdue, reminderCalendar,
+    capacityFrom, prepareGuide, isOverdue, reminderCalendar, impactTimeline, stageDates,
   };
 }

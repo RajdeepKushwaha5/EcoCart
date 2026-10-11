@@ -145,6 +145,11 @@ async function main() {
     const before = await tiles();
     check("dashboard counts the waiting plan", before["Plans waiting for action"] === "01", JSON.stringify(before));
     check("dashboard counts the choice", Number(before["Footprint difference of your choices"]) > 0);
+    const allTime = await dashboard.evaluate(() => ({
+      total: Number(document.querySelector(".alltime-number")?.textContent),
+      steps: document.querySelectorAll(".alltime-chart .dot").length,
+    }));
+    check("all-time total and its chart", allTime.total > 0 && allTime.steps === 1, JSON.stringify(allTime));
 
     await realClick(dashboard, pageControl(`document.getElementById("tab-actions")`));
     await dashboard.evaluate(() => {

@@ -33,6 +33,16 @@ The public totals on the website show plans saved, reported done and verified, a
 - Any choice can be undone, and removing a product from the shortlist removes the choices it was part of.
 - The difference is between two products' reported figures. It is not a measured saving: it assumes the shopper would otherwise have bought the other product. The dashboard says so wherever the figure is opened.
 
+## The all-time total
+
+The dashboard's Overview opens with the shopper's all-time total: the sum of the differences of every choice that counts (chosen or bought), shown as a running total over time, one step per choice. Hovering a step shows which choice it was.
+
+- It follows the same rules as everything above: only recorded choices between comparable products count, each once, and considering does not count.
+- Bought is shown as its own line, and comes only from the shopper: on an order confirmation page EcoCart asks "Did you buy the ... you chose?", without reading the page.
+- Appliance differences are kWh a year, which repeats for as long as the appliance runs, so they are shown beside the total and never added to it.
+- The total is also given in everyday terms (km by car or scooter, phone charges) using the same sourced factors as the card.
+- It lives in the browser with the choices. A backup file keeps it across reinstalls.
+
 ## Verifying a handover
 
 A reported handover becomes verified only when the team has seen proof: a collection receipt, or the collector's written confirmation.
