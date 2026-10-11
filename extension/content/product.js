@@ -172,7 +172,7 @@ function deviceDecision(card, page, category, item) {
       : policy?.value ? factLine(`${product.brand}: "${policy.value}".`, checkedMeta(policy, "Policy")) : null,
     card.carbon
       ? factLine(`${formatNumber(card.carbon.kg)} kg CO₂e over its life, as ${product.brand} reports.`, checkedMeta(card.carbon, "Report"))
-      : factLine(`${product.brand} has not published this ${word}'s footprint.`),
+          : factLine(card.referenceCarbon ? card.carbonReason : `${product.brand} has not published this ${word}'s footprint.`),
   ];
   const check = [];
   const lower = card.lowerFootprint;
@@ -202,7 +202,7 @@ function deviceDecision(card, page, category, item) {
 function cardSnapshot(card, page, item) {
   return productSnapshot({ key: item.key, name: card.product.displayName, shop: SITE.name, url: SITE.productUrl(), price: page.price,
     kg: card.carbon?.kg ?? null, basis: card.carbon ? "reported" : null, category: DEVICE_WORDS[card.product.category],
-    source: card.carbon?.source });
+    source: card.carbon?.source, reportBasis: card.carbon?.basis, checked: card.carbon?.checked });
 }
 
 function estimateSnapshot(estimate, page, item) {
@@ -352,6 +352,12 @@ function renderDetails(card) {
 }
 
 async function renderCard(body, card, page) {
+  const applicability = listingCarbon(card, page);
+  if (!applicability.carbon && card.carbon) {
+    card = { ...card, referenceCarbon: card.carbon, carbon: null, carbonReason: applicability.reason,
+      lowerFootprint: null, scorecard: { ...card.scorecard, footprint: null },
+      explanation: applicability.reason, explanationSource: "template" };
+  }
   const category = card.product.category;
   const planKey = `model:${card.product.modelId}`;
   const scorecard = await deviceScorecard(card, page, category, planKey);
@@ -365,7 +371,10 @@ async function renderCard(body, card, page) {
     deviceDecision(card, page, category, item),
     renderOldDevice({ modelId: card.product.modelId, category, planKey }, { showsExchange: page.showsExchange }),
     evidence(
-      cardStep("01", "What we know", renderLede(card), renderLabels(page), renderDetails(card)),
+      cardStep("01", "What we know", renderLede(card),
+        card.referenceCarbon ? factLine(`Reference report only: ${formatNumber(card.referenceCarbon.kg)} kg CO₂e (${card.referenceCarbon.basis}). Not counted for this listing.`,
+          checkedMeta(card.referenceCarbon, "Manufacturer report")) : null,
+        renderLabels(page), renderDetails(card)),
       cardStep("02", "What this means", deviceMeaning(card, category), scorecard, footprintScope(card, DEVICE_WORDS[category])),
       cardStep("03", "More options", deviceOptions(card, page, category, item, { catalogRows: false }))),
   );
@@ -495,7 +504,7 @@ function renderOldDevice(device, { showsExchange = false, intro } = {}) {
         ? { modelIdBought: device.modelId }
         : { listingName: device.listingName.slice(0, 150), category };
       try {
-        await api("POST", "/actions", {
+        const saved = await api("POST", "/actions", {
           ...newDevice,
           oldDevice: { brand: oldDevice.brand, ageYears: oldDevice.ageYears,
             works: oldDevice.works, condition: oldDevice.condition, goal: oldDevice.goal },
@@ -503,7 +512,7 @@ function renderOldDevice(device, { showsExchange = false, intro } = {}) {
           optionId,
           requestId,
         }, true);
-        if (device.planKey) await rememberPlan(device.planKey);
+        if (device.planKey) await rememberPlan(device.planKey, saved.actionId);
         await logActivity("planned", { name: device.listingName || device.modelId, kind: "plan" });
         await chrome.storage.local.set({ [PLANS_CHANGED_KEY]: Date.now() });
         show(section, await savedMessage(word), prepareChecklist(oldDevice.brand, category));

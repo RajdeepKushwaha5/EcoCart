@@ -1,6 +1,7 @@
 import { API_BASE_URL, CITIES } from "./config.js";
 
 const TOKEN_KEY = "sessionToken";
+let pendingSession = null;
 
 async function request(method, path, body, token) {
   const headers = {};
@@ -24,12 +25,15 @@ async function request(method, path, body, token) {
 }
 
 async function sessionToken() {
-  const stored = await chrome.storage.local.get(TOKEN_KEY);
-  if (stored[TOKEN_KEY]) return stored[TOKEN_KEY];
-
-  const { token } = await request("POST", "/sessions");
-  await chrome.storage.local.set({ [TOKEN_KEY]: token });
-  return token;
+  pendingSession ??= (async () => {
+    const stored = await chrome.storage.local.get(TOKEN_KEY);
+    if (stored[TOKEN_KEY]) return stored[TOKEN_KEY];
+    const { token } = await request("POST", "/sessions");
+    await chrome.storage.local.set({ [TOKEN_KEY]: token });
+    return token;
+  })();
+  try { return await pendingSession; }
+  finally { pendingSession = null; }
 }
 
 async function callApi({ method, path, body, auth }) {

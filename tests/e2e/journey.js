@@ -211,6 +211,57 @@ async function main() {
     await wait(3000);
     check("test plan deleted", (await dashboard.evaluate(() => document.querySelectorAll(".plan").length)) === 0);
 
+    await realClick(dashboard, pageControl(`document.getElementById("tab-comparisons")`));
+    await dashboard.select(".choice-item select", "purchased");
+    await wait(800);
+    check("confirming a choice as bought also creates its purchase record", await dashboard.evaluate(async () => {
+      const { choices, purchases } = await chrome.storage.local.get(["choices", "purchases"]);
+      return choices[0].stage === "purchased" && purchases.some((purchase) => purchase.choiceId === choices[0].id);
+    }));
+    await dashboard.select(".choice-item select", "chosen");
+    await wait(800);
+    check("undoing purchase confirmation removes its linked purchase", await dashboard.evaluate(async () => {
+      const { choices, purchases } = await chrome.storage.local.get(["choices", "purchases"]);
+      return choices[0].stage === "chosen" && !purchases.some((purchase) => purchase.choiceId === choices[0].id);
+    }));
+
+    const savedPurchases = await dashboard.evaluate(async () => {
+      const stored = await chrome.storage.local.get("purchases");
+      const now = new Date();
+      const previous = new Date(now.getFullYear(), now.getMonth() - 1, 10).toISOString();
+      const current = now.toISOString();
+      const purchases = Array.from({ length: 25 }, (_, index) => ({
+        id: `fixture-${index}`, key: `fixture-${index}`, name: "Test purchase", shop: "Test", kg: 2,
+        basis: "reported", at: current,
+      }));
+      purchases.push({ id: "fixture-old", key: "fixture-old", name: "Old test purchase", shop: "Test", kg: 7, basis: "reported", at: previous });
+      await chrome.storage.local.set({ purchases });
+      return { original: stored.purchases || [], month: previous.slice(0, 7) };
+    });
+    await realClick(dashboard, pageControl(`document.getElementById("tab-overview")`));
+    await wait(600);
+    check("purchase history starts with twenty rows", await dashboard.evaluate(() => document.querySelectorAll(".purchase-table tbody tr").length === 20));
+    await realClick(dashboard, pageControl(`[...document.querySelectorAll("button")].find(b => b.textContent === "Show more purchases")`));
+    check("purchase pagination exposes older rows", await dashboard.evaluate(() => document.querySelectorAll(".purchase-table tbody tr").length === 26));
+    await dashboard.select("#month-filter", savedPurchases.month);
+    check("month filter changes purchase rows and totals together", await dashboard.evaluate(() =>
+      document.querySelectorAll(".purchase-table tbody tr").length === 1
+      && Number(document.querySelector(".purchase-number.reported").textContent) === 7));
+
+    const badBackup = path.join(require("node:os").tmpdir(), `ecocart-invalid-${Date.now()}.json`);
+    fs.writeFileSync(badBackup, JSON.stringify({ app: "EcoCart", version: 1, savedAt: new Date().toISOString(), data: { choices: {} } }));
+    try {
+      await (await dashboard.$("#restore")).uploadFile(badBackup);
+      await wait(600);
+      check("invalid backup is rejected without overwriting history", await dashboard.evaluate(async () => {
+        const { choices, purchases } = await chrome.storage.local.get(["choices", "purchases"]);
+        return document.getElementById("status").textContent.includes("invalid") && Array.isArray(choices) && purchases.length === 26;
+      }));
+    } finally {
+      fs.unlinkSync(badBackup);
+      await dashboard.evaluate(async original => chrome.storage.local.set({ purchases: original }), savedPurchases.original);
+    }
+
     // Search results: one labelled estimate badge per result, from one batch request.
     const shop = await browser.newPage();
     await shop.goto("https://www.flipkart.com/search?q=green+tea", { waitUntil: "domcontentloaded", timeout: 60000 });

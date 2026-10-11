@@ -44,12 +44,21 @@ function loadFactors() {
 
 async function hasPlan(key) {
   const stored = await chrome.storage.local.get(PLANNED_KEY);
-  return Boolean(stored[PLANNED_KEY]?.includes(key));
+  const saved = stored[PLANNED_KEY];
+  if (!saved) return false;
+  try {
+    const { actions } = await api("GET", "/actions", undefined, true);
+    if (Array.isArray(saved)) return key.startsWith("model:") && actions.some((action) => `model:${action.modelIdBought}` === key);
+    return actions.some((action) => action.actionId === saved[key]);
+  } catch {
+    return false;
+  }
 }
 
-async function rememberPlan(key) {
+async function rememberPlan(key, actionId) {
   const stored = await chrome.storage.local.get(PLANNED_KEY);
-  const keys = [key, ...(stored[PLANNED_KEY] || []).filter((item) => item !== key)].slice(0, 50);
+  const previous = stored[PLANNED_KEY];
+  const keys = { ...(Array.isArray(previous) ? {} : previous || {}), [key]: actionId };
   await chrome.storage.local.set({ [PLANNED_KEY]: keys });
 }
 
@@ -66,11 +75,12 @@ function dashboardLink(label, tab = null) {
 function shortlistItem(page, card, category, estimate = null) {
   const kwhYear = annualKwh(page.details);
   const base = {
-    key: card ? `model:${card.product.modelId}` : `${SITE.name.toLowerCase()}:${SITE.listingId()}`,
+    key: card ? `model:${card.product.modelId}:${listingStorageGb(page) || "unspecified"}` : `${SITE.name.toLowerCase()}:${SITE.listingId()}`,
     shop: SITE.name,
     url: SITE.productUrl(),
     name: (card?.product.displayName || page.title).slice(0, 150),
     price: page.price,
+    priceCheckedAt: new Date().toISOString(),
     type: clean(page.crumbs[page.crumbs.length - 1] || "").toLowerCase() || null,
     kwhYear,
     capacity: capacityFrom(page.details),
@@ -89,6 +99,7 @@ function shortlistItem(page, card, category, estimate = null) {
       carbonKg: card?.carbon?.kg ?? null,
       carbonBasis: card?.carbon?.basis || null,
       carbonSource: card?.carbon?.source || null,
+      carbonChecked: card?.carbon?.checked || null,
       support: card?.headline?.source ? card.headline.value : null,
     };
   }
@@ -134,7 +145,7 @@ async function celebrateChoice(anchor, chosen, difference) {
   const card = anchor.getRootNode().querySelector(".card");
   if (!card) return;
   const choices = await loadChoices();
-  const grown = choices.filter((choice) => choice.stage === "chosen" || choice.stage === "purchased").length;
+  const grown = greenActions([], choices);
   const { stage, name } = plantStage(grown);
   const art = el("div", { className: "celebrate-plant" });
   art.innerHTML = plantSvg(stage); // Fixed shapes only, no page data.
@@ -236,7 +247,8 @@ async function tariffBlock(item, others) {
     output.replaceChildren(
       el("p", { className: "decide-text" }, el("strong", {}, `About ${formatRupees(own.yearly)} a year`), ` to run at ${formatRupees(rate)} a unit.`),
       ...rows,
-      el("p", { className: "meta" }, `${formatNumber(item.kwhYear)} kWh a year from the label × your rate. Real use depends on how you use it; prices are today's listing prices.`));
+      el("p", { className: "meta" }, `${formatNumber(item.kwhYear)} kWh a year from the label × your rate. Real use depends on how you use it. Payback uses saved listing prices, which can change.`),
+      ...others.map((other) => el("p", { className: "meta" }, `${shortName(other.name)}: price saved ${other.priceCheckedAt ? formatDate(other.priceCheckedAt.slice(0, 10)) : "on an unknown date"}. Check the current offer before buying.`)));
   };
   const rate = await loadTariff();
   if (rate) input.value = String(rate);
@@ -467,7 +479,8 @@ function supportRow(card, word) {
 function footprintRow(card, word) {
   const footprint = card?.scorecard?.footprint;
   // Without a card there is nothing to say about the footprint, so the row is left out.
-  if (!footprint) return card ? { label: "Reported footprint", value: `Not published by ${card.product.brand}`, unknown: true } : null;
+  if (!footprint) return card ? { label: "Reported footprint", value: card.referenceCarbon ? "Reference report only" : `Not published by ${card.product.brand}`,
+    note: card.carbonReason || null, unknown: true } : null;
   const { carbon } = card;
   const compared = footprint.position == null
     ? `Reported by ${footprint.brand}`
@@ -536,8 +549,9 @@ function catalogAlternativeRows(card, item) {
 // The suggested lower-footprint device as a shortlist item, and how much lower its reported footprint is.
 function lowerFootprintChoice(card, lower) {
   const lowerItem = {
-    key: `model:${lower.modelId}`, kind: "device", category: card.product.category, brand: card.product.brand,
-    modelId: lower.modelId, name: lower.displayName, price: lower.price.value, shop: SITE.name, url: SITE.searchUrl(lower.displayName),
+    key: `model:${lower.modelId}:${storageGb(lower.basis) || "unspecified"}`, kind: "device", category: card.product.category, brand: card.product.brand,
+    modelId: lower.modelId, name: lower.displayName, price: lower.price.value, priceCheckedAt: lower.price.checked,
+    shop: SITE.name, url: SITE.searchUrl(lower.displayName),
     carbonKg: lower.kg, carbonBasis: lower.basis || null, carbonSource: lower.carbonSource,
   };
   const difference = `${formatNumber(Math.round((card.carbon.kg - lower.kg) * 10) / 10)} kg CO₂e`;

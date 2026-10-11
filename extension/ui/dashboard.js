@@ -37,6 +37,7 @@ const state = {
   viewed: [],
   reminders: {},
   purchases: [],
+  purchaseLimit: 20,
   name: "",
   gridFactor: null,
   factors: [],
@@ -569,14 +570,14 @@ function renderPurchases() {
     return;
   }
   const purchases = state.purchases.filter((purchase) => inMonth(purchase.at));
-  const totals = purchaseTotals(state.purchases);
+  const totals = purchaseTotals(purchases);
   const plural = (count) => `${count} purchase${count === 1 ? "" : "s"}`;
   const figure = (basis, label, kg, count, meaning) => append(node("div", `purchase-total ${basis}`),
     node("p", "purchase-label", label),
     append(node("p", "alltime-figure"), node("span", `purchase-number ${basis}`, formatNumber(kg, 1)), node("span", "alltime-unit", "kg CO₂e")),
     node("p", "muted", `${plural(count)}. ${meaning}`));
   const head = append(node("div", "purchases-head"),
-    node("p", "eyebrow", "Your purchases"),
+    node("p", "eyebrow", state.month === "all" ? "Your purchases, all time" : `Your purchases in ${monthLabel(state.month)}`),
     totals.count
       ? append(node("div", "purchase-totals"),
         figure("reported", "From makers' own reports", totals.reportedKg, totals.reported, "The whole life of the product, as the maker reports it."),
@@ -592,12 +593,13 @@ function renderPurchases() {
   const table = node("table", "purchase-table");
   table.append(append(node("thead"), append(node("tr"), ["CO₂e", "Product", "Shop", "Date", "Figure", ""].map((label) => node("th", "", label)))));
   const body = node("tbody");
-  body.append(...purchases.slice(0, 20).map(purchaseRow));
+  body.append(...purchases.slice(0, state.purchaseLimit).map(purchaseRow));
   table.append(body);
   box.replaceChildren(head, purchaseChart(totals.byMonth),
     append(node("p", "eyebrow"), state.month === "all" ? "Purchases" : `Purchases in ${monthLabel(state.month)}`),
     purchases.length ? table : node("p", "muted", "None in this month."),
-    node("p", "note", "Makers' reports cover a product's whole life; category estimates cover making it, from its price. Both are labelled, and neither is a measurement of your item."));
+    node("p", "note", "Makers' reports cover a product's whole life; category estimates cover making it, from its price. Both are labelled, and neither is a measurement of your item. This browser keeps the most recent 500 purchases; download a backup to keep older records."));
+  if (purchases.length > state.purchaseLimit) box.append(button("Show more purchases", () => { state.purchaseLimit += 20; renderPurchases(); }, "ghost"));
 }
 
 // ---------- Start here ----------
@@ -903,12 +905,7 @@ function renderTimeline() {
 // ---------- My comparisons ----------
 
 function shortlistGroups() {
-  const groups = new Map();
-  for (const item of state.shortlist) {
-    const group = compareGroup(item);
-    if (group) groups.set(group, [...(groups.get(group) || []), item]);
-  }
-  return [...groups];
+  return comparisonGroups(state.shortlist);
 }
 
 function groupHeading(items) {
@@ -917,7 +914,7 @@ function groupHeading(items) {
     return [`${first.brand} ${DEVICE_WORDS[first.category]}s: lifecycle footprint the maker reports`,
       `Only ${first.brand}'s own reports are compared here, on the same basis.`];
   }
-  return [`${first.type}: yearly electricity on the energy label`, "Only labels of the same type of appliance are compared."];
+  return [`${first.type}: yearly electricity on the energy label`, "Only the same appliance type, with stated capacities within 10%, is compared."];
 }
 
 async function choose(chosen, instead) {
@@ -961,7 +958,7 @@ function groupCard([, items]) {
     const row = append(node("div", `bar-row${chosenKeys.has(item.key) ? " chosen" : ""}`),
       node("span", "bar-label", item.name), track,
       node("span", "bar-value", `${formatNumber(value(item), 1)} ${device ? "kg" : "kWh"}`));
-    row.title = item.name;
+    row.title = `${item.name}: ${device ? item.carbonBasis || "Unspecified report basis" : `${item.capacity.value} ${item.capacity.unit}`}`;
     const actions = append(node("div", "row-actions"),
       chosenKeys.has(item.key) ? node("span", "pill done", "Chosen") : choosePicker(item, items),
       link(device ? item.carbonSource : item.url, device ? "Report" : "Listing"),
@@ -1115,6 +1112,7 @@ function renderMonthOptions() {
     ...state.actions.flatMap((action) => [action.createdAt, action.doneAt, action.verified?.at]),
     ...state.choices.map((choice) => choice.updatedAt),
     ...state.activity.map((entry) => entry.at),
+    ...state.purchases.map((purchase) => purchase.at),
   ].filter(Boolean).map(monthKey));
   const select = $("month-filter");
   const current = select.value;
@@ -1174,6 +1172,7 @@ for (const tab of document.querySelectorAll(".tab")) {
 }
 $("month-filter").addEventListener("change", (event) => {
   state.month = event.target.value;
+  state.purchaseLimit = 20;
   state.selectedDay = null;
   renderAll();
 });
@@ -1204,12 +1203,11 @@ $("restore").addEventListener("change", async (event) => {
   if (!file) return;
   try {
     const backup = JSON.parse(await file.text());
-    if (backup?.app !== "EcoCart" || typeof backup.data !== "object") throw new Error("Not an EcoCart backup");
-    const data = Object.fromEntries(Object.entries(backup.data).filter(([key]) => BACKUP_KEYS.includes(key)));
+    const data = validateBackup(backup, BACKUP_KEYS);
     await chrome.storage.local.set({ ...data, [PLANS_CHANGED_KEY]: Date.now() });
     $("status").textContent = `Restored the backup from ${formatDay(backup.savedAt)}.`;
   } catch {
-    $("status").textContent = "That file is not an EcoCart backup, so nothing was changed.";
+    $("status").textContent = "That backup is invalid or uses an unsupported version. Nothing was changed.";
   }
 });
 $("clear-history").addEventListener("click", async () => {

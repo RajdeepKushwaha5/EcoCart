@@ -1,6 +1,30 @@
 # Verification on 11 October 2026
 
-Extension 0.9.8. This log records what was checked today and the quotes behind the new route details.
+This log records release checks and the source quotes behind the route details.
+
+## Release 0.9.10: audit fixes and deployment
+
+The release fixes linked purchase confirmation and undo, preserves decision history when the shortlist is cleared, checks report applicability, separates incompatible chart groups, and excludes zero-improvement choices from plant growth. Search badges retry temporary failures, purchase history supports pagination and monthly totals, and malformed backups are rejected before storage changes. Appliance payback now states that it uses saved prices.
+
+Plan saves use deterministic request IDs and conditional writes. Conflicting updates and deletes are rejected. Server-side route validation enforces device restrictions. Search batches use rules only, so optional model classification cannot create a model call for every result. The first concurrent live check exposed a DynamoDB Decimal serialization error in a replayed response; that was fixed and given a regression test before the final deployment.
+
+Validation performed on 11 October:
+
+- Backend: 109 tests passed.
+- Extension: 52 tests passed.
+- Research tooling: 19 tests passed.
+- Final deployed API smoke test: 360 passed, 0 failed.
+- Full live Amazon.in and Flipkart browser journey passed with no script errors, including purchase confirmation/undo, 20-row pagination, filtered monthly totals, and rejection of an invalid backup without overwriting records.
+- Five concurrent saves against the deployed API produced one plan. Concurrent edits completed or returned a conflict. The same test passed against the local API. Temporary plans were deleted.
+- Data validation, SAM lint and JavaScript syntax checks passed.
+- All three README Mermaid diagrams parsed and rendered in a browser. README local links resolved.
+- SAM deployment completed successfully in ap-south-1. Amplify deployment succeeded.
+- The public extension download reports 0.9.10; every packaged application file matches the local release.
+- The deployed API Lambda's Python and JSON source files match the local backend. Lambda reports Active and Successful.
+
+These are software checks. No outside-user study, confirmed real-world handover, or measured environmental saving is implied. Bedrock remains disabled in the deployed stack.
+
+## Earlier 0.9.8 checks
 
 ## Search results
 

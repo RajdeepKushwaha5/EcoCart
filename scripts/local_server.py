@@ -29,18 +29,34 @@ class MemoryTable:
     def __init__(self, key_names):
         self.key_names = key_names
         self.items = {}
+        self.meta = types.SimpleNamespace(client=types.SimpleNamespace(exceptions=types.SimpleNamespace(ConditionalCheckFailedException=ConditionalFailure)))
 
     def _key(self, item):
         return tuple(item[name] for name in self.key_names)
 
-    def put_item(self, Item):
+    def _condition(self, key, expression, values):
+        item = self.items.get(key)
+        if not expression:
+            return
+        if expression == "attribute_not_exists(actionId)":
+            valid = item is None
+        elif expression == "version = :version":
+            valid = item is not None and item.get("version") == values[":version"]
+        else:
+            valid = item is not None and "version" not in item
+        if not valid:
+            raise ConditionalFailure()
+
+    def put_item(self, Item, ConditionExpression=None, ExpressionAttributeValues=None):
+        self._condition(self._key(Item), ConditionExpression, ExpressionAttributeValues)
         self.items[self._key(Item)] = json.loads(json.dumps(Item))
 
-    def get_item(self, Key):
+    def get_item(self, Key, **_):
         item = self.items.get(self._key(Key))
         return {"Item": json.loads(json.dumps(item))} if item else {}
 
-    def delete_item(self, Key):
+    def delete_item(self, Key, ConditionExpression=None, ExpressionAttributeValues=None):
+        self._condition(self._key(Key), ConditionExpression, ExpressionAttributeValues)
         self.items.pop(self._key(Key), None)
 
     def update_item(self, Key, UpdateExpression, ExpressionAttributeValues):
@@ -53,6 +69,10 @@ class MemoryTable:
     def query(self, KeyConditionExpression, ExpressionAttributeValues, **_):
         session_id = ExpressionAttributeValues[":s"]
         return {"Items": [dict(item) for item in self.items.values() if item["sessionId"] == session_id]}
+
+
+class ConditionalFailure(Exception):
+    pass
 
 
 def read_json(name):

@@ -30,7 +30,7 @@ The public totals on the website show plans saved, reported done and verified, a
 - A choice has three stages: **considering** (weighing it up), **chosen** (decided on it) and **bought (you said)**. Considering is not counted. Chosen and bought are counted, and bought is shown separately because it is the shopper's own statement.
 - The difference is the other product's figure minus the chosen one, never below zero. Choosing the higher-footprint product is recorded but counts nothing.
 - Each product takes part in at most one active choice, so one decision is never counted twice. A new choice that involves either product replaces the earlier one.
-- Any choice can be undone, and removing a product from the shortlist removes the choices it was part of.
+- Any choice can be undone explicitly. Removing a product from the shortlist preserves recorded decisions and purchase history.
 - The difference is between two products' reported figures. It is not a measured saving: it assumes the shopper would otherwise have bought the other product. The dashboard says so wherever the figure is opened.
 
 ## The all-time total
@@ -51,7 +51,9 @@ The dashboard also keeps a log of what the shopper says they bought, like a shop
 - Each purchase keeps where its number comes from: the maker's own lifecycle report, or a category estimate from the price. Both are labelled in the list, and a product with neither is listed without a number.
 - This is the footprint of what was bought. It is a different figure from the difference of choices above, and the two are never added together.
 - Makers' reports cover a product's whole life; category estimates cover making that kind of product, from its price. They are different methods, so the dashboard shows two totals and two chart lines and never adds them into one number.
-- The same product bought twice on one day counts once. Any purchase can be removed.
+- The same product bought twice on one day counts once. Any purchase can be removed. Confirming a purchase also marks its matching choice as bought; confirming a choice as bought creates the purchase record. Undoing that confirmation removes its linked purchase, and removing the last linked purchase returns the choice to chosen.
+- A storage-specific report is counted only when the listing states the matching storage. Unverified regional reports are reference evidence, not that listing's purchase footprint. Saved snapshots retain the report basis and checked date.
+- Month filters apply to purchase totals and rows. The history has a Show more control and retains the most recent 500 purchases; backups preserve earlier exports.
 
 ## Verifying a handover
 

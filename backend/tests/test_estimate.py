@@ -59,7 +59,7 @@ def test_model_answer_must_come_from_the_list(monkeypatch):
 
     estimate._cached_model_sector.cache_clear()
     monkeypatch.setattr(estimate, "_model_sector", lambda *_: "315000")
-    assert choose_sector(["Mystery"], "Odd shirt") == ("315000", ALLOWED["315000"], "model", None)
+    assert choose_sector(["Mystery"], "Odd thing") == ("315000", ALLOWED["315000"], "model", None)
 
 
 def test_model_failure_is_not_fatal(monkeypatch):
@@ -71,6 +71,15 @@ def test_model_failure_is_not_fatal(monkeypatch):
 
     monkeypatch.setattr(estimate, "_model_sector", broken)
     assert choose_sector(["Mystery 2"], "Thing") == (None, None, "none", None)
+
+
+def test_rules_win_before_model_and_search_batches_disable_model_calls(monkeypatch):
+    monkeypatch.setenv("BEDROCK_MODEL_ID", "test-model")
+    def unexpected(*_):
+        raise AssertionError("The model must not be called")
+    monkeypatch.setattr(estimate, "_cached_model_sector", unexpected)
+    assert choose_sector([], "Cotton T-shirt")[2] == "title"
+    assert estimate.estimate([], "Unheard of widget", 100, allow_model=False)["estimate"] is None
 
 
 def test_every_rule_points_at_a_built_sector():

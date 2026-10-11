@@ -120,6 +120,43 @@ def test_a_retried_save_returns_the_first_plan(table):
     assert actions.find_by_request(table, "s1", BODY) is None
 
 
+def test_duplicate_create_is_atomic_even_without_the_preflight_lookup(table):
+    body = {**BODY, "requestId": "same-request"}
+    first = actions.create_action(table, "s1", body, CATALOG, OPTIONS)
+    second = actions.create_action(table, "s1", body, CATALOG, OPTIONS)
+    assert first["actionId"] == second["actionId"]
+    assert second["_replayed"] is True
+    assert len(actions.list_actions(table, "s1")) == 1
+
+
+def test_stale_plan_update_cannot_overwrite_a_newer_change(table):
+    created = actions.create_action(table, "s1", BODY, CATALOG, OPTIONS)
+    key = {"sessionId": "s1", "actionId": created["actionId"]}
+    stale = table.get_item(Key=key)["Item"]
+    actions.update_status(table, "s1", created["actionId"], {"status": "done"})
+    with pytest.raises(ApiError) as error:
+        actions._save_version(table, stale)
+    assert error.value.status == 409
+    assert table.get_item(Key=key)["Item"]["status"] == "done"
+
+
+def test_legacy_plan_gets_a_version_on_its_first_update(table):
+    created = actions.create_action(table, "s1", BODY, CATALOG, OPTIONS)
+    key = {"sessionId": "s1", "actionId": created["actionId"]}
+    item = table.get_item(Key=key)["Item"]
+    item.pop("version")
+    table.put_item(Item=item)
+    updated, _ = actions.update_status(table, "s1", created["actionId"], {"status": "done"})
+    assert updated["version"] == 1
+
+
+@pytest.mark.parametrize("restriction", [{"brands": ["Apple"]}, {"categories": ["laptop"]}])
+def test_route_restrictions_are_enforced_on_save(table, restriction):
+    with pytest.raises(ApiError) as error:
+        actions.create_action(table, "s1", BODY, CATALOG, [{**OPTIONS[0], **restriction}])
+    assert error.value.status == 400
+
+
 def test_verification_is_requested_only_for_a_reported_handover(table):
     created = actions.create_action(table, "s1", BODY, CATALOG, OPTIONS)
     with pytest.raises(ApiError) as error:

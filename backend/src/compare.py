@@ -87,6 +87,9 @@ def comparable(current, candidate):
     """
     if (current.get("basis") or None) == (candidate.get("basis") or None):
         return True
+    storage_only = r"\d+\s*(?:GB|TB)(?:\s+(?:SSD\s+)?model)?"
+    if not all(re.fullmatch(storage_only, block.get("basis") or "", re.I) for block in (current, candidate)):
+        return False
     current_gb, candidate_gb = _storage_gb(current.get("basis")), _storage_gb(candidate.get("basis"))
     return current_gb is not None and candidate_gb is not None and candidate_gb >= current_gb
 

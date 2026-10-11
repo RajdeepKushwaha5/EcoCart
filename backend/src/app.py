@@ -137,7 +137,8 @@ def post_estimates(event):
         price = item.get("price")
         if isinstance(price, bool) or not isinstance(price, (int, float)):
             price = None
-        result = estimate([], item["title"][:300], price)["estimate"]
+        # A search batch must not make one model call for every result.
+        result = estimate([], item["title"][:300], price, allow_model=False)["estimate"]
         results.append(None if result is None else {
             "kg": result["kg"], "category": result["category"], "kgPerThousandInr": result["kgPerThousandInr"],
         })
@@ -196,8 +197,10 @@ def post_action(event):
     item = actions.create_action(
         db.table("ACTIONS_TABLE"), session_id, body, db.load_catalog(), _options(city, category=None)
     )
-    _count(saved=1)
-    return 201, item
+    replayed = item.pop("_replayed", False)
+    if not replayed:
+        _count(saved=1)
+    return (200 if replayed else 201), item
 
 
 def get_actions(event):

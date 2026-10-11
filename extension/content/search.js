@@ -7,6 +7,7 @@ const DONE_ATTR = "data-ecocart";
 
 let catalogRequest = null;
 let searchObserver = null;
+const badgeAttempts = new WeakMap();
 
 function loadCatalog() {
   catalogRequest ??= api("GET", "/catalog")
@@ -66,34 +67,48 @@ async function estimateBadges(pending) {
     try {
       ({ results } = await api("POST", "/estimates", { items: batch.map(({ title, price }) => ({ title, price })) }));
     } catch {
-      return; // No badge rather than a wrong one.
+      for (const { node } of batch) node.removeAttribute(DONE_ATTR);
+      if (batch.some(({ node }) => (badgeAttempts.get(node) || 0) < 3)) setTimeout(badgeResults, 2500);
+      continue;
     }
-    batch.forEach(({ spot }, index) => {
+    batch.forEach(({ spot, node, signature }, index) => {
       if (results[index]) spot.after(estimateBadge(results[index]));
+      node.setAttribute(DONE_ATTR, signature);
     });
   }
 }
 
 async function badgeResults() {
-  const results = SITE.searchResults().filter(({ node }) => !node.hasAttribute(DONE_ATTR));
+  const results = SITE.searchResults().filter(({ node, title }) => {
+    const signature = `${title}:${SITE.resultPrice(node) || ""}`;
+    const previous = node.getAttribute(DONE_ATTR);
+    if (previous && previous !== "pending" && previous !== signature) badgeAttempts.delete(node);
+    return previous !== "pending" && previous !== signature && (badgeAttempts.get(node) || 0) < 3;
+  });
   if (results.length === 0) return;
   // Marked before waiting, so a page change during the wait does not badge the same results twice.
-  for (const { node } of results) node.setAttribute(DONE_ATTR, "");
+  for (const { node } of results) node.setAttribute(DONE_ATTR, "pending");
 
   const catalog = await loadCatalog();
   const pending = [];
   for (const { node, title, anchor } of results) {
-    if (!title || !anchor) continue;
+    if (!title || !anchor) { node.removeAttribute(DONE_ATTR); continue; }
+    for (const old of node.querySelectorAll(".ecocart-badge-host")) old.remove();
+    const price = SITE.resultPrice(node);
+    const signature = `${title}:${price || ""}`;
     const product = matchByAlias(title, catalog);
     // "Case for Galaxy A56" names the device it fits, so it never gets the device's badge.
     if (product && !looksLikeAccessory(title, devicePosition(title, product))) {
       anchor.after(makeBadge(product));
+      node.setAttribute(DONE_ATTR, signature);
       continue;
     }
     const claim = claimBadge(title);
     if (claim) anchor.after(claim);
-    const price = SITE.resultPrice(node);
-    if (price) pending.push({ title, price, spot: claim || anchor });
+    if (price) {
+      badgeAttempts.set(node, (badgeAttempts.get(node) || 0) + 1);
+      pending.push({ title, price, spot: claim || anchor, node, signature });
+    } else node.removeAttribute(DONE_ATTR);
   }
   if (pending.length) await estimateBadges(pending);
 }

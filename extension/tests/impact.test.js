@@ -33,8 +33,8 @@ test("appliances compare only within one type and only with stated yearly use", 
 
 test("ordinary products with only a category estimate are never grouped for comparison", () => {
   assert.equal(compareGroup({ kind: "product", estimateKg: 2 }), null);
-  assert.equal(compareGroup(phone({ carbonKg: 50 })), "device:phone:Apple");
-  assert.equal(compareGroup(fridge({ kwhYear: 200 })), "appliance:refrigerators");
+  assert.equal(compareGroup(phone({ carbonKg: 50 })), "device:phone:Apple:unspecified");
+  assert.equal(compareGroup(fridge({ kwhYear: 200 })), "appliance:refrigerators:litres");
 });
 
 test("a choice records both sides and never counts a negative difference", () => {
@@ -146,7 +146,10 @@ test("the chart covers the last twelve months and the plant grows with greener a
   const months = lastMonths(12, new Date(2026, 9, 11));
   assert.equal(months.length, 12);
   assert.deepEqual([months[0], months[11]], ["2025-11", "2026-10"]);
-  assert.equal(greenActions([{ status: "done" }, { status: "planned" }], [{ stage: "chosen" }, { stage: "considered" }, { stage: "purchased" }]), 3);
+  const lower = phone({ key: "low", carbonKg: 40 });
+  const higher = phone({ key: "high", carbonKg: 60 });
+  assert.equal(greenActions([{ status: "done" }, { status: "planned" }],
+    [makeChoice(lower, higher), makeChoice(lower, higher, "considered"), makeChoice(lower, higher, "purchased")]), 3);
 });
 
 const ROUTES = [

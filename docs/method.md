@@ -15,7 +15,7 @@ This page explains what EcoCart shows, where it comes from, and what it will not
 
 Every value in `data/products.json`, `data/options.json` and `data/factors.json` has a source URL and a checked date. `scripts/validate_data.py` refuses to seed data that breaks this rule, and the API returns any fact without a source as null.
 
-Lifecycle figures from different manufacturers can use different methods, so we show them but never rank devices by them.
+Lifecycle figures from different manufacturers can use different methods, so we never rank across manufacturers. Charts use one manufacturer, one device category and the same report basis. A storage-specific figure is applied only when the listing's storage matches; unverified regional figures stay visible as reference reports and are excluded from that listing's totals and comparisons.
 
 ## Makers' official support lists
 

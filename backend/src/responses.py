@@ -1,4 +1,11 @@
 import json
+from decimal import Decimal
+
+
+def _json_number(value):
+    if isinstance(value, Decimal):
+        return int(value) if value == value.to_integral_value() else float(value)
+    raise TypeError(f"Cannot encode {type(value).__name__} as JSON")
 
 
 class ApiError(Exception):
@@ -12,7 +19,7 @@ def json_response(status, body):
     return {
         "statusCode": status,
         "headers": {"Content-Type": "application/json"},
-        "body": json.dumps(body),
+        "body": json.dumps(body, default=_json_number),
     }
 
 

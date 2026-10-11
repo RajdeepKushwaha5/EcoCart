@@ -2,6 +2,7 @@
 
 import secrets
 import time
+import hashlib
 from datetime import datetime, timezone
 
 from categories import CATEGORIES, device_category
@@ -89,6 +90,19 @@ def find_by_request(actions_table, session_id, body):
     return next((item for item in list_actions(actions_table, session_id) if item.get("requestId") == request_id), None)
 
 
+def _save_version(actions_table, item):
+    previous = item.get("version")
+    updated = {**item, "version": (previous or 0) + 1}
+    kwargs = {"Item": updated, "ConditionExpression": "attribute_exists(actionId) AND attribute_not_exists(version)"}
+    if previous is not None:
+        kwargs.update(ConditionExpression="version = :version", ExpressionAttributeValues={":version": previous})
+    try:
+        actions_table.put_item(**kwargs)
+    except actions_table.meta.client.exceptions.ConditionalCheckFailedException:
+        raise ApiError(409, "This plan changed in another request. Refresh and try again.")
+    return updated
+
+
 def create_action(actions_table, session_id, body, catalog, options):
     if len(list_actions(actions_table, session_id)) >= MAX_PLANS_PER_SESSION:
         raise ApiError(429, f"A session can keep at most {MAX_PLANS_PER_SESSION} plans")
@@ -100,10 +114,14 @@ def create_action(actions_table, session_id, body, catalog, options):
     option = next((item for item in options if item["optionId"] == option_id), None)
     if option is None:
         raise ApiError(400, "Unknown 'optionId' for this city")
+    for field, wanted in (("brands", old_device["brand"]), ("categories", category)):
+        accepted = option.get(field)
+        if accepted and wanted.lower() not in [value.lower() for value in accepted]:
+            raise ApiError(400, "This route does not accept this device's brand or category")
 
     item = {
         "sessionId": session_id,
-        "actionId": new_action_id(),
+        "actionId": "request-" + hashlib.sha256(request_id.encode()).hexdigest()[:32] if request_id else new_action_id(),
         "modelIdBought": model_id,
         "modelName": model_name,
         "category": category,
@@ -113,10 +131,15 @@ def create_action(actions_table, session_id, body, catalog, options):
         "optionName": option["name"],
         "status": "planned",
         "createdAt": _now(),
+        "version": 1,
     }
     if request_id:
         item["requestId"] = request_id
-    actions_table.put_item(Item=item)
+    try:
+        actions_table.put_item(Item=item, ConditionExpression="attribute_not_exists(actionId)")
+    except actions_table.meta.client.exceptions.ConditionalCheckFailedException:
+        existing = _owned_action(actions_table, session_id, item["actionId"])
+        return {**_public(existing), "_replayed": True}
     return _public(item)
 
 
@@ -125,6 +148,7 @@ def list_actions(actions_table, session_id):
     kwargs = {
         "KeyConditionExpression": "sessionId = :s",
         "ExpressionAttributeValues": {":s": session_id},
+        "ConsistentRead": True,
     }
     while True:
         page = actions_table.query(**kwargs)
@@ -136,7 +160,7 @@ def list_actions(actions_table, session_id):
 
 
 def _owned_action(actions_table, session_id, action_id):
-    item = actions_table.get_item(Key={"sessionId": session_id, "actionId": action_id}).get("Item")
+    item = actions_table.get_item(Key={"sessionId": session_id, "actionId": action_id}, ConsistentRead=True).get("Item")
     if item is None:
         raise ApiError(404, "Action not found")
     return item
@@ -152,19 +176,28 @@ def update_status(actions_table, session_id, action_id, body):
     if item.get("verified") and status != "done":
         raise ApiError(409, "A verified handover cannot be undone")
     was_done = item["status"] == "done"
+    if item["status"] == status:
+        return _public(item), 0
     item["status"] = status
     if status == "done":
         item["doneAt"] = _now()
     else:
         item.pop("doneAt", None)
-    actions_table.put_item(Item=item)
+    item = _save_version(actions_table, item)
     return _public(item), int(status == "done") - int(was_done)
 
 
 def delete_action(actions_table, session_id, action_id):
     """Delete the plan and return (whether it had been marked done, whether it had been verified)."""
     item = _owned_action(actions_table, session_id, action_id)
-    actions_table.delete_item(Key={"sessionId": session_id, "actionId": action_id})
+    kwargs = {"Key": {"sessionId": session_id, "actionId": action_id},
+              "ConditionExpression": "attribute_exists(actionId) AND attribute_not_exists(version)"}
+    if item.get("version") is not None:
+        kwargs.update(ConditionExpression="version = :version", ExpressionAttributeValues={":version": item["version"]})
+    try:
+        actions_table.delete_item(**kwargs)
+    except actions_table.meta.client.exceptions.ConditionalCheckFailedException:
+        raise ApiError(409, "This plan changed in another request. Refresh and try again.")
     return item["status"] == "done", bool(item.get("verified"))
 
 
@@ -180,7 +213,7 @@ def request_verification(actions_table, session_id, action_id, body):
         raise ApiError(409, "This handover is already verified")
     note = require_string(body, "note", max_length=MAX_EVIDENCE)
     item["verificationRequest"] = {"at": _now(), "note": note}
-    actions_table.put_item(Item=item)
+    item = _save_version(actions_table, item)
     return _public(item)
 
 

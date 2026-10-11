@@ -38,6 +38,20 @@ def test_footprint_bar_compares_the_same_maker_only():
     assert (row["low"], row["high"], row["count"], row["brand"]) == (55, 70, 3, "Apple")
 
 
+def test_footprint_chart_excludes_other_storage_and_regional_bases():
+    products = [phone(str(index), "Apple", kg=50 + index) for index in range(4)]
+    for item, basis in zip(products, ["128GB model", "128GB model", "256GB model", "EU model"]):
+        item["lifecycleCo2eKg"]["basis"] = basis
+    row = scorecard(products[0], products)["footprint"]
+    assert row["count"] == 2
+    assert row["position"] is None
+
+
+def test_storage_comparison_does_not_ignore_hardware_or_connectivity():
+    assert not comparable({"basis": "M5, 8-core GPU, 16GB, 512GB"}, {"basis": "M5, 10-core GPU, 16GB, 512GB"})
+    assert not comparable({"basis": "128GB Wi-Fi + Cellular"}, {"basis": "256GB model"})
+
+
 def test_too_few_peers_means_no_bar():
     row = scorecard(CATALOG[3], CATALOG)["footprint"]
     assert row["position"] is None and row["count"] == 1

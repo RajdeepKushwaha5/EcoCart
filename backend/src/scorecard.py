@@ -47,6 +47,7 @@ def footprint_row(product, catalog):
     devices = [
         (item, carbon_block(item, [])) for item in catalog
         if item["brand"] == product["brand"] and device_category(item) == category and carbon_block(item, []) is not None
+        and (carbon_block(item, []).get("basis") or None) == (carbon.get("basis") or None)
     ]
     peers = [block["kg"] for _, block in devices]
     row = {"value": carbon["kg"], "position": None, "low": None, "high": None, "count": len(peers), "brand": product["brand"],

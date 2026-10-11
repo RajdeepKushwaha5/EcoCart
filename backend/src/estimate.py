@@ -171,14 +171,18 @@ def _cached_model_sector(model_id, crumbs, title):
     return sector
 
 
-def choose_sector(crumbs, title):
+def choose_sector(crumbs, title, allow_model=True):
     """Return (sector or None, label, how, matched) where how is 'breadcrumb', 'title', 'model' or 'none'."""
     found = sector_from_crumbs(crumbs, title)
     if found is not None:
         sector, label, matched = found
         return sector, label, "breadcrumb", matched
+    found = sector_from_title(title)
+    if found is not None:
+        sector, label, matched = found
+        return sector, label, "title", matched
     model_id = os.environ.get("BEDROCK_MODEL_ID", "")
-    if model_id:
+    if model_id and allow_model:
         sector = _cached_model_sector(model_id, tuple(crumbs), title)
         if sector:
             return sector, ALLOWED[sector], "model", None
@@ -219,9 +223,9 @@ def per_rupee_rank(sector):
     }
 
 
-def estimate(crumbs, title, price):
+def estimate(crumbs, title, price, allow_model=True):
     """A labelled category estimate, or a reason why there is none."""
-    sector, label, how, matched = choose_sector(crumbs, title)
+    sector, label, how, matched = choose_sector(crumbs, title, allow_model=allow_model)
     if sector is None:
         reason = "excluded" if how == "breadcrumb" else "unclassified"
         return {"estimate": None, "reason": reason}

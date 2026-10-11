@@ -22,7 +22,7 @@ const STAGE_LABELS = { considered: "Considering", chosen: "Chosen", purchased: "
 // ---------- Comparison rules ----------
 
 function storageGb(basis) {
-  const found = /(\d+)\s*(GB|TB)/i.exec(basis || "");
+  const found = [...String(basis || "").matchAll(/(\d+)\s*(GB|TB)/gi)].at(-1);
   if (!found) return null;
   return Number(found[1]) * (found[2].toUpperCase() === "TB" ? 1024 : 1);
 }
@@ -36,6 +36,8 @@ function devicesComparable(chosen, instead) {
   if (chosen.brand !== instead.brand || chosen.category !== instead.category) return false;
   if (chosen.carbonKg == null || instead.carbonKg == null) return false;
   if ((chosen.carbonBasis || null) === (instead.carbonBasis || null)) return true;
+  const storageOnly = /^\d+\s*(?:GB|TB)(?:\s+(?:SSD\s+)?model)?$/i;
+  if (!storageOnly.test(chosen.carbonBasis || "") || !storageOnly.test(instead.carbonBasis || "")) return false;
   const chosenGb = storageGb(chosen.carbonBasis);
   const insteadGb = storageGb(instead.carbonBasis);
   return chosenGb !== null && insteadGb !== null && chosenGb >= insteadGb;
@@ -81,9 +83,111 @@ function comparable(chosen, instead) {
 
 // The group a shortlisted item can be compared within, or null when it cannot be compared with anything.
 function compareGroup(item) {
-  if (item.kind === "device" && item.carbonKg != null) return `device:${item.category}:${item.brand}`;
-  if (item.kind === "appliance" && item.kwhYear != null && item.type) return `appliance:${item.type}`;
+  if (item.kind === "device" && item.carbonKg != null) return `device:${item.category}:${item.brand}:${item.carbonBasis || "unspecified"}`;
+  if (item.kind === "appliance" && item.kwhYear != null && item.type && item.capacity) return `appliance:${item.type}:${item.capacity.unit}`;
   return null;
+}
+
+function listingStorageGb(page) {
+  for (const [label, value] of Object.entries(page.details || {})) {
+    if (/storage capacity|hard (?:drive|disk) size|\brom\b/i.test(label) && !/\bram\b/i.test(label)) {
+      const size = storageGb(value);
+      if (size !== null) return size;
+    }
+  }
+  const title = page.title || "";
+  const sizes = [...title.matchAll(/(\d+)\s*(GB|TB)\b/gi)].filter((match) => {
+    const after = title.slice(match.index + match[0].length, match.index + match[0].length + 20);
+    const before = title.slice(Math.max(0, match.index - 20), match.index);
+    return !/^\s*(?:RAM|unified memory)\b/i.test(after) && !/\bRAM\s*[:=-]\s*$/i.test(before);
+  }).map((match) => Number(match[1]) * (match[2].toUpperCase() === "TB" ? 1024 : 1));
+  const unique = [...new Set(sizes)];
+  return unique.length === 1 ? unique[0] : null;
+}
+
+function comparisonGroups(items) {
+  const groups = [];
+  for (const item of items) {
+    const key = compareGroup(item);
+    if (!key) continue;
+    const group = groups.find(([id, peers]) => id === key && peers.every((peer) => comparable(item, peer) && comparable(peer, item)));
+    if (group) group[1].push(item);
+    else groups.push([key, [item]]);
+  }
+  return groups;
+}
+
+// A report for one storage configuration or region is not a measurement of another listing.
+function listingCarbon(card, page) {
+  const carbon = card?.carbon;
+  if (!carbon) return { carbon: null, reason: null };
+  const basis = carbon.basis || "";
+  const reportedStorage = storageGb(basis);
+  const listingStorage = listingStorageGb(page);
+  if (/\b(?:EU(?:\/UK)?|UK|US|China)\s+model\b/i.test(basis)) return { carbon: null, reason: `The available report covers ${basis}. Its applicability to this Indian listing is unverified.` };
+  const listingSpecs = `${page.title || ""} ${Object.values(page.details || {}).join(" ")}`;
+  const gpu = /\b(\d+)-core GPU\b/i.exec(basis);
+  if (gpu && !new RegExp(`\\b${gpu[1]}[- ]core\\s+(?:GPU|graphics)\\b`, "i").test(listingSpecs)) {
+    return { carbon: null, reason: `The report covers ${basis}. The listing does not confirm the same GPU configuration.` };
+  }
+  if (/Wi-Fi\s*\+\s*Cellular/i.test(basis) && !/\b(?:cellular|5G)\b/i.test(listingSpecs)) {
+    return { carbon: null, reason: `The report covers ${basis}. The listing does not confirm cellular connectivity.` };
+  }
+  if (reportedStorage !== null && reportedStorage !== listingStorage) {
+    return { carbon: null, reason: `The available report covers ${basis}. This listing's storage does not match or could not be confirmed.` };
+  }
+  return { carbon, reason: null };
+}
+
+function validateBackup(backup, allowedKeys) {
+  const object = (value) => value !== null && typeof value === "object" && !Array.isArray(value);
+  const date = (value) => typeof value === "string" && Number.isFinite(Date.parse(value));
+  if (backup?.app !== "EcoCart" || backup.version !== 1 || !object(backup.data) || !date(backup.savedAt)) {
+    throw new Error("Unsupported backup");
+  }
+  const data = Object.fromEntries(Object.entries(backup.data).filter(([key]) => allowedKeys.includes(key)));
+  const lists = { shortlist: 40, choices: 100, activity: 500, viewedPhones: 500, purchases: 500, recentProducts: 20 };
+  for (const [key, limit] of Object.entries(lists)) {
+    if (!(key in data)) continue;
+    if (!Array.isArray(data[key]) || data[key].length > limit || !data[key].every(object)) throw new Error(`Invalid ${key}`);
+  }
+  const walk = (value, depth = 0) => {
+    if (depth > 12) throw new Error("Backup is too deeply nested");
+    if (typeof value === "number" && !Number.isFinite(value)) throw new Error("Invalid number");
+    if (!value || typeof value !== "object") return;
+    for (const [key, child] of Object.entries(value)) {
+      if (["url", "source", "carbonSource"].includes(key) && child != null && !/^https?:\/\//i.test(child)) throw new Error("Invalid link");
+      if (["kg", "carbonKg", "kwhYear", "price", "value"].includes(key) && typeof child === "number" && child < 0) throw new Error("Negative value");
+      if (["kg", "carbonKg", "kwhYear", "price", "estimateKg"].includes(key) && child != null && typeof child !== "number") throw new Error("Invalid numeric field");
+      walk(child, depth + 1);
+    }
+  };
+  walk(data);
+  const text = (value) => typeof value === "string" && value.length > 0 && value.length <= 500;
+  for (const item of data.shortlist || []) {
+    if (!text(item.key) || !text(item.name) || !["device", "appliance", "product"].includes(item.kind)) throw new Error("Invalid shortlist item");
+  }
+  for (const choice of data.choices || []) {
+    if (!text(choice.id) || !CHOICE_STAGES.includes(choice.stage) || !["device", "appliance"].includes(choice.kind)
+      || !date(choice.createdAt) || !date(choice.updatedAt)) throw new Error("Invalid choice");
+    for (const side of [choice.chosen, choice.instead]) {
+      if (!object(side) || !text(side.key) || !text(side.name) || !Number.isFinite(side.value) || side.value < 0) throw new Error("Invalid comparison");
+    }
+  }
+  for (const item of data.purchases || []) {
+    if (!text(item.id) || !text(item.key) || !text(item.name) || !date(item.at)
+      || (item.kg != null && (!Number.isFinite(item.kg) || item.kg < 0))
+      || ![null, undefined, "reported", "estimate"].includes(item.basis)) throw new Error("Invalid purchase");
+  }
+  for (const item of data.activity || []) if (!date(item.at) || !text(item.type)) throw new Error("Invalid activity");
+  for (const key of ["planReminders", "confirmedMatches"]) {
+    if (key in data && (!object(data[key]) || !Object.values(data[key]).every(text))) throw new Error(`Invalid ${key}`);
+  }
+  if ("plannedFor" in data && !((Array.isArray(data.plannedFor) || object(data.plannedFor)) && Object.values(data.plannedFor).every(text))) throw new Error("Invalid plan markers");
+  for (const key of ["userName", "lastCity", "sessionToken"]) {
+    if (key in data && (typeof data[key] !== "string" || data[key].length > 500)) throw new Error(`Invalid ${key}`);
+  }
+  return data;
 }
 
 // ---------- Recording a choice ----------
@@ -102,6 +206,8 @@ function makeChoice(chosen, instead, stage = "chosen", now = new Date()) {
     value: device ? item.carbonKg : item.kwhYear,
     basis: device ? item.carbonBasis || null : null,
     source: device ? item.carbonSource || null : item.url || null,
+    snapshot: productSnapshot({ ...item, kg: device ? item.carbonKg : null, basis: device ? "reported" : null,
+      source: device ? item.carbonSource : null, reportBasis: item.carbonBasis, checked: item.carbonChecked }),
   });
   return {
     id: choiceId(chosen, instead),
@@ -194,9 +300,9 @@ function planTotals(actions) {
 
 // A product as the card saw it: what it is, where, its price, and its footprint with where that number comes from.
 // basis: "reported" (the maker's own lifecycle figure) or "estimate" (Open CEDA's average for its category and price).
-function productSnapshot({ key, name, shop, url, price, kg, basis, category, source }) {
+function productSnapshot({ key, name, shop, url, price, kg, basis, category, source, reportBasis, checked }) {
   return { key, name: String(name || "").slice(0, 150), shop, url, price: price ?? null, kg: kg ?? null, basis: basis || null,
-    category: category || null, source: source || null };
+    category: category || null, source: source || null, reportBasis: reportBasis || null, checked: checked || null };
 }
 
 // The same product bought twice on one day counts once; on another day it is a new purchase.
@@ -242,7 +348,7 @@ function lastMonths(count = 12, now = new Date()) {
 // Greener actions grow the plant: plans handed over, and lower-footprint choices made.
 function greenActions(actions, choices) {
   const done = actions.filter((action) => action.status === "done").length;
-  const chosen = choices.filter((choice) => choice.stage === "chosen" || choice.stage === "purchased").length;
+  const chosen = choices.filter((choice) => (choice.stage === "chosen" || choice.stage === "purchased") && choiceDifference(choice) > 0).length;
   return done + chosen;
 }
 
@@ -263,7 +369,14 @@ async function logPurchase(snapshot) {
   const at = new Date().toISOString();
   const id = purchaseId(snapshot, at);
   const purchases = (await loadPurchases()).filter((item) => item.id !== id);
-  await chrome.storage.local.set({ [PURCHASES_KEY]: [{ ...snapshot, id, at }, ...purchases].slice(0, MAX_PURCHASES) });
+  const choices = await loadChoices();
+  const linked = choices.find((choice) => choice.chosen.key === snapshot.key);
+  const updated = choices.map((choice) => choice === linked
+    ? { ...choice, stage: "purchased", updatedAt: at, ...stageDates(choice, "purchased", new Date(at)) } : choice);
+  await chrome.storage.local.set({
+    [PURCHASES_KEY]: [{ ...snapshot, id, at, choiceId: linked?.id || null }, ...purchases].slice(0, MAX_PURCHASES),
+    [CHOICES_KEY]: updated,
+  });
   await logActivity("bought", { name: snapshot.name, kind: "purchase", key: snapshot.key });
 }
 
@@ -273,7 +386,13 @@ async function hasPurchasedToday(key) {
 }
 
 async function removePurchase(id) {
-  await chrome.storage.local.set({ [PURCHASES_KEY]: (await loadPurchases()).filter((item) => item.id !== id) });
+  const previous = await loadPurchases();
+  const removed = previous.find((item) => item.id === id);
+  const purchases = previous.filter((item) => item.id !== id);
+  const choices = (await loadChoices()).map((choice) => removed?.choiceId === choice.id
+    && !purchases.some((item) => item.choiceId === choice.id)
+    ? { ...choice, stage: "chosen", ...stageDates(choice, "chosen"), updatedAt: new Date().toISOString() } : choice);
+  await chrome.storage.local.set({ [PURCHASES_KEY]: purchases, [CHOICES_KEY]: choices });
 }
 
 // ---------- Old devices ----------
@@ -381,9 +500,8 @@ async function addToShortlist(item) {
 
 async function removeFromShortlist(key) {
   const shortlist = (await loadShortlist()).filter((entry) => entry.key !== key);
-  // Choices that involve the item go with it, so no total counts something the shopper took back.
-  const choices = (await loadChoices()).filter((choice) => choice.chosen.key !== key && choice.instead.key !== key);
-  await chrome.storage.local.set({ [SHORTLIST_KEY]: shortlist, [CHOICES_KEY]: choices });
+  // Recorded decisions are independent history. Their explicit Undo control removes them.
+  await chrome.storage.local.set({ [SHORTLIST_KEY]: shortlist });
 }
 
 async function isShortlisted(key) {
@@ -398,8 +516,9 @@ async function saveChoice(choice) {
   const involved = new Set([choice.chosen.key, choice.instead.key]);
   const others = choices.filter((item) => item.id !== choice.id
     && !involved.has(item.chosen.key) && !involved.has(item.instead.key));
+  const stage = existing?.stage === "purchased" ? "purchased" : choice.stage;
   const saved = existing
-    ? { ...existing, stage: choice.stage, updatedAt: choice.updatedAt, ...stageDates(existing, choice.stage) }
+    ? { ...existing, stage, updatedAt: choice.updatedAt, ...stageDates(existing, stage) }
     : choice;
   await chrome.storage.local.set({ [CHOICES_KEY]: [saved, ...others].slice(0, MAX_CHOICES) });
   await logActivity(saved.stage === "considered" ? "compared" : "chose", { name: saved.chosen.name, kind: saved.kind });
@@ -409,9 +528,20 @@ async function saveChoice(choice) {
 async function setChoiceStage(id, stage) {
   if (!CHOICE_STAGES.includes(stage)) return;
   const now = new Date();
-  const choices = (await loadChoices()).map((choice) => (choice.id === id
+  const previous = await loadChoices();
+  const selected = previous.find((choice) => choice.id === id);
+  if (!selected) return;
+  if (stage === "purchased") {
+    const snapshot = selected.chosen.snapshot || productSnapshot({ ...selected.chosen,
+      kg: selected.kind === "device" ? selected.chosen.value : null,
+      basis: selected.kind === "device" ? "reported" : null, reportBasis: selected.chosen.basis });
+    await logPurchase(snapshot);
+    return;
+  }
+  const choices = previous.map((choice) => (choice.id === id
     ? { ...choice, stage, updatedAt: now.toISOString(), ...stageDates(choice, stage, now) } : choice));
-  await chrome.storage.local.set({ [CHOICES_KEY]: choices });
+  const purchases = (await loadPurchases()).filter((purchase) => purchase.choiceId !== id);
+  await chrome.storage.local.set({ [CHOICES_KEY]: choices, [PURCHASES_KEY]: purchases });
 }
 
 // The most recent choice not yet marked as bought, made within the last few days, for the order page to ask about.
@@ -570,7 +700,7 @@ if (typeof module !== "undefined") {
   module.exports = {
     validTariff, runningCost,
     OLD_DEVICE_QUESTIONS, routeFacts, routeFit, routeAdvice, validCheck, NOT_STATED,
-    comparable, compareGroup, makeChoice, choiceDifference, impactTotals, planTotals, storageGb, monthKey,
+    comparable, compareGroup, comparisonGroups, listingStorageGb, listingCarbon, validateBackup, makeChoice, choiceDifference, impactTotals, planTotals, storageGb, monthKey,
     capacityFrom, prepareGuide, isOverdue, reminderCalendar, impactTimeline, stageDates,
     productSnapshot, purchaseId, purchaseTotals, lastMonths, greenActions,
   };

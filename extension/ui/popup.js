@@ -61,7 +61,7 @@ async function loadAllTime() {
 chrome.storage.onChanged.addListener((changes, area) => {
   if (area !== "local") return;
   if (changes[PLANS_CHANGED_KEY]) load();
-  if (changes[CHOICES_KEY]) loadAllTime();
+  if (changes[CHOICES_KEY]) { load(); loadAllTime(); }
 });
 
 load();

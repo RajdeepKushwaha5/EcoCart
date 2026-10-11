@@ -53,7 +53,7 @@ export function planSummary(action) {
 
 export async function loadActions() {
   const { actions } = await api("GET", "/actions");
-  return actions.sort((a, b) => b.actionId.localeCompare(a.actionId));
+  return actions.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
 }
 
 function plantArt(stage, className = "plant-art") {

@@ -80,7 +80,7 @@ def main():
         if not item.get("verified"):
             sys.exit("That plan is not verified.")
         item.pop("verified")
-        actions_table.put_item(Item=item)
+        actions._save_version(actions_table, item)
         stats.adjust(stats_table, verified=-1)
         print(f"Removed the verification from {args.action_id}.")
         return
@@ -91,7 +91,7 @@ def main():
         updated = actions.verify(item, args.evidence or "")
     except ApiError as error:
         sys.exit(error.message)
-    actions_table.put_item(Item=updated)
+    actions._save_version(actions_table, updated)
     stats.adjust(stats_table, verified=1)
     print(f"Verified {args.action_id} ({item['optionName']}, {item['city']}): {updated['verified']['evidence']}")
 
