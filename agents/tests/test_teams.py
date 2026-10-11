@@ -106,4 +106,5 @@ def test_runs_on_the_same_day_add_to_one_draft(monkeypatch, tmp_path):
         path, _ = category_team.map_gaps([f"Toys > {term}"], model=None)
     draft = json.loads(path.read_text(encoding="utf-8"))
     assert [rule["term"] for rule in draft["rules"]] == ["kites", "yo-yos"]
-    assert len(draft["notes"]) == 3
+    # A breadcrumb already in today's draft is skipped, so a long run can stop and resume.
+    assert [note["breadcrumb"] for note in draft["notes"]] == ["Toys > Kites", "Toys > Yo-yos"]

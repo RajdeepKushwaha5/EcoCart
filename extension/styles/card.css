@@ -302,6 +302,30 @@ a:hover {
   border-left: 3px solid #e2b23b;
 }
 
+.tree-line {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink);
+  background: var(--green-soft);
+  border-radius: var(--radius);
+}
+
+.tree-emoji {
+  flex: none;
+  font-size: 22px;
+  line-height: 1.1;
+}
+
+.tree-line a {
+  font: 12px var(--mono);
+  color: var(--muted);
+  white-space: nowrap;
+}
+
 /* ---------- See the evidence ---------- */
 
 .evidence {

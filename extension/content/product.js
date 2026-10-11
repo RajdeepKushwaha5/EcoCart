@@ -85,7 +85,7 @@ function reportControl() {
 // The top of every card answers three questions in a few lines: what to know, what is worth checking, what to do.
 // Everything else (charts, sources, method) sits behind "See the evidence".
 function decisionRow(label, ...content) {
-  const items = content.flat().filter(Boolean);
+  const items = content.flat(Infinity).filter(Boolean);
   if (items.length === 0) return null;
   return el("div", { className: "decide-row" }, el("p", { className: "decide-label" }, label), el("div", { className: "decide-body" }, items));
 }
@@ -111,9 +111,23 @@ function checkedMeta(fact, label = "Source") {
   return [sourceLink(fact.source, label), fact.checked ? `${DOT}checked ${formatDate(fact.checked)}` : null];
 }
 
-function everydayLine(equivalent) {
-  if (!equivalent) return null;
-  return `About the same as ${formatNumber(equivalent.amount)} ${equivalent.unit}.`;
+// The footprint as time one city tree needs to take that much CO2 out of the air (US EPA: about 60 kg a year per tree).
+function treeLine(equivalents) {
+  const tree = equivalents?.find((item) => item.factorId === "tree-year");
+  if (!tree) return null;
+  const years = tree.amount;
+  const days = Math.round(years * 365);
+  const months = Math.round(years * 12);
+  const span = days < 1 ? "less than a day"
+    : days < 60 ? `about ${days} ${days === 1 ? "day" : "days"}`
+      : years < 2 ? `about ${months} months`
+        : `about ${formatNumber(Math.round(years))} years`;
+  const text = years > 10
+    ? `It would take about ${formatNumber(Math.round(years))} city trees a whole year to take in this much CO₂ from the air.`
+    : `One city tree would need ${span} to take in this much CO₂ from the air.`;
+  return el("p", { className: "tree-line" },
+    el("span", { className: "tree-emoji", "aria-hidden": "true" }, "🌳"),
+    el("span", {}, text, " ", sourceLink(tree.source, "US EPA")));
 }
 
 function deviceDecision(card, page, category, item) {
@@ -126,8 +140,8 @@ function deviceDecision(card, page, category, item) {
       ? factLine(`Security updates until at least ${support.value}.`, checkedMeta(policy, `${product.brand}'s policy`))
       : policy?.value ? factLine(`${product.brand}: "${policy.value}".`, checkedMeta(policy, "Policy")) : null,
     card.carbon
-      ? factLine(`${formatNumber(card.carbon.kg)} kg CO₂e over its life, as ${product.brand} reports. ${everydayLine(card.carbon.equivalents?.[0]) || ""}`,
-        checkedMeta(card.carbon, "Report"))
+      ? [factLine(`${formatNumber(card.carbon.kg)} kg CO₂e over its life, as ${product.brand} reports.`, checkedMeta(card.carbon, "Report")),
+        treeLine(card.carbon.equivalents)]
       : factLine(`${product.brand} has not published this ${word}'s footprint.`),
   ];
   const check = [];
@@ -535,8 +549,9 @@ async function showEstimate(page) {
       decisionBlock(
         decisionRow("What to know",
           el("p", { className: "decide-figure" }, `About ${formatNumber(estimate.kg)} kg CO₂e`),
-          factLine(`The average for ${estimate.category.toLowerCase()} at this price in India, not a measurement of this product. ${everydayLine(estimate.equivalents?.[0]) || ""}`,
+          factLine(`The average for ${estimate.category.toLowerCase()} at this price in India, not a measurement of this product.`,
             sourceLink(estimate.dataset.source, "Open CEDA")),
+          treeLine(estimate.equivalents),
           labelLine),
         decisionRow("What you can do", shortlistControl(item))),
       evidence(

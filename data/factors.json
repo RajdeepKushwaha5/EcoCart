@@ -34,5 +34,14 @@
     "checked": "2026-09-30",
     "notes": "CEA CO2 Baseline Database v21.0, weighted average for FY 2024-25: 0.710 tCO2/MWh.",
     "order": 4
+  },
+  {
+    "factorId": "tree-year",
+    "unit": "years of one city tree taking in CO₂",
+    "kgCo2ePerUnit": 60,
+    "source": "https://www.epa.gov/energy/greenhouse-gases-equivalencies-calculator-calculations-and-references",
+    "checked": "2026-10-11",
+    "notes": "US EPA: 0.060 metric ton CO2 per urban tree planted per year (medium-growth trees, weighted 11% coniferous and 89% deciduous, from McPherson et al. 2016).",
+    "order": 5
   }
 ]

@@ -9,6 +9,7 @@ Nothing reaches the catalog until a person runs scripts/approve_draft.py or scri
 """
 
 import argparse
+import json
 import sys
 from pathlib import Path
 
@@ -43,6 +44,7 @@ def main():
     mapping.add_argument("--breadcrumb", action="append", default=[])
     mapping.add_argument("--from-gaps", action="store_true")
     mapping.add_argument("--top", type=int, default=20)
+    mapping.add_argument("--from-file", help="A JSON list of category paths, such as research/unmatched-categories.json")
 
     args = parser.parse_args()
     model = build_model(args.model)
@@ -56,6 +58,9 @@ def main():
         from .category_team import map_gaps
 
         breadcrumbs = args.breadcrumb + (recorded_gaps(args.top) if args.from_gaps else [])
+        if args.from_file:
+            paths = json.loads(Path(args.from_file).read_text(encoding="utf-8"))
+            breadcrumbs += [" > ".join(path) if isinstance(path, list) else path for path in paths]
         if not breadcrumbs:
             sys.exit("Give --breadcrumb or --from-gaps.")
         path, rules = map_gaps(breadcrumbs, model)

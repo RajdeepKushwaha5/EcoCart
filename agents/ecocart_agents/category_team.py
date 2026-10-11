@@ -114,20 +114,29 @@ def map_breadcrumb(breadcrumb, model):
     return rule, f"Agreed: '{term}' is {rule['label']}"
 
 
-def map_gaps(breadcrumbs, model):
-    rules, notes = [], []
-    for breadcrumb in breadcrumbs:
-        rule, note = map_breadcrumb(breadcrumb, model)
-        print(f"[Category team] {breadcrumb}: {note}", flush=True)
-        notes.append({"breadcrumb": breadcrumb, "note": note})
-        if rule:
-            rules.append(rule)
-    DRAFTS_DIR.mkdir(exist_ok=True)
-    path = DRAFTS_DIR / f"rules-{date.today().isoformat()}.json"
+def _save(path, rule, note):
     # Runs on the same day add to one draft, so nothing waiting for review is lost.
     draft = json.loads(path.read_text(encoding="utf-8")) if path.exists() else {"rules": [], "notes": []}
-    terms = {rule["term"] for rule in draft["rules"]}
-    draft["rules"] += [rule for rule in rules if rule["term"] not in terms]
-    draft["notes"] += notes
+    if rule and rule["term"] not in {item["term"] for item in draft["rules"]}:
+        draft["rules"].append(rule)
+    draft["notes"].append(note)
     path.write_text(json.dumps(draft, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+
+
+def map_gaps(breadcrumbs, model):
+    """Sort each breadcrumb and save the draft after every one, so a long run loses nothing if it stops."""
+    DRAFTS_DIR.mkdir(exist_ok=True)
+    path = DRAFTS_DIR / f"rules-{date.today().isoformat()}.json"
+    done = set()
+    if path.exists():
+        done = {note["breadcrumb"] for note in json.loads(path.read_text(encoding="utf-8"))["notes"]}
+    rules = []
+    for index, breadcrumb in enumerate(breadcrumbs, 1):
+        if breadcrumb in done:
+            continue
+        rule, note = map_breadcrumb(breadcrumb, model)
+        print(f"[Category team {index}/{len(breadcrumbs)}] {breadcrumb}: {note}", flush=True)
+        _save(path, rule, {"breadcrumb": breadcrumb, "note": note})
+        if rule:
+            rules.append(rule)
     return path, rules

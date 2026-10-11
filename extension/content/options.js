@@ -250,6 +250,7 @@ const EVERYDAY_ICONS = {
   "scooter-km": '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="17" r="2.4"/><circle cx="18" cy="17" r="2.4"/><path d="M8.4 17h7.2M15 17l-2-8h-2.5M13 9h3l2 8M6 14.6V12h5"/></svg>',
   "phone-charge": '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M12.6 8l-2 4h3l-2 4"/></svg>',
   "india-grid-kwh": '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3v5M15 3v5M7 8h10v3a5 5 0 0 1-10 0V8zM12 16v5"/></svg>',
+  "tree-year": '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c-3.3 0-6 2.5-6 5.6 0 .9.2 1.7.6 2.4A4 4 0 0 0 8 18h8a4 4 0 0 0 1.4-7c.4-.7.6-1.5.6-2.4C18 5.5 15.3 3 12 3zM12 12v9M9.5 15.5 12 18l2.5-2.5"/></svg>',
 };
 
 function everydayIcon(factorId) {
